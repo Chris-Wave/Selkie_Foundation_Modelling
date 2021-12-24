@@ -18,6 +18,7 @@ For details about the methodology, contact pbonar@gdgeo.com
 For questions regarding the code, please contact gshoukat@gdgeo.com 
 """
 import math
+from Eccentricity import eccent
 
 class Foundation_Definition:
     def __init__(self, weight_concrete, weight_slag, slope, device_geometry):
@@ -51,6 +52,11 @@ class Foundation_Definition:
         self.ext_loads_dict = {'Mxuls':Mxuls, 'Myuls':Myuls, 'Vv':Vv, 
                           'Vh':Vh}
     
+    """
+    declare descriptor to use eccent function for calculations in the eccentric
+    function in this class
+    """
+    eccent = eccent
     def eccentricity(self):
         #function to perform eccentricity calculations. does not need 
         #any arguments. ext_loads dict can be accessed internally
@@ -59,6 +65,8 @@ class Foundation_Definition:
         self.ey = self.ext_loads_dict['Myuls'] / self.ext_loads_dict['Vv'] # unit (m)
         self.Ix_min = max(6 * self.ex, self.geom) #might need tweaking
         self.Iy_min = max(6 * self.ey, self.goem)
+        self.cache_eccent = self.eccent.__func__(self.ex, self.ey, 
+                                            self.Ix_min, self.Iy_min)
         
         
         
@@ -79,3 +87,4 @@ class Foundation_Definition:
        pass            
             
     
+x = Foundation_Definition(100, 1010, 5, 3)
