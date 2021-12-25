@@ -20,6 +20,7 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 from Eccentricity import eccent
 from ext_loads_func import external_loads as el
 import math
+import numpy as np
 
 class Foundation_Definition:
     def __init__(self, weight_concrete, weight_slag, slope, device_geometry):
@@ -50,6 +51,23 @@ class Foundation_Definition:
     declare descriptor to use eccent function for calculations in the eccentric
     function in this class
     """
+    def key_calc(self, key: str):
+        #function to use to adjust the key calculations
+        #key : string : yes, y, all cases permitted. if yes, launches key calculations
+        #embed : string : will see at a later s
+        
+        #lower().startswith() allows all combinations of yes to be accepted
+        
+       
+        if key.lower().startswith('y'):
+            self.zs = 0.1 * self.cache_eccent['Ix_min']
+        else:
+            self.zs = 0
+        
+        self.Df = self.zs #m
+        self.Hs = np.min(self.Df * np.ones(len(self.cache['Calc'])), self.zs + 
+                         self.cache['Calc'].t)
+        
     eccent = eccent
     def eccentricity(self):
         #function to perform eccentricity calculations. does not need 
@@ -58,22 +76,12 @@ class Foundation_Definition:
         
         
         
-    def key_calc(self, key: str):
-        #function to use to adjust the key calculations
-        #key : string : yes, y, all cases permitted. if yes, launches key calculations
-        #embed : string : will see at a later s
-        
-        #lower().startswith() allows all combinations of yes to be accepted
-        
-       """
-        if key.lower().startswith('y'):
-            self.zs = 0.1 * self.Ix
-        else:
-            self.zs = 0
-       """
-       pass            
+
+          
             
 x = Foundation_Definition(1000, 100, 5,3)
 x.external_loads(0, 0, 10, 10)
+loads = x.ext_loads_dict
 x.eccentricity()
 cache2 = x.cache_eccent
+

@@ -18,7 +18,7 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 
 from bearing_capacity import drained_bearing_capacity
 import math
-
+from foundation_characteristics import Foundation_Definition
 #Class to clasify soil. all parameters to be user defined, no default initially
 #all standard units used
 #angles in degree  

@@ -26,6 +26,11 @@ def eccent(ext_loads_dict, geom):
     #ext_loads_dict : dictionary : user specified moments and forces
     #geom     : float : m, user-specified
 
+    #output
+    #returns a dictionary with all the calculations done, one data frame to
+    #consolidate the vector calculations done starting with L_vect and then
+    #everything before that is seperately cached in the dict. 
+    
     ex = ext_loads_dict['Mxuls'] / ext_loads_dict['Vv'] # unit (m)
     ey = ext_loads_dict['Myuls'] / ext_loads_dict['Vv'] # unit (m)
     Ix_min = max(6 * ex, geom) #might need tweaking
@@ -58,6 +63,8 @@ def eccent(ext_loads_dict, geom):
                 np.ones(np.shape(A_comma))], axis = 0)
     v = A_comma * t
     W = v * 24
-    Wb = W - v *10
+    Wb = W - v * 10
 
-    return pd.DataFrame({'L':L_vect, 'B':B_vect, 'A':A_comma, 't':t, 'v':v, 'W':W, 'Wb':Wb})
+    return {'Calc':pd.DataFrame({'L':L_vect, 'B':B_vect, 'A':A_comma, 't':t, 'v':v, 'W':W, 'Wb':Wb}),
+         'ex':ex, 'ey':ey, 'Ix_min':Ix_min, 'Iy_min':Iy_min}
+    
