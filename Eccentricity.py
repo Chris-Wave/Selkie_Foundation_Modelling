@@ -7,7 +7,7 @@ Created on Fri Dec 24 15:17:04 2021
 
 This function calculates the eccentricity and will be utilised using descriptors
 
-This function feeds into the class foundation characteristics
+This function feeds into the class foundation characteristics and soil_parameters
 
 THis script is part of the Selkie Project
 
@@ -22,12 +22,14 @@ import math
 import numpy as np
 import pandas as pd
 
-def eccent(ex, ey, Ix_min, Iy_min):
-    #ex     : float : m
-    #ey     : float : m
-    #Ix_min : float : m
-    #Iy_min : float : m
-    
+def eccent(ext_loads_dict, geom):
+    #ext_loads_dict : dictionary : user specified moments and forces
+    #geom     : float : m, user-specified
+
+    ex = ext_loads_dict['Mxuls'] / ext_loads_dict['Vv'] # unit (m)
+    ey = ext_loads_dict['Myuls'] / ext_loads_dict['Vv'] # unit (m)
+    Ix_min = max(6 * ex, geom) #might need tweaking
+    Iy_min = max(6 * ey, geom)
     L_comma = max(Ix_min - 2 * ex, Iy_min - 2 * ey)
     B_comma = min(Ix_min - 2 * ex, Iy_min - 2 * ey)
     """
@@ -52,13 +54,10 @@ def eccent(ex, ey, Ix_min, Iy_min):
 
 
     #row by row min max selection, eliminates the need for for loop
-    t = np.max([0.3 * np.min([L_vect, B_vect], axis = 0), np.ones(np.shape(A_comma))], axis = 0)
+    t = np.max([0.3 * np.min([L_vect, B_vect], axis = 0), 
+                np.ones(np.shape(A_comma))], axis = 0)
     v = A_comma * t
     W = v * 24
     Wb = W - v *10
 
-
-
     return pd.DataFrame({'L':L_vect, 'B':B_vect, 'A':A_comma, 't':t, 'v':v, 'W':W, 'Wb':Wb})
-    
-x = eccent(0,0,3,3)

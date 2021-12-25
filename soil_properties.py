@@ -16,7 +16,7 @@ For details about the methodology, contact pbonar@gdgeo.com
 For questions regarding the code, please contact gshoukat@gdgeo.com 
 """
 
-
+from bearing_capacity import drained_bearing_capacity
 import math
 
 #Class to clasify soil. all parameters to be user defined, no default initially
