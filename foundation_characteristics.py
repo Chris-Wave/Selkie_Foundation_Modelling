@@ -21,17 +21,20 @@ from Eccentricity import eccent
 from ext_loads_func import external_loads as el
 import math
 import numpy as np
-
+from bearing_capacity import bearing_capacity
 class Foundation_Definition:
-    def __init__(self, weight_concrete, weight_slag, slope, device_geometry):
+    def __init__(self, weight_concrete, weight_slag, slope, device_geometry, SF):
         #weight_concrete : float   : kN/m**3
         #weight_slab     : float   : kN/m**3
         #slope           : float   : degrees
         #device_geometry : float   : unspecified, Pault to confirm
+        #SF              : float   : safety factor for beariing capacity
+        
         self.weight_concrete = weight_concrete
         self.weight_slag = weight_slag
         self.slope = slope
         self.geom = device_geometry #read off the excel. dont know how to use this
+        self.SF = SF
         
     def drained_soil_(self, friction_angle, cohesion, fos, sensitivity):
         #friction_angle         : float : angle in degrees, obtained from lookup table. 
@@ -88,11 +91,14 @@ class Foundation_Definition:
         #Vuls  : float : kN,   User-defined
         #Huls  : float : kN,   User-defined
         #function to allocate external user defined loads to the foundation
+        self.Vuls = Vuls
+        self.Huls = Huls
         
-        
-        
+        #horizontal and vertical loads adjusted for slope, passed to 
         self.ext_loads_dict = self.el.__func__(self.slope, Mxuls, Myuls, Vuls, 
                                                Huls)
+        
+
         
     
     """
@@ -113,8 +119,9 @@ class Foundation_Definition:
             self.zs = 0
         
         self.Df = self.zs #m
-        self.Hs = np.min(self.Df * np.ones(len(self.cache['Calc'])), self.zs + 
-                         self.cache['Calc'].t)
+        self.Hs = np.min([self.Df * np.ones(len(self.cache_eccent['Calc'])), 
+                         self.zs + 
+                         self.cache_eccent['Calc'].t], axis = 0)
         
     eccent = eccent
     def eccentricity(self):
@@ -122,14 +129,40 @@ class Foundation_Definition:
         #any arguments. ext_loads dict can be accessed internally
         self.cache_eccent = self.eccent.__func__(self.ext_loads_dict, self.geom)
         
+    
+    def design_check(self):
+        #variable will be used for comparing design validity only after 
+        #bearing_capacity function returns the bearing capacity
+        #function different from slope adjusted values.
+        slope = math.radians(self.slope)
+        self.load_check = (self.Vuls - self.cache_eccent['Calc'].Wb -  
+                           self.cache_eccent['Calc'].A * self.zs * self.weight) * (
+                               math.cos(slope)) + self.Huls * math.sin(slope)
         
+        #call function bearing_capacity                       
+        self.Qu_SF = bearing_capacity(self.phi, self.ext_loads_dict, self.c, 
+                                      self.geom, self.weight, self.Df, 
+                                      self.Hs, self.SF)
+        
+        checker = self.Qu_SF > self.load_check # see from the entire stack of
+        #dataframe with different dimensions, which pass the test
+        #select the one with the smallest dimensions. 
+        
+        design_dim = self.cache_eccent['Calc'][checker].reset_index(drop
+                                                        = True).iloc[0]
+        return design_dim
         
 
           
             
-x = Foundation_Definition(1000, 100, 5,3)
+x = Foundation_Definition(1000, 100, 5,3, 2)
 x.external_loads(0, 0, 10, 10)
 loads = x.ext_loads_dict
 x.eccentricity()
 cache2 = x.cache_eccent
+x.key_calc('yes')
+x.undrained_soil(30, 10, 1.56, 9.8, 1255, 1)
+x.design_check()
+
+
 
