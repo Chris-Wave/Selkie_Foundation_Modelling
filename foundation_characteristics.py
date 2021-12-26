@@ -33,6 +33,54 @@ class Foundation_Definition:
         self.slope = slope
         self.geom = device_geometry #read off the excel. dont know how to use this
         
+    def drained_soil_(self, friction_angle, cohesion, fos, sensitivity):
+        #friction_angle         : float : angle in degrees, obtained from lookup table. 
+        #cohesion               : float : value in kPa
+        #fos (factor of safety) : float :
+        #sensititivity          : TBD with Paul : 
+        
+            
+        self.friction_angle = friction_angle                #degrees            
+        self.cohesion = cohesion                            #kPa
+        self.fos = fos                                      #fos is for soil parameters
+        self.sensitivity = sensitivity
+        """
+        for calculations, all angles need to be converted to radians, and 
+        then reconverted back to degrees.
+        
+        The code is based off on degrees. 
+        """
+        self.phi = math.degrees(math.atan(math.tan(
+            math.radians(self.friction_angle))/self.fos))   #degrees
+        self.c = self.cohesion/self.fos                     #kPa
+        
+    def undrained_soil(self, friction_angle, cohesion, fos, relative_density, 
+                 weight, sensitivity):
+        #friction_angle         : float : angle in degrees, obtained from lookup table. 
+        #cohesion               : float : value in kPa
+        #fos (factor of safety) : float : 
+        #relative_density       : float : %, obtained from the look-up table, user defined 
+        #Weight of soil         : float : kN/m**3, Weight of soil
+        #sensititivity          : TBD with Paul : 
+            
+            
+        self.friction_angle = friction_angle                #degrees            
+        self.cohesion = cohesion                            #kPa
+        self.fos = fos                                      #fos is for soil parameters
+        self.relative_density = relative_density            #  %
+        self.weight = weight                                #kN/m**3
+        self.sensitivity = sensitivity
+        """
+        for calculations, all angles need to be converted to radians, and 
+        then reconverted back to degrees.
+        
+        The code is based off on degrees. 
+        """
+        self.phi = math.degrees(math.atan(math.tan(
+            math.radians(self.friction_angle))/self.fos))   #degrees
+        self.c = self.cohesion/self.fos                     #kPa
+            
+        
     el = el    
     def external_loads(self, Mxuls, Myuls, Vuls, Huls):
         #Mxuls : float : kN-m, User-defined
