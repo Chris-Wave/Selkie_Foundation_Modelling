@@ -6,7 +6,7 @@ Created on Fri Dec 24 23:54:46 2021
 @author: goharshoukat
 
 This function calculates the bearing capacity and will be utilised using descriptors
-This file links into the class soil_parameters
+This file links into the class foundation_characteristics
 
 it has two parts: 
     drained
@@ -25,10 +25,11 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 import math
 import numpy as np
 from Eccentricity import eccent
-def bearing_capacity(phi, loads, c, geom, weight, Df, Hs, SF, embed=False):
+def bearing_capacity(phi, loads, load_check, c, geom, weight, Df, Hs, SF, embed=False):
     #inputs
     #phi : float : degrees, obtained from the friction angle of soil
     #loads : {}dict : loads dictionary, passed on from function file external_loads
+    #load_check : pd.series : single value per dimension used for capacity check
     #c     : float : kPa, cohesion/safety factor
     #geom  : float : m, passed on because eccent function needs this
     #weight : float : kN/m3, weight of soil
@@ -39,8 +40,8 @@ def bearing_capacity(phi, loads, c, geom, weight, Df, Hs, SF, embed=False):
     
     
     #output
-    #Qu_SF : pd.Series : bearing capacity adjusted for safety for 
-    #several dimensions. 
+    #checker_bearingcap : pd.Series : series of booleans for dims that pass the 
+    #design check necessary for bearing_cap
     phi = math.radians(phi) #convert degrees to radians for use in this function
     
     """
@@ -94,7 +95,13 @@ def bearing_capacity(phi, loads, c, geom, weight, Df, Hs, SF, embed=False):
     Qu = cache['Calc'].A * (qc + qq + qgamma) + RHS
     Qu_SF = Qu/SF
     
-    return Qu_SF
+    checker_bearingcap = Qu_SF > load_check # see from the entire stack of
+    #dataframe with different dimensions, which pass the test
+    #select the one with the smallest dimensions. 
+    
+
+
+    return checker_bearingcap
 
 
                             

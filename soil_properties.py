@@ -16,6 +16,10 @@ For details about the methodology, contact pbonar@gdgeo.com
 For questions regarding the code, please contact gshoukat@gdgeo.com 
 """
 
+
+"""
+file redundant. merged into foundation_characteristics. 
+"""
 from bearing_capacity import drained_bearing_capacity
 import math
 from foundation_characteristics import Foundation_Definition

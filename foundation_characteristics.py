@@ -22,6 +22,10 @@ from ext_loads_func import external_loads as el
 import math
 import numpy as np
 from bearing_capacity import bearing_capacity
+from sliding import sliding_resistance
+from overturning_resistance import overturning
+
+
 class Foundation_Definition:
     def __init__(self, weight_concrete, weight_slag, slope, device_geometry, SF):
         #weight_concrete : float   : kN/m**3
@@ -139,30 +143,46 @@ class Foundation_Definition:
                            self.cache_eccent['Calc'].A * self.zs * self.weight) * (
                                math.cos(slope)) + self.Huls * math.sin(slope)
         
-        #call function bearing_capacity                       
-        self.Qu_SF = bearing_capacity(self.phi, self.ext_loads_dict, self.c, 
-                                      self.geom, self.weight, self.Df, 
-                                      self.Hs, self.SF)
+        #call function bearing_capacity   
+        #assign it to a column in the diimensions dataframe                    
+        self.cache_eccent['Calc']['bearing_checker'] = bearing_capacity(
+                                      self.phi, self.ext_loads_dict, 
+                                      self.load_check, self.c, self.geom, 
+                                      self.weight, self.Df, self.Hs, self.SF)
         
-        checker = self.Qu_SF > self.load_check # see from the entire stack of
-        #dataframe with different dimensions, which pass the test
-        #select the one with the smallest dimensions. 
         
-        design_dim = self.cache_eccent['Calc'][checker].reset_index(drop
-                                                        = True).iloc[0]
-        return design_dim
+        
+        #call function sliding_Resistance to check design for sliding resistance
+        self.cache_eccent['Calc']['sliding_checker'] = sliding_resistance(
+                                             self.c, self.ext_loads_dict,
+                                             self.cache_eccent, self.weight, 
+                                             self.phi, self.slope, self.Hs, 
+                                             self.SF)
+        
+        
+        self.cache_eccent['Calc']['overturning_checker'] = overturning(
+                                          self.ext_loads_dict, 
+                                          self.cache_eccent, self.slope,
+                                          self.SF)
+        
+        
+        
+        
+       
+        
+        return self.cache_eccent
         
 
           
             
 x = Foundation_Definition(1000, 100, 5,3, 2)
-x.external_loads(0, 0, 10, 10)
+x.external_loads(50000, 50000, 100000, 102000)
 loads = x.ext_loads_dict
 x.eccentricity()
 cache2 = x.cache_eccent
 x.key_calc('yes')
 x.undrained_soil(30, 10, 1.56, 9.8, 1255, 1)
-x.design_check()
+cache2 = x.design_check()
 
 
 

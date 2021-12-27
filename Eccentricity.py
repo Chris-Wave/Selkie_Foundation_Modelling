@@ -49,12 +49,13 @@ def eccent(ext_loads_dict, geom):
     which was rigourously tested as well. 
     """
     if L_comma >= B_comma:
-        end = L_comma + 40
+        end = L_comma + 20
+        steps = int((end - L_comma) / 0.5) 
     else:
-        end = B_comma + 40
-
-    L_vect = np.arange(L_comma, end, 0.5)
-    B_vect = np.arange(B_comma, end, 0.5)
+        end = B_comma + 20
+        steps = int((end - B_comma) / 0.5)
+    L_vect = np.linspace(L_comma, end, steps)
+    B_vect = np.linspace(B_comma, end, steps)
     A_comma = L_vect * B_vect #element wise multiplication of both vectors
 
 
@@ -67,4 +68,6 @@ def eccent(ext_loads_dict, geom):
 
     return {'Calc':pd.DataFrame({'L':L_vect, 'B':B_vect, 'A':A_comma, 't':t, 'v':v, 'W':W, 'Wb':Wb}),
          'ex':ex, 'ey':ey, 'Ix_min':Ix_min, 'Iy_min':Iy_min}
-    
+
+
+   
