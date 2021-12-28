@@ -19,7 +19,7 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 """
 import math
 from precalculation import precalculations
-    
+from soil_properties import soil    
     
 class Foundation_Definition:
     
@@ -29,9 +29,12 @@ class Foundation_Definition:
     rhosteel    = 8050 
     E           = 210E6    #young's modulus
     rhowater    = 1025 #density of water
+    gamma_m     = 1.15 #safety factor of material
+    gamma_f     = 0.9 #favorable safety factor load factor
+    gamma_uf    = 1.1 #unfavorable safety factor load
     
     def __init__(self, d, D0, D0min, D0max, D0delta, L, Lmin, Lmax, Ldelta, t, 
-                 V_LRP):
+                 V_LRP, H_LRP, M_LRP):
         #inputs
         #d      : float : m, water depth
         #D0     : float : m. outer diameter
@@ -45,7 +48,8 @@ class Foundation_Definition:
         #Ldelta : float : m, skirt length delta
         #t      : float : m, wall thickness
         #V_LRP  : float : m, vertical load reference point
-        
+        #H_LRP  : float : m, horizontal load reference point
+        #M_LRP  : float : m, moment load reference point
         self.d = d
         self.D0 = D0
         self.D0min = D0min
@@ -57,11 +61,22 @@ class Foundation_Definition:
         self.Ldelta = Ldelta
         self.t = t
         self.V_LRP = V_LRP
+        self.H_LRP = H_LRP
         self.cache = precalculations(d, D0, L, t, self.rhosteel, self.rhowater,
                                      V_LRP)
         
         
+    def soil_selection(self, soil_type, soil_subtype):
+        #input
+        #soil_type : string : sand or clay
+        #soil_subtype : string : choose from the different types of soils
+        self.soil_type = soil_type
+        self.soil_prop = soil(soil_type, soil_subtype)
         
+        
+            
+            
+            
         
         
         #
@@ -118,3 +133,5 @@ class Foundation_Definition:
         #
 A = Foundation_Definition(10, 12, 13, 10, 1 , 2, 3, 3, 3, 4,2)        
 x = A.cache
+A.soil_selection('clay', 'very loose')
+y = A.soil_prop
