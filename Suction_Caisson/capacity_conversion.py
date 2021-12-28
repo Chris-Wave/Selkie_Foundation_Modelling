@@ -34,10 +34,10 @@ def capacity_conversions(soil_type, cache, soil_prop, K, H_LRP, V_LRP, M_LRP):
         Vside = math.pi * cache['D'] * cache['h']**2 / 2 * K * \
                             soil_prop['gamma'] * math.tan(soil_prop['delta'])
     
-    Hside = cache['D'] * Cache['h'] * (soil['gamma'] * cache['h'] / 2) #equation left incomplete
-    Hbase = Hside - H_LRPVbase
+    Hside = cache['D'] * cache['h'] * (soil_prop['gamma'] * cache['h'] / 2) #equation left incomplete
+    Hbase = Hside - H_LRP
     Vbase = V_LRP + cache['Wc'] - Vside
-    hside = 2 * cache[h] /3 
+    hside = 2 * cache['h'] /3 
     Mbase = M_LRP + hside * Hside + cache['h'] * Hbase
     
     return {'Hbase' : Hbase, 'Vbase' : Vbase, 'Mbase' : Mbase}
