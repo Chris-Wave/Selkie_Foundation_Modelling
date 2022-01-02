@@ -39,11 +39,73 @@ code is reached
 """
 
 #Values here are only assumed and might not present any realistic picture
-weight_concrete = 
-weight_slag
-slope = 
-device_geometry
-SF
+weight_concrete     = 10 
+weight_slag         = 10
+slope               = 5
+device_geometry     = 3
+SF                  = 2
 #declare FoundationA to be an instance of the class
-Foundation_A = Foundation_Definition()
+Foundation_A = Foundation_Definition(weight_concrete, weight_slag, slope, 
+                                     device_geometry, SF)
 
+"""
+After class decleration, select soil properties. For undrained soil, the 
+following parameters need to be declared. 
+1. friction angle [degrees]
+2. cohesion [kPa]
+3. factor of safety for soil parameters
+4. relative_density [%]
+5. weight [kN/m**3]
+6. sensitivity
+
+Decleration of soil functtion does not return any value, however, it enables
+the next set of functions to perform their calculations and produce a cache
+of results
+"""
+#define the soil parameters
+friction_angle      = 5 
+cohesion            = 2
+fos                 = 2
+relative_density    = 50
+weight              = 1000
+sensitivity         = 5
+Foundation_A.undrained_soil(friction_angle, cohesion, fos, relative_density, 
+                            weight, sensitivity)
+
+
+"""
+External loading needs to be defined in the next function call
+The variables required are:
+1. Mxuls [kN-m]
+2. Myuls [kN-m]
+3. Vuls [kN]
+4. Huls [kN-m]
+"""
+Mxuls               = 1000
+Myuls               = 1000
+Vuls                = 1000
+Huls                = 1000
+Foundation_A.external_loads(Mxuls, Myuls, Vuls, Huls)
+
+
+"""
+After the load definition, eccentricity calculations need to be performed
+Eccentricity calculations will take all class objects to complete calculations.
+The function needs to be called however. 
+
+Immediately following the eccentricity calculation, presence of key needs to
+be defined. this function takes a string - yes or no. 
+"""
+Foundation_A.eccentricity()
+Foundation_A.key_calc('n')
+
+
+"""
+Finally, the smallest dimension that clears all checks are identified. 
+If in an nth iteration, no dimension which passes all three checks is obtained,
+nth + 1 iteration is performed. 
+
+The designe_check method is called and it returns the dimensions with their 
+checks. 
+"""
+dimensions = Foundation_A.design_check()

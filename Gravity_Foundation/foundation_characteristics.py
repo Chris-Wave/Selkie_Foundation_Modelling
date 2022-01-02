@@ -172,17 +172,3 @@ class Foundation_Definition:
         
         return self.cache_eccent
         
-
-          
-            
-x = Foundation_Definition(1000, 100, 5,3, 2)
-x.external_loads(50000, 50000, 100000, 102000)
-loads = x.ext_loads_dict
-x.eccentricity()
-cache2 = x.cache_eccent
-x.key_calc('yes')
-x.undrained_soil(30, 10, 1.56, 9.8, 1255, 1)
-cache2 = x.design_check()
-
-
-
