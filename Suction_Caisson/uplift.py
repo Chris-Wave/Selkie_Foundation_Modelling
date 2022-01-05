@@ -52,7 +52,9 @@ def uplift(soil_type, analysis_type, capacity_cache, cache , sand_prop,
             Vult =  math.pi * cache['D']**2/4 * (101325 + 1000 * h ) + 2* math.pi * \
                 cache['D'] * sand_prop['gamma'] * h **2/2 * K * math.tan(
                     math.radians(sand_prop['delta']))
-                
+        
+        else:
+            raise ValueError
             
     elif soil_type.lower() == 'sand-drained':
         if analysis_type.lower() == 'cavitation-base':
@@ -61,4 +63,6 @@ def uplift(soil_type, analysis_type, capacity_cache, cache , sand_prop,
                     cache['D'] * sand_prop['gamma'] * h **2/2 * K * math.tan(
                         math.radians(sand_prop['delta']))
                     
-        elif analysis_type.lower() == 'cavitation-lid'
+        elif analysis_type.lower() == 'cavitation-lid':
+           Vult =  2* math.pi * cache['D'] * sand_prop['gamma'] * h **2/2 * K \
+               * math.tan(math.radians(sand_prop['delta']))
