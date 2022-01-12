@@ -40,7 +40,7 @@ class Foundation_Definition:
         self.geom = device_geometry #read off the excel. dont know how to use this
         self.SF = SF
         
-    def drained_soil_(self, friction_angle, cohesion, fos, sensitivity):
+    def drained_soil(self, friction_angle, cohesion, fos, sensitivity):
         #friction_angle         : float : angle in degrees, obtained from lookup table. 
         #cohesion               : float : value in kPa
         #fos (factor of safety) : float :
