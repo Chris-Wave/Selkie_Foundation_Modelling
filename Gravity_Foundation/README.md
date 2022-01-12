@@ -72,9 +72,43 @@ Foundation_Definition():
 
 
 	- def external_loads(self, Mxuls, Myuls, Vuls, Huls):
-        #Mxuls : float : kN-m, User-defined
-        #Myuls : float : kN-m, User-defined
-        #Vuls  : float : kN,   User-defined
-        #Huls  : float : kN,   User-defined
-        #function to allocate external user defined loads to the foundation
+        	
+		This function needs to be called to provide external loads applicable on the foundation. These can be attributed to the wave hydrodynamics, etc. The function takes in the following four inputs:
+	
+		- Mxuls : float : kN-m, User-defined
+        	- Myuls : float : kN-m, User-defined
+        	- Vuls  : float : kN,   User-defined
+        	- Huls  : float : kN,   User-defined
+
+This function also does not have any outputs. The input values are then accessible to the other objects of the class through the instance. 
+
+ 
+	- def key_calc(self, key: str):
+        	
+This function needs to be called to define if there is a key present in the design. Even if the key is absent, the function still needs to be called and an input given so that dimensions are calculated with the information that no key is present for the given foundation design. This function makes use of the following inputs:
+
+        	- key : string : yes, y, all cases permitted. if yes, launches key calculations
+        	- embed : string : Utility and incoorporation of this function will be provided in the future iteration. It is however, included within the code for now but performs no operation
+
+This function has no output. The input information and the corresponding changes are then available for the life of the instance. 
+
+
+	-  def eccentricity(self):
+		
+This function takes no additional inputs. It also has no additional outputs. Calling this function however ensures calculation of very important dimensional calculations which are required for by the design checker. This will be revised in the next iteration and included within the external loads adjustment function. 
+
+
+	- def design_check(self):
+
+Finally, the library calls the design_check function which runs 3 checks -- (1) Bearing Capacity, (2) Overturning Resistance, (3) Sliding Resistance. It however, needs no inputs. Note that this function makes use of external loads that are different from the ones calculated from slope adjustement. 
+
+The output of this function is a pandas dataframe with several different dimensional values. Included within the dataframe is the result of the 3 checks performed. 
+
+ 
+
+		    
+    
+
+
         
+               
