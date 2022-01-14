@@ -34,7 +34,7 @@ Foundation_Definition():
 
 
 	- __init__(self, weight_concrete, weight_slag, slope, device_geometry, SF):
-		This is the initialization function. To declare an instance of the class Foundation_Definition, call the class from the library foundation_characterisitcs  and pass on the directory containing the datafiles. To declare an isntance of this class, the following inputs are required:
+This is the initialization function. To declare an instance of the class Foundation_Definition, call the class from the library foundation_characterisitcs  and pass on the directory containing the datafiles. To declare an isntance of this class, the following inputs are required:
 
 		- weight_concrete : float   : kN/m**3
        		- weight_slab     : float   : kN/m**3
@@ -46,20 +46,20 @@ Foundation_Definition():
 
 	- def drained_soil(self, friction_angle, cohesion, fos, sensitivity):
 
-		This function is called to define a soil formation which is drained. The properties of a drained soil are then input here which can be accessed by the instance of that class. The following are the inputs required for this function: 
+This function is called to define a soil formation which is drained. The properties of a drained soil are then input here which can be accessed by the instance of that class. The following are the inputs required for this function: 
 
         	- friction_angle         : float : angle in degrees, obtained from lookup table. 
         	- cohesion               : float : value in kPa
         	- fos (factor of safety) : float :
         	- sensititivity          : TBD with Paul : 
     
-		It however, has no outputs and any property added is then accessible to the instance. 
+It however, has no outputs and any property added is then accessible to the instance. 
 
          
 
 	- def undrained_soil(self, friction_angle, cohesion, fos, relative_density, weight, sensitivity):
 
-		Similar to the last function, this object is called when the soil formation presents the behavior of an undrained soil. The arguments it takes are the properties of necessary to define the undrained behavior. It takes the following inputs: 
+Similar to the last function, this object is called when the soil formation presents the behavior of an undrained soil. The arguments it takes are the properties of necessary to define the undrained behavior. It takes the following inputs: 
 
         	- friction_angle         : float : angle in degrees, obtained from lookup table. 
         	- cohesion               : float : value in kPa
@@ -68,12 +68,12 @@ Foundation_Definition():
         	- Weight of soil         : float : kN/m**3, Weight of soil
         	- sensititivity          : TBD with Paul : 
 
-		It does not have any additional outputs either. All the properties input are then accessible to the instance of the class. 
+It does not have any additional outputs either. All the properties input are then accessible to the instance of the class. 
 
 
 	- def external_loads(self, Mxuls, Myuls, Vuls, Huls):
         	
-		This function needs to be called to provide external loads applicable on the foundation. These can be attributed to the wave hydrodynamics, etc. The function takes in the following four inputs:
+This function needs to be called to provide external loads applicable on the foundation. These can be attributed to the wave hydrodynamics, etc. The function takes in the following four inputs:
 	
 		- Mxuls : float : kN-m, User-defined
         	- Myuls : float : kN-m, User-defined
@@ -102,13 +102,4 @@ This function takes no additional inputs. It also has no additional outputs. Cal
 
 Finally, the library calls the design_check function which runs 3 checks -- (1) Bearing Capacity, (2) Overturning Resistance, (3) Sliding Resistance. It however, needs no inputs. Note that this function makes use of external loads that are different from the ones calculated from slope adjustement. 
 
-The output of this function is a pandas dataframe with several different dimensional values. Included within the dataframe is the result of the 3 checks performed. 
-
- 
-
-		    
-    
-
-
-        
-               
+The output of this function is a pandas dataframe with several different dimensional values. Included within the dataframe is the result of the 3 checks performed.                
