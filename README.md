@@ -12,3 +12,14 @@ Please note that this is still in progress and a stable version is yet to be rel
 
 
 The source codes and their respective documentation can be found in the two seperate folders: Gravity Based Foundation and Suction Caisson.    
+
+
+## Requirements
+
+The algorithm makes use of Python 3.9 only. 
+
+The libraries used and their respective versions used are as follows:
+
+- Pandas - v1.3.5
+- Numpy - v1.22.0
+

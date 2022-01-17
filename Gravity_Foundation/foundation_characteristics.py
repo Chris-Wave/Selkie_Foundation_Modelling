@@ -131,6 +131,7 @@ class Foundation_Definition:
     def eccentricity(self):
         #function to perform eccentricity calculations. does not need 
         #any arguments. ext_loads dict can be accessed internally
+        #shift this into the external loads function. 
         self.cache_eccent = self.eccent.__func__(self.ext_loads_dict, self.geom)
         
     
