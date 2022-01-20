@@ -20,6 +20,8 @@ For details about the methodology, contact cwrigth@gdgeo.com
 For questions regarding the code, please contact gshoukat@gdgeo.com 
 """
 
+import math
+
 def soil(soil_type, soil_subtype):
     #input
     #soil_type  : string : sand or clay are acceptable options only
@@ -101,42 +103,42 @@ def soil(soil_type, soil_subtype):
     
     else: #sand
         if soil_subtype.lower() == 'very loose':
-            gamma = 870             #Effective unit weight of soil
-            phi = 25                  #angle of friction
-            rel_density_index = 0.1    #relative density index
-            delta = phi - 5         #
-            Nq = 10.66214239           #bearing capacity factor (overburden)
+            gamma = 870                                 #Effective unit weight of soil
+            phi = math.radians(25)                      #angle of friction
+            rel_density_index = 0.1                     #relative density index
+            delta = math.radians(math.degrees(phi) - 5) #interface friction angle
+            Nq = 10.66214239                            #bearing capacity factor (overburden)
             
             
         elif soil_subtype.lower() == 'loose':
-            gamma = 870             #Effective unit weight of soil
-            phi = 30                  #angle of friction
-            rel_density_index = 0.25     #relative density index
-            delta = phi - 5         #
-            Nq = 18.40112222           #bearing capacity factor (overburden)
+            gamma = 870                                 #Effective unit weight of soil
+            phi = math.radians(30)                      #angle of friction
+            rel_density_index = 0.25                    #relative density index
+            delta = math.radians(math.degrees(phi) - 5) #interface friction angle
+            Nq = 18.40112222                            #bearing capacity factor (overburden)
             
         elif soil_subtype.lower() == 'medium dense':
-            gamma = 870             #Effective unit weight of soil
-            phi = 32                   #angle of friction
-            rel_density_index = 0.45     #relative density index
-            delta = phi - 5         #
-            Nq = 23.17677621           #bearing capacity factor (overburden)
+            gamma = 870                                 #Effective unit weight of soil
+            phi = math.radians(32)                      #angle of friction
+            rel_density_index = 0.45                    #relative density index
+            delta = math.radians(math.degrees(phi) - 5) #interface friction angle
+            Nq = 23.17677621                            #bearing capacity factor (overburden)
             
    
             
         elif soil_subtype.lower() == 'dense':
-            gamma = 870             #Effective unit weight of soil
-            phi = 35                  #angle of friction
-            rel_density_index = 0.75     #relative density index
-            delta = phi - 5         #
-            Nq = 33.29609149           #bearing capacity factor (overburden)
+            gamma = 870                                 #Effective unit weight of soil
+            phi = math.radians(35)                      #angle of friction
+            rel_density_index = 0.75                    #relative density index
+            delta = math.radians(math.degrees(phi) - 5) #interface friction angle
+            Nq = 33.29609149                            #bearing capacity factor (overburden)
             
             
         else:
-            gamma = 870             #Effective unit weight of soil
-            phi = 38                   #angle of friction
-            rel_density_index = 0.85    #relative density index
-            delta = phi - 5         #
+            gamma = 870                                 #Effective unit weight of soil
+            phi = math.radians(38)                      #angle of friction
+            rel_density_index = 0.85                    #relative density index
+            delta = math.radians(math.degrees(phi) - 5) #interface friction angle
             Nq = 48.9332527           #bearing capacity factor (overburden)
             
         return {'gamma':gamma, 'phi':phi, 'rel_density_index':rel_density_index,
