@@ -83,9 +83,9 @@ class Foundation_Definition:
 
             
 
-A = Foundation_Definition(10, 12, 13, 10, 1 , 2, 3, 3, 3, 4,2, 5, 3)        
-x = A.calc_cache
+A = Foundation_Definition(10, 12, 13, 10, 1 , 2, 3, 3, 3, 4,2, 5, 3)     
+   
+calc_cache = A.calc_cache
 A.soil_selection('clay', 'very soft')
 clay_prop = A.soil_prop
-A.capacity_conversion()
-y = A.cap_cache
+input_cache = A.input_cache
