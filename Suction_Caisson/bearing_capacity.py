@@ -9,50 +9,75 @@ function untested, unintegrated.
 """
 import  math
 import numpy as np
-def bearing_capacity(ty, condition, M_LRP, L, cache, capacity_cache, clay_prop,
-                     sand_prop, gamma_m, gamma_f):
+def bearing_capacity(foundation_type, input_cache, calc_cache, soil, cap_cache,
+                     gamma_m, gamma_f):
     #Input
-    #ty     : str   : option for it to be 'anchor' or 'foundation'
-    #condition : str : option to chose between drained or undrained
-    #M_LRP  : float : m, moment load reference points
-    #cache  : dict {} : dictionary of pre calculations
-    #L      : float   : m, skirt length
-    #clay_prop : dict : cache with clay proeprties
-    #sand_prop : dict : cache with sand proeprties
-    #gamma_m : float : safety factor of materia 
-    #gamma_f : float : favorouble safety factor load
+    #foundation_type     : str   : option for it to be 'anchor' or 'foundation'
+    #input_cache: dict {} : dictionary of input cache
+    #soil       : dict {} : dictionary of soil properties
+    #calc_cache : dict {} : dictionary of pre calculations
+    #cap_cache  : dict {} : dictionary of capacity cache
+    #gamma_m    : float   : ahrd coded safety factor of material
+    #gamma_f    : float   : hard coded favorable safety factor
+ 
     
     
-    if ty.lower() == 'anchor' or M_LRP == 0:
-        Aeff = math.pi * cache['D']**2 / 4
-        Beff = cache['D']
+    if foundation_type.lower() == 'anchor' or input_cache['M_LRP'] == 0:
+        Aeff = math.pi * calc_cache['D']**2 / 4
+        Beff = calc_cache['D']
         Leff = Beff
         
-    elif ty.lower() == 'foundation' or M_LRP > 0:
-        e = capacity_cache['Mbase'] / capacity_cache['Vbase']
-        Aeff = 2*(cache['D']/4 * math.acos(2 * e / cache['D']) - e * 
-                  math.sqrt(cache['D']**2 / 4 - e**2))
-        Be = cache['D'] - 2*e
-        Le = math.sqrt(cache['D']**2 - (cache['D'] - Be)**2)
-        Leff = math.sqrt(Aeff * Le / Be)
-        Beff = math.sqrt(Aeff * Be/Le)
+    elif foundation_type.lower() == 'foundation' or input_cache['M_LRP'] > 0:
+        e = cap_cache['Mbase'] / cap_cache['Vbase']
+        Aeff = 2*(calc_cache['D'] / 4 * np.acos(2 * e / calc_cache['D']) - e * 
+                  np.sqrt(calc_cache['D']**2 / 4 - e**2))
+        Be = calc_cache['D'] - 2 * e
+        Le = np.sqrt(calc_cache['D']**2 - (calc_cache['D'] - Be)**2)
+        Leff = np.sqrt(Aeff * Le / Be)
+        Beff = np.sqrt(Aeff * Be/Le)
     
     else:
         raise ValueError
         
         
-        
-    h = np.linspace(int(cache['h']), int(cache['h'] + 50), int((cache['h']+50)))   
-    if condition.lower() == 'undrained':
-        Nc = 2 + math.pi
-        ica = 0.5 - 0.5 * math.sqrt(1 - capacity_cache['Hbase']/(
-            Aeff * clay_prop['s_u']))
-        sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
-        dca = 0.3 * np.arctan(h/Beff)
-        Vbase_R = Aeff * (clay_prop['Nc'] * clay_prop['s_u']*(1 + sca + dca - 
-                                    ica) + sand_prop['gamma'] * h)
-        
-        
-        
-        
-        
+    #Perform bearing capacity check for undrained soil conditions
+    #currently, incomplete data and equations are present
+    #coding what we have access to for now. 
+
+    
+
+    Nc = 2 + math.pi
+    ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['Hbase']/(
+        Aeff * soil['s_u']))
+    sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
+    dca = 0.3 * np.arctan(calc_cache['h'] / Beff)
+    Vbase_R = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
+                                ica) + soil['gamma'] * calc_cache['h'])
+    
+    undrained_bear_checker = Vbase_R/gamma_m > cap_cache['Vbase'] * gamma_f
+    del Vbase_R
+
+    
+    #Perform bearing capacity for drained sand
+    Bcomma = input_cache['D0']
+    Lcomma = calc_cache['h']
+    
+    Nq = np.tan(math.pi / 4 + soil['phi'] / 2)**2 * np.exp(math.pi * 
+                                                    math.tan(soil['phi']))
+    Ngamma = 1.5 * (Nq - 1) * math.tan(soil['phi'])    
+    iq = 1 - 0.5 * (cap_cache['Hbase'] / cap_cache['Vbase'])**5
+    sq = 1 + iq * (Bcomma / Lcomma) * math.sin(soil['phi'])
+    igamma = 1 - 0.7 * (cap_cache['Hbase'] / cap_cache['Vbase'])**5
+    sgamma = 1 - 0.4 * igamma * Bcomma / Lcomma
+    dq = 1+ 1.2 * calc_cache['h']/Bcomma * math.tan(soil['phi']) * (1 - 
+                                                    math.sin(soil['phi']))**2
+    dgamma = 1
+    Vbase_R = Aeff * (0.5 * soil['gamma'] * Beff * Ngamma * sgamma * dgamma * 
+                      igamma + soil['gamma'] * calc_cache['h'] * Nq * sq * 
+                      dq * iq)
+    drained_bear_checker = Vbase_R/gamma_m > cap_cache['Vbase'] * gamma_f
+    
+    
+    return {'drained bearing capacity' : drained_bear_checker, 
+            'undrained bearing capacity' : undrained_bear_checker}
+

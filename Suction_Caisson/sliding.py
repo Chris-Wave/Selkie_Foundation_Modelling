@@ -7,8 +7,7 @@ Created on Tue Dec 28 21:56:27 2021
 """
 import math
 import numpy as np
-def sliding(capacity_cache, cache, soil_type, sand_prop, clay_prop, gamma_m, 
-            H_LRP):
+def sliding(input_cache, capacity_cache, calc_cache, soil_type, soil, gamma_m):
     #Input
     #soil_type : str : string specifiying either clay or sand
     #cache     : {}  : dictionary from the precalc function
@@ -16,19 +15,19 @@ def sliding(capacity_cache, cache, soil_type, sand_prop, clay_prop, gamma_m,
     #clay_prop : dict : cache with clay proeprties
     #sand_prop : dict : cache with sand proeprties
     #gamma_m   : float : material safety factor
-    #H_LRP  : float : m, horizontal load reference point
-    h = np.linspace(int(cache['h']), int(cache['h'] + 50), int((cache['h']+50)))   
+    #H_LRP  : float : m, horizontal load reference point   
     if soil_type.lower() == 'clay':    
-        Hbase_R = math.pi * cache['D']**2/4 * clay_prop['s_u']
-        Hside_R = cache['D'] * h * (h/2 * sand_prop['gamma'] + 2 * 
-                                    clay_prop['s_u'])
+        Hbase_R = math.pi * calc_cache['D']**2/4 * soil['s_u']
+        Hside_R = calc_cache['D'] * calc_cache['h'] * (calc_cache['h']/2 * 
+                                        soil['gamma'] + 2 * soil['s_u'])
+                                    
         
     else:
-        phi = math.radians(sand_prop['phi'])
-        Hbase_R = capacity_cache['Vbase'] * math.tan(phi)
-        kp = (1 + math.sin(phi)) / (1 - math.sin(phi))
-        ka = (1 - math.sin(phi)) / (1 + math.sin(phi)) 
-        Hside_R = sand_prop['gamma'] * h**2 * cache['D']/2 * (kp - ka)
+        phi = soil['phi']
+        Hbase_R = capacity_cache['Vbase'] * math.tan(soil['phi'])
+        kp = (1 + math.sin(soil['phi'])) / (1 - math.sin(soil['phi']))
+        ka = (1 - math.sin(soil['phi'])) / (1 + math.sin(soil['phi'])) 
+        Hside_R = soil['gamma'] * calc_cache['h']**2 * calc_cache['D']/2 * (kp - ka)
         
-    checker = capacity_cache['Hbase'] + Hside_R/gamma_m > H_LRP
+    return capacity_cache['Hbase'] + Hside_R/gamma_m > input_cache['H_LRP']
     

@@ -23,7 +23,11 @@ import math
 from precalculation import precalculations
 from soil_properties import soil    
 from capacity_conversion import capacity_conversions as cc #to avoid naming conflicts as the name of a method is also capacity conversion
-    
+from installation import installation_sand, installation_clay
+from bearing_capacity import bearing_capacity
+from sliding import sliding
+
+
 class Foundation_Definition:
     #these properties can be changed for the class instance if needed
     
@@ -79,13 +83,56 @@ class Foundation_Definition:
         self.cap_cache = cc(self.input_cache, self.calc_cache, self.soil_type, 
                        self.soil_prop, self.K)
         
+     
+    def checker(self, foundation_type):
+        #perform installation checks
+        if self.soil_type.lower() == 'clay':
+            self.installation_checker = installation_clay(self.soil_prop, 
+                                                     self.input_cache, 
+                                                     self.calc_cache, 
+                                                     self.v, self.E, 
+                                                     self.gamma_m, self.gamma_f)
+
+        elif self.soil_type.lower() == 'sand':
+            self.installation_checker = installation_sand(self.soil_prop, 
+                                                     self.input_cache, 
+                                                     self.calc_cache,
+                                                     self.v, self.E, self.K, 
+                                                     self.gamma_m, self.gamma_f)
+        else:
+            raise ValueError
+         
+        #perform bearing capacity checks for drained and undrained soil type    
+        self.bearing_capacity_checker = bearing_capacity(foundation_type, 
+                                                    self.input_cache, 
+                                                    self.calc_cache, 
+                                                    self.soil_prop, 
+                                                    self.cap_cache, 
+                                                    self.gamma_m, self.gamma_f)
         
+        self.sliding_checker = sliding(self.input_cache, self.cap_cache, 
+                                       self.calc_cache, self.soil_type, 
+                                       self.soil_prop, self.gamma_m)
+        
+        
+        
+        return {'L' : calc_cache['L'], 'h' : calc_cache['h'],
+                'Buckling' : self.installation_checker['buckling check'],
+                'Self-weight installation' : self.installation_checker['sw installation check'], 
+                'Suction Limit' : self.installation_checker['suction limit check'], 
+                'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'], 
+                'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
+                'Sliding' : self.sliding_checker}
+
 
             
 
 A = Foundation_Definition(10, 12, 13, 10, 1 , 2, 3, 3, 3, 4,2, 5, 3)     
-   
 calc_cache = A.calc_cache
-A.soil_selection('clay', 'very soft')
-clay_prop = A.soil_prop
+#A.soil_selection('clay', 'very soft')
+#clay_prop = A.soil_prop
+A.soil_selection('sand', 'very loose')
+sand = A.soil_prop
 input_cache = A.input_cache
+cap_cache = A.cap_cache
+checker = A.checker('anchor')
