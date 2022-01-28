@@ -30,7 +30,7 @@ def precalculations(input_cache, rhosteel, rhowater):
     #output
     #cache : dict: dictionary with results of all the below calculations
     
-    L = np.arange(input_cache['L'],input_cache['L'] + 30, 0.5)
+    L = np.arange(input_cache['Lmin'],input_cache['Lmax'], input_cache['Ldelta'])
     h = L - 0.5                     #installed depth
     Di = input_cache['D0'] - 2 * input_cache['t']                #inner dia
     D = (Di + input_cache['D0']) / 2              #caisson dia 

@@ -5,64 +5,107 @@ Created on Wed Dec 29 10:35:24 2021
 
 @author: goharshoukat
 
-Undrained analysis for uplift (tension or anchor based)
+Undrained analysis for uplift (tension on anchor based)
+
+This script will sequentially perform several checks on different locations
+of the caisson to determine if the design passes checks
 
 Feeds into the Foundation_characteristics
 """
 import numpy as np
 import math
-def uplift(soil_type, analysis_type, capacity_cache, cache , sand_prop, 
-           clay_prop, K):
-    #Input
-    #soil_type : str : string specifiying either clay or sand-drained, sand-undrained
-    #cache     : {}  : dictionary from the precalc function
-    ##soil_prop: {}  : dictionary with soil properties of the sub-type 
-    #clay_prop : dict : cache with clay proeprties
-    #sand_prop : dict : cache with sand proeprties
-    #analysis_type : str : option to chose between undrained, cavitation-lid and
-    #                                                           cavitation-base
+def uplift(input_cache, calc_cache, soil_type, soil, cap_cache, K,
+           gamma_m, gamma_f):
+#Input
+    #soil_type  : string  : optino to choose between sand or clay
+    #soil       : {}      : dictionary with soil properties of the sub-type
+    #input_cache: dict {} : dictionary of input cache
+    #calc_cache : dict {} : dictionary of pre calculations     
+    #cap_cache  : dict {} : dictionary of capacity calculations cache
     #K         : float : constant user specified
-    h = np.linspace(int(cache['h']), int(cache['h'] + 50), int((cache['h']+50)))   
+    #gamma_m    : float   : ahrd coded safety factor of material
+    #gamma_f    : float   : hard coded favorable safety factor
     
+
     if soil_type.lower() == 'clay':
-        if analysis_type.lower() == 'undrained':
-            Vult = cache['Wc'] + clay_prop['Nc'] * cache['Ac'] * clay_prop['s_u'] +\
-                clay_prop['alpha'] * math.pi * cache['D'] * h * clay_prop['s_u']
-        elif analysis_type.lower()=='cavitation-base':
-            Vult = math.pi * cache['D']**2 / 4 * h * sand_prop['gamma'] + \
-                math.pi * cache['D']**2/4 * (101325 + 1000 * h ) + math.pi * \
-                    cache['D'] * clay_prop['alpha'] * h * clay_prop['s_u']
-                    
-        elif  analysis_type.lower()=='cavitation-lid':
-            Vult =  math.pi * cache['D']**2/4 * (101325 + 1000 * h ) + 2 * \
-            math.pi * cache['D'] * clay_prop['alpha'] * h * clay_prop['s_u']
+        """
+        uplift calculations for clay involve calculating Vult under 4 different 
+        scenarios:
+        1. Undrained clay
+        2. Cavitation at Caisson base
+        3. Cavitation under lid
+        4. Friction on the sides of caisson
+        Check the minimum value of Vult obtained and proceed witht that. 
+        """
+        #undrained
+        Vult1 = calc_cache['Wc'] + soil['Nc'] * calc_cache['Ac'] * \
+            soil['s_u'] + soil['alpha'] * math.pi * calc_cache['D'] * \
+                calc_cache['h'] * soil['s_u']
+      
+        #cavitation at caisson base
+        Vult2 = math.pi * calc_cache['D']**2 / 4 * calc_cache['h'] * \
+            soil['gamma'] + math.pi * calc_cache['D']**2/4 * (101325 + 1000 * 
+            calc_cache['h']) + math.pi * calc_cache['D'] * soil['alpha'] * \
+                calc_cache['h'] * soil['s_u']
         
-        else:
-            raise ValueError
-            
-    elif soil_type.lower() == 'sand-undrained':
-        if analysis_type.lower() == 'cavitation-base':
-            Vult =  math.pi * cache['D']**2 / 4 * h * sand_prop['gamma'] + \
-                math.pi * cache['D']**2/4 * (101325 + 1000 * h ) + math.pi * \
-                    cache['D'] * sand_prop['gamma'] * h **2/2 * K * math.tan(
-                        math.radians(sand_prop['delta']))
-                    
-            
-        elif analysis_type.lower() == 'cavitation-lid':
-            Vult =  math.pi * cache['D']**2/4 * (101325 + 1000 * h ) + 2* math.pi * \
-                cache['D'] * sand_prop['gamma'] * h **2/2 * K * math.tan(
-                    math.radians(sand_prop['delta']))
+        #cavitation under lid                    
+        Vult3 =  math.pi * calc_cache['D']**2/4 * (101325 + 1000 *
+           calc_cache['h']) + 2 * math.pi * calc_cache['D'] * soil['alpha'] *\
+            calc_cache['h']  * soil['s_u']
         
-        else:
-            raise ValueError
+        Vult4 = 2 * math.pi * calc_cache['D'] * calc_cache['h'] * \
+            soil['alpha'] * soil['s_u']
             
-    elif soil_type.lower() == 'sand-drained':
-        if analysis_type.lower() == 'cavitation-base':
-            Vult = math.pi * cache['D']**2/4 * sand_prop['gamma'] * h - \
-                math.pi*cache['D']**2/4 * 1000 * h +math.pi * \
-                    cache['D'] * sand_prop['gamma'] * h **2/2 * K * math.tan(
-                        math.radians(sand_prop['delta']))
-                    
-        elif analysis_type.lower() == 'cavitation-lid':
-           Vult =  2* math.pi * cache['D'] * sand_prop['gamma'] * h **2/2 * K \
-               * math.tan(math.radians(sand_prop['delta']))
+        #for each row of values, select the lowest from the 4 and proceed
+        #with the check there
+        Vult_min = np.min([Vult1, Vult2, Vult3, Vult4], axis = 0)
+        return Vult_min/gamma_m > calc_cache['V_comma'] * gamma_f
+        
+
+    
+    elif soil_type.lower() == 'sand':
+        """
+        uplift calculations for sand involve calculating Vult under 5 different 
+        scenarios:
+        1. Undrained 
+            a. Cavitation at footing base
+            b. Cavitation below caisson lid
+        2. Drained
+            a. Cavitation at footing base
+            b. Cavitation below caisson lid
+        3. Friction on the sides of caisson
+        Check the minimum value of Vult obtained and proceed witht that. 
+        """
+        #undrained - cavitation at footing base
+        Vult1a =  math.pi * calc_cache['D']**2 / 4 * calc_cache['h'] * soil['gamma'] + \
+            math.pi * calc_cache['D']**2/4 * (101325 + 1000 * calc_cache['h']) + math.pi * \
+                calc_cache['D'] * soil['gamma'] * calc_cache['h'] **2/2 * K * math.tan(
+                    soil['delta'])
+         
+            
+        #undrained - cavitation below caisson lid
+        Vult1b =  math.pi * calc_cache['D']**2/4 * (101325 + 1000 * calc_cache['h']) + 2* math.pi * \
+            calc_cache['D'] * soil['gamma'] * calc_cache['h'] **2/2 * K * math.tan(
+               (soil['delta']))
+        
+        #drained - cavitation at footing base
+        Vult2a = math.pi * calc_cache['D']**2/4 * soil['gamma'] * calc_cache['h'] - \
+                math.pi*calc_cache['D']**2/4 * 1000 * calc_cache['h'] + math.pi * \
+                    calc_cache['D'] * soil['gamma'] * calc_cache['h'] **2/2 * K * math.tan(
+                     (soil['delta']))
+        #drained - cavitation at caisson lid 
+        Vult2b = 2* math.pi * calc_cache['D'] * soil['gamma'] * calc_cache['h'] **2/2 * K \
+            * math.tan((soil['delta']))
+
+        #Friction on the side of caissons
+        Vult3 = 2 * math.pi * calc_cache['D'] * soil['gamma'] * calc_cache['h']**2 / 2 * K * math.tan(soil['delta'])
+        
+        #find the minimum from all the above Vult calculations and 
+        #proceed with the design checker
+        Vult_min = np.min([Vult1a, Vult1b, Vult2a, Vult2b, Vult3], axis = 0)
+        
+        return Vult_min/gamma_m > calc_cache['V_comma'] * gamma_f
+        
+    else:
+        print('Incorrect Soil type selected. Please choose from sand or clay.')
+        raise ValueError

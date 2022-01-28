@@ -13,6 +13,12 @@ Included within the documentation is a designer script which provides the user a
 ## Version 0.00:
 Warning: This version is not a stable released version. It is work in progress.
 
+The current iteration of the suction caisson makes use of hard coded soil properties. The user however, has to define the soil type and soil subtype themselves. Next revision will address this and provide more independencei in setting up proeprties. 
+
+The module accepts a singular value of D0. Iterations over several 
+values of D0 is achieved in the designer script - outside of this module. 
+Improvements to this will be made in the next revisions
+
 ## Functions:
 
 We will cover each function available within the SCF class, specify the inputs and outputs for them and the datatypes.

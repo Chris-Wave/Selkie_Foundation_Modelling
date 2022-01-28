@@ -10,6 +10,10 @@ Foundation properties and material characteristics are defined in this class.
 This is the main library description for the suction caisson Foundation design for the 
 Selkie Project
 
+Note: The module accepts a singular value of D0. Iterations over several 
+values of D0 is achieved in the designer script - outside of this module. 
+Improvements to this will be made in the next revisions
+
 This code is based off of Christopher Wright's work on suction caisson 
 
 
@@ -20,13 +24,14 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 
 
 import math
+import pandas as pd
 from precalculation import precalculations
 from soil_properties import soil    
 from capacity_conversion import capacity_conversions as cc #to avoid naming conflicts as the name of a method is also capacity conversion
 from installation import installation_sand, installation_clay
 from bearing_capacity import bearing_capacity
 from sliding import sliding
-
+from uplift import uplift
 
 class Foundation_Definition:
     #these properties can be changed for the class instance if needed
@@ -42,15 +47,11 @@ class Foundation_Definition:
     gamma_uf    = 1.1 #unfavorable safety factor load
     
     
-    def __init__(self, d, D0, D0min, D0max, D0delta, L, Lmin, Lmax, Ldelta, t, 
+    def __init__(self, d, D0, L, Lmin, Lmax, Ldelta, t, 
                  V_LRP, H_LRP, M_LRP):
         #inputs
         #d      : float : m, water depth
         #D0     : float : m. outer diameter
-        #D0min  : float : m, outer diameter min
-        #D0max  : float : m, outer diameter max
-        #D0min  : float : m, outer diameter min
-        #D0delta: float : m, outer diameter delta
         #L      : float : m, skirt length
         #Lmin   : float : m, skirt length min
         #Lmax   : float : m, skirt length max
@@ -61,8 +62,7 @@ class Foundation_Definition:
         #M_LRP  : float : m, moment load reference point
         t = .02 * D0           #assumed to be 2% of outer dia
 
-        self.input_cache = {'d' : d, 'D0' : D0, 'D0min' : D0min, 'D0max' : D0max,
-                            'D0delta' : D0delta, 'L' : L, 'Lmin' : Lmin, 
+        self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 'Lmin' : Lmin, 
                             'Lmax' : Lmax, 'Ldelta' : Ldelta, 't' : t, 
                             'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 'M_LRP' : M_LRP}
         
@@ -86,6 +86,7 @@ class Foundation_Definition:
      
     def checker(self, foundation_type):
         #perform installation checks
+        #foundation_type     : str   : option for it to be 'anchor' or 'foundation'
         if self.soil_type.lower() == 'clay':
             self.installation_checker = installation_clay(self.soil_prop, 
                                                      self.input_cache, 
@@ -112,27 +113,24 @@ class Foundation_Definition:
         
         self.sliding_checker = sliding(self.input_cache, self.cap_cache, 
                                        self.calc_cache, self.soil_type, 
-                                       self.soil_prop, self.gamma_m)
+                                       self.soil_prop, self.gamma_m, 
+                                       self.gamma_f)
         
-        
-        
-        return {'L' : calc_cache['L'], 'h' : calc_cache['h'],
+        self.uplift_checker = uplift(self.input_cache, 
+                                        self.calc_cache, 
+                                        self.soil_type,
+                                        self.soil_prop, 
+                                        self.cap_cache, self.K, 
+                                        self.gamma_m, self.gamma_f)
+                                        
+                                        
+
+        return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
                 'Buckling' : self.installation_checker['buckling check'],
                 'Self-weight installation' : self.installation_checker['sw installation check'], 
-                'Suction Limit' : self.installation_checker['suction limit check'], 
+                'Suction limit' : self.installation_checker['suction limit check'], 
                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'], 
                 'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
-                'Sliding' : self.sliding_checker}
-
-
-            
-
-A = Foundation_Definition(10, 12, 13, 10, 1 , 2, 3, 3, 3, 4,2, 5, 3)     
-calc_cache = A.calc_cache
-#A.soil_selection('clay', 'very soft')
-#clay_prop = A.soil_prop
-A.soil_selection('sand', 'very loose')
-sand = A.soil_prop
-input_cache = A.input_cache
-cap_cache = A.cap_cache
-checker = A.checker('anchor')
+                'Sliding' : self.sliding_checker, 'Uplift' : self.uplift_checker})
+    
+        

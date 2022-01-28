@@ -117,7 +117,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
     
 #import scipy library to solve equations iteratively
 from scipy.optimize import fsolve    
-def installation_sand(input_cache, calc_cache, sand, v, E, K, gamma_m, gamma_f):
+def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     
     #Installation Clay function first solves for installation under self weight
     #In the second step, it solves for the sunction pressure required for the 
@@ -225,6 +225,3 @@ def installation_sand(input_cache, calc_cache, sand, v, E, K, gamma_m, gamma_f):
     return {'sw installation check' : h_sw_checker,
             'suction limit check' : s_checker,
            'buckling check' : buckling_check}
-
-    
-                    

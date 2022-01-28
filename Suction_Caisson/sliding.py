@@ -4,18 +4,35 @@
 Created on Tue Dec 28 21:56:27 2021
 
 @author: goharshoukat
+
+
+Sliding calculations are performed in this script. This feeds into the foundation_
+characteristics class.  
+
+This script includes sliding checker for both clay and sand.  
+
+
+This is the main library description for the suction caisson Foundation design for the 
+Selkie Project
+
+This code is based off of Christopher Wright's work on suction caisson 
+
+
+
+For details about the methodology, contact cwrigth@gdgeo.com
+For questions regarding the code, please contact gshoukat@gdgeo.com 
 """
 import math
 import numpy as np
-def sliding(input_cache, capacity_cache, calc_cache, soil_type, soil, gamma_m):
+def sliding(input_cache, capacity_cache, calc_cache, soil_type, soil, gamma_m,
+            gamma_f):
     #Input
-    #soil_type : str : string specifiying either clay or sand
-    #cache     : {}  : dictionary from the precalc function
-    ##soil_prop: {}  : dictionary with soil properties of the sub-type 
-    #clay_prop : dict : cache with clay proeprties
-    #sand_prop : dict : cache with sand proeprties
-    #gamma_m   : float : material safety factor
-    #H_LRP  : float : m, horizontal load reference point   
+     #input_cache: dict {} : dictionary of input cache
+     #clay       : dict {} : dictionary of clay soil properties
+     #calc_cache : dict {} : dictionary of pre calculations
+     #gamma_m    : float   : ahrd coded safety factor of material
+     #gamma_f    : float   : hard coded favorable safety factor
+       
     if soil_type.lower() == 'clay':    
         Hbase_R = math.pi * calc_cache['D']**2/4 * soil['s_u']
         Hside_R = calc_cache['D'] * calc_cache['h'] * (calc_cache['h']/2 * 
@@ -29,5 +46,5 @@ def sliding(input_cache, capacity_cache, calc_cache, soil_type, soil, gamma_m):
         ka = (1 - math.sin(soil['phi'])) / (1 + math.sin(soil['phi'])) 
         Hside_R = soil['gamma'] * calc_cache['h']**2 * calc_cache['D']/2 * (kp - ka)
         
-    return capacity_cache['Hbase'] + Hside_R/gamma_m > input_cache['H_LRP']
+    return (Hbase_R + Hside_R)/gamma_m > input_cache['H_LRP'] * gamma_f
     
