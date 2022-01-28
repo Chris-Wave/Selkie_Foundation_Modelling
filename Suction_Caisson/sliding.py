@@ -28,6 +28,7 @@ def sliding(input_cache, capacity_cache, calc_cache, soil_type, soil, gamma_m,
             gamma_f):
     #Input
      #input_cache: dict {} : dictionary of input cache
+     #capacity_cache : dict {} : dictionary of capacity conversion calculations
      #clay       : dict {} : dictionary of clay soil properties
      #calc_cache : dict {} : dictionary of pre calculations
      #gamma_m    : float   : ahrd coded safety factor of material
@@ -40,7 +41,6 @@ def sliding(input_cache, capacity_cache, calc_cache, soil_type, soil, gamma_m,
                                     
         
     else:
-        phi = soil['phi']
         Hbase_R = capacity_cache['Vbase'] * math.tan(soil['phi'])
         kp = (1 + math.sin(soil['phi'])) / (1 - math.sin(soil['phi']))
         ka = (1 - math.sin(soil['phi'])) / (1 + math.sin(soil['phi'])) 
