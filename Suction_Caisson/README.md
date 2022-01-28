@@ -1,5 +1,8 @@
 # Suction Caison Foundation
-heavily based on OWA Suction Installed Caisson Foundations for Offshore Wind: Design Guidelines February 2019
+
+This algorithm is  based on OWA Suction Installed Caisson Foundations for Offshore Wind: Design Guidelines February 2019.
+
+
 Suction Caison foundation (SCF) module of the Selkie Project makes use of classical object oriented programing approach. Several different functions, seperately written, feed into the main class as pythonic descriptors (descriptors is an attribute of Python that can be viewed in more detail using Python's own documentation.)
 
 Fig. 1 shows the different functions which are also the objects within the main class. The figure provides a description of the functions that make up the class. Each function within the class provides furhter description about their utility, inputs and outputs. They are also highlighted in this documentation.
