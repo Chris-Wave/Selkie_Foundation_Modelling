@@ -24,8 +24,8 @@ provide the smallest dimensions which pass all three tests
 """
 
 import numpy as np
-import math
 import pandas as pd
+from plot import plot
 from Foundation_Characteristics import Foundation_Definition
 
 """
@@ -72,7 +72,7 @@ M_LRP               = 1
 D = np.arange(D0min, D0max, D0delta)
 #declare dataframe to hold dimensions and their checks
 dimensions = pd.DataFrame(columns={'L', 'h', 'D', 'Buckling', 
-                                   'Self-weight installation', 'sw installation check',
+                                   'Self-weight installation',
                                    'Suction limit', 'Drained bearing capacity',
                                    'Undrained bearing capacity', 'Sliding',
                                    'Uplift'})
@@ -129,3 +129,7 @@ for i in D:
     frames = [checker, dimensions]
     dimensions = pd.concat(frames, join='inner', axis = 0, 
                            ignore_index=True, sort=False)
+    
+
+#Plot the output
+plot(dimensions)
