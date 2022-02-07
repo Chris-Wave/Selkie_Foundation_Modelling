@@ -69,9 +69,15 @@ fos                 = 2
 relative_density    = 50
 weight              = 1000
 sensitivity         = 5
+
+#For undrained, use the following: 
 Foundation_A.undrained_soil(friction_angle, cohesion, fos, relative_density, 
                             weight, sensitivity)
 
+#For drained, use the following: (commented out)
+    
+#Foundation_A.drained_soil(friction_angle, cohesion, fos,
+ #                           weight, sensitivity)
 
 """
 External loading needs to be defined in the next function call
@@ -93,12 +99,15 @@ After the load definition, eccentricity calculations need to be performed
 Eccentricity calculations will take all class objects to complete calculations.
 The function needs to be called however. 
 
-Immediately following the eccentricity calculation, presence of key needs to
+Following the eccentricity calculation, presence of key needs to
 be defined. this function takes a string - yes or no. 
+
+Simultaenously, it is important to define if embedment is present. The function
+takes in a string, y or n. 
 """
 Foundation_A.eccentricity()
 Foundation_A.key_calc('n')
-
+Foundation_A.embedment('y')
 
 """
 Finally, the smallest dimension that clears all checks are identified. 

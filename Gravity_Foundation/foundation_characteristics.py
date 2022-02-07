@@ -40,10 +40,11 @@ class Foundation_Definition:
         self.geom = device_geometry #read off the excel. dont know how to use this
         self.SF = SF
         
-    def drained_soil(self, friction_angle, cohesion, fos, sensitivity):
+    def drained_soil(self, friction_angle, cohesion, fos, sensitivity, weight):
         #friction_angle         : float : angle in degrees, obtained from lookup table. 
         #cohesion               : float : value in kPa
         #fos (factor of safety) : float :
+        #weight                 : float : weight of soil kN/m**3
         #sensititivity          : TBD with Paul : 
         
             
@@ -51,6 +52,7 @@ class Foundation_Definition:
         self.cohesion = cohesion                            #kPa
         self.fos = fos                                      #fos is for soil parameters
         self.sensitivity = sensitivity
+        self.weight = weight
         """
         for calculations, all angles need to be converted to radians, and 
         then reconverted back to degrees.
@@ -112,7 +114,6 @@ class Foundation_Definition:
     def key_calc(self, key: str):
         #function to use to adjust the key calculations
         #key : string : yes, y, all cases permitted. if yes, launches key calculations
-        #embed : string : will see at a later s
         
         #lower().startswith() allows all combinations of yes to be accepted
         
@@ -123,9 +124,14 @@ class Foundation_Definition:
             self.zs = 0
         
         self.Df = self.zs #m
-        self.Hs = np.min([self.Df * np.ones(len(self.cache_eccent['Calc'])), 
-                         self.zs + 
-                         self.cache_eccent['Calc'].t], axis = 0)
+        self.Hs = np.min([self.Df, 
+                         self.zs], axis = 0)
+        
+    
+    def embedment(self, embed: str):
+        #function to specify if embedment is present or not. 
+        self.embed = embed
+        
         
     eccent = eccent
     def eccentricity(self):
@@ -145,11 +151,22 @@ class Foundation_Definition:
                                math.cos(slope)) + self.Huls * math.sin(slope)
         
         #call function bearing_capacity   
-        #assign it to a column in the diimensions dataframe                    
-        self.cache_eccent['Calc']['bearing_checker'] = bearing_capacity(
+        #assign it to a column in the diimensions dataframe  
+        #if else statement
+        if self.embed.lower().startswith('y'):                  
+            self.cache_eccent['Calc']['bearing_checker'] = bearing_capacity(
+                                      self.phi, self.ext_loads_dict, 
+                                      self.load_check, self.c, self.geom, 
+                                      self.weight, self.Df, self.Hs, 
+                                      self.sensitivity, self.SF,
+                                      embed = True)
+        else:
+            self.cache_eccent['Calc']['bearing_checker'] = bearing_capacity(
                                       self.phi, self.ext_loads_dict, 
                                       self.load_check, self.c, self.geom, 
                                       self.weight, self.Df, self.Hs, self.SF)
+            
+            
         
         
         
@@ -167,9 +184,6 @@ class Foundation_Definition:
                                           self.SF)
         
         
-        
-        
        
         
         return self.cache_eccent
-        

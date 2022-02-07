@@ -25,7 +25,8 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 import math
 import numpy as np
 from Eccentricity import eccent
-def bearing_capacity(phi, loads, load_check, c, geom, weight, Df, Hs, SF, embed=False):
+def bearing_capacity(phi, loads, load_check, c, geom, weight, Df, Hs, 
+                     sensitivity, SF,  embed=False):
     #inputs
     #phi : float : degrees, obtained from the friction angle of soil
     #loads : {}dict : loads dictionary, passed on from function file external_loads
@@ -35,6 +36,7 @@ def bearing_capacity(phi, loads, load_check, c, geom, weight, Df, Hs, SF, embed=
     #weight : float : kN/m3, weight of soil
     #Df     : float : m, depth of foundation
     #Hs     : float : m, Side soil contact
+    #sensitivity : float : user defined sensitivity parameter
     #SF     : float : safety factor for bearing capacity
     #embed : bool : True if there is an embediment, false otherwise
     
@@ -69,8 +71,9 @@ def bearing_capacity(phi, loads, load_check, c, geom, weight, Df, Hs, SF, embed=
         Nq = math.exp(math.pi * math.tan(phi)) * \
                                     (math.tan(math.pi/4 + phi/2))**2
         Nc = (Nq - 1) / math.tan(phi)
-        Ngamma = (Nq - 1) / math.tan(1.4 * phi)
-        #Ngamma = 2 * (Nq + 1) * math.tan(phi) * math.tan(math.pi/4 + phi/5)
+        Ngamma_1 = (Nq - 1) / math.tan(1.4 * phi)
+        Ngamma_2 = 2 * (Nq + 1) * math.tan(phi) * math.tan(math.pi/4 + phi/5)
+        Ngamma = np.min([Ngamma_1, Ngamma_2], axis = 0)
         ic = iq - (1 - iq)/(Nc * math.tan(phi))
 
     sq = 1 + cache['Calc'].B / cache['Calc'].L *math.tan(phi)  
@@ -89,9 +92,9 @@ def bearing_capacity(phi, loads, load_check, c, geom, weight, Df, Hs, SF, embed=
         qq = 0
     
     qgamma = weight * cache['Iy_min']/2 * Ngamma * kgamma
-    RHS = 2 * (cache['Calc'].L + cache['Calc'].B) * Hs * (c + weight * 0.5 *
-            (Df + np.max([np.zeros(len(cache['Calc'].t)), Df - cache['Calc'].t -
-                         Hs], axis = 0))) * math.tan(phi - 5)
+    RHS = 2 * (cache['Calc'].L + cache['Calc'].B) * Hs * (c/sensitivity + 
+          weight * 0.5 * (Df + np.max([np.zeros(len(cache['Calc'].t)), Df - 
+       cache['Calc'].t - Hs], axis = 0))) * math.tan(phi - 5)
     Qu = cache['Calc'].A * (qc + qq + qgamma) + RHS
     Qu_SF = Qu/SF
     
