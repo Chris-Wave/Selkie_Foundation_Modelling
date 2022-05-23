@@ -31,38 +31,37 @@ from Foundation_Characteristics import Foundation_Definition
 """
 The following properties must be defined in order to get the calculations going
 d      : float : m, water depth
-D0     : float : m. outer diameter
 D0min  : float : m, outer diameter min
 D0max  : float : m, outer diameter max
 D0min  : float : m, outer diameter min
 D0delta: float : m, outer diameter delta
-L      : float : m, skirt length
 Lmin   : float : m, skirt length min
 Lmax   : float : m, skirt length max
 Ldelta : float : m, skirt length delta
+h_pert : float : m, height of caisson above seabed
 t      : float : m, wall thickness
-V_LRP  : float : m, vertical load reference point
-H_LRP  : float : m, horizontal load reference point
-M_LRP  : float : m, moment load reference point
+V_LRP  : float : N, vertical load reference point
+H_LRP  : float : N, horizontal load reference point
+M_LRP  : float : N, moment load reference point
 
 The next set of inputs required will be stated when the specific portion of the
 code is reached 
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 10
-D0                  = 10
-D0min               = 10
-D0max               = 50
+d                   = 50
+D0min               = 1
+D0max               = 20
 D0delta             = 1
-L                   = 15
-Lmin                = 12
-Lmax                = 20
+L = 5 #bus fix it. 
+Lmin                = 5
+Lmax                = 30
 Ldelta              = 1
-t                   = 2
-V_LRP               = 1
-H_LRP               = 1
-M_LRP               = 1
+h_pert              = 10
+t                   = 2 # %
+V_LRP               = 10000000
+H_LRP               = 10000000
+M_LRP               = 10000000
 
 
 
@@ -79,7 +78,7 @@ dimensions = pd.DataFrame(columns={'L', 'h', 'D', 'Buckling',
 for i in D:
     #declare FoundationA to be an instance of the class
     Foundation_A = Foundation_Definition(d, i, L, Lmin, 
-                                         Lmax, Ldelta, t, V_LRP, H_LRP, M_LRP)
+                                         Lmax, Ldelta, h_pert, t, V_LRP, H_LRP, M_LRP)
     
     """
     After class decleration, select soil type and soil subtype. For soil type, the 
@@ -96,12 +95,12 @@ for i in D:
     
     
     The subtype for clay are:
-    a. very soft
-    b. soft
-    c. firm
-    d. stiff
-    e. very stiff
-    f. hard
+    a. extremely low strength
+    b. very low strength
+    c. low strength
+    d. medium strength
+    e. high strength
+    f. very high strength
     
     Decleration of soil function does not return any value, however, it enables
     the next set of functions to perform their calculations and produce a cache
@@ -113,7 +112,7 @@ for i in D:
     
     """
     soil_type = 'sand'
-    soil_subtype = 'very loose'
+    soil_subtype = 'very high strength'
     Foundation_A.soil_selection(soil_type, soil_subtype)
     
     

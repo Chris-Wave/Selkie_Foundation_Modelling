@@ -48,97 +48,56 @@ def soil(soil_type, soil_subtype):
     #soil_parameters : dictionary : dictionary of soil parameters. the cache
     #is different for the two types included in this script
     
+    Nc  =  math.pi + 2      #bearing capacity factor cohesion
+
+
     if soil_type.lower() == 'clay':
-        if soil_subtype.lower() == 'very soft':
+        if soil_subtype.lower() == 'extremely low strength':
             s_u = 1E4               #Undrained strength
-            s_t = 12                #soil sensitivity
+            s_t = 2                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 720             #effective unit weight of soil
-            Nc  =  5.141592654      #bearing capacity factor cohesion
-            
-            #phi and delta added to allow program build
-            #these properties are missing from the table and prevent
-            #algorithm execution
-            phi = math.radians(25)
-            delta = math.radians(math.degrees(phi) - 5)
-            Nq = 10.6
-            
-            
-        elif soil_subtype.lower() == 'soft':
-            s_u = 2E4               #Undrained strength
-            s_t = 12                #soil sensitivity
-            alpha = 1/s_t           #adhesion factor
-            gamma = 720             #effective unit weight of soil
-            Nc  =  5.141592654      #bearing capacity factor cohesion
-            
-            #phi and delta added to allow program build
-            #these properties are missing from the table and prevent
-            #algorithm execution
-            phi = math.radians(25)
-            delta = math.radians(math.degrees(phi) - 5)
-            Nq = 10.6
-            
-        elif soil_subtype.lower() == 'firm':
-            s_u = 3.3E4               #Undrained strength
-            s_t = 12                #soil sensitivity
-            alpha = 1/s_t           #adhesion factor
-            gamma = 720             #effective unit weight of soil
-            Nc  =  5.141592654      #bearing capacity factor cohesion
-            
-            #phi and delta added to allow program build
-            #these properties are missing from the table and prevent
-            #algorithm execution
-            phi = math.radians(25)
-            delta = math.radians(math.degrees(phi) - 5)
-            Nq = 10.6
+            gamma = 7.0362E3             #effective unit weight of soil N/m3
+            #Nq = 10.6
             
         
-        elif soil_subtype.lower() == 'stiff':
-            s_u = 7.5E4               #Undrained strength
-            s_t = 12                #soil sensitivity
+        if soil_subtype.lower() == 'very low strength':
+            s_u = 1.5E4               #Undrained strength
+            s_t = 2                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 980             #effective unit weight of soil
-            Nc  =  5.141592654      #bearing capacity factor cohesion
-            
-            #phi and delta added to allow program build
-            #these properties are missing from the table and prevent
-            #algorithm execution
-            phi = math.radians(25)
-            delta = math.radians(math.degrees(phi) - 5)
-            Nq = 10.6
-            
-            
-        elif soil_subtype.lower() == 'very stiff':
-            s_u = 1.5E5               #Undrained strength
-            s_t = 12                #soil sensitivity
+            gamma = 7.0362E3             #effective unit weight of soil N/m3
+            #Nq = 10.6
+        
+       
+        if soil_subtype.lower() == 'low strength':
+            s_u = 3E4               #Undrained strength
+            s_t = 1.5                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 980             #effective unit weight of soil
-            Nc  =  5.141592654      #bearing capacity factor cohesion
-            
-            #phi and delta added to allow program build
-            #these properties are missing from the table and prevent
-            #algorithm execution
-            phi = math.radians(25)
-            delta = math.radians(math.degrees(phi) - 5)
-            Nq = 10.6
-            
-        else:
-            s_u = 2E5               #Undrained strength
-            s_t = 12                #soil sensitivity
+            gamma = 7.0362E3             #effective unit weight of soil N/m3
+            #Nq = 10.6
+        
+        if soil_subtype.lower() == 'medium strength':
+            s_u = 5E4               #Undrained strength
+            s_t = 1.5               #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 980             #effective unit weight of soil
-            Nc  =  5.141592654      #bearing capacity factor cohesion
-            
-            #phi and delta added to allow program build
-            #these properties are missing from the table and prevent
-            #algorithm execution
-            phi = math.radians(25)
-            delta = math.radians(math.degrees(phi) - 5)
-            Nq = 10.6
-            
-
-        return {'s_u':s_u, 's_t' : s_t,'alpha' : alpha,'gamma' : gamma,'Nc' : Nc,
-                'phi' : phi, 'delta' : delta, 'Nq' : Nq}
+            gamma = 9.6138E3             #effective unit weight of soil N/m3
+            #Nq = 10.6
+        
+        if soil_subtype.lower() == 'high strength':
+            s_u = 10E4               #Undrained strength
+            s_t = 1.2                #soil sensitivity
+            alpha = 1/s_t           #adhesion factor
+            gamma = 9.6138E3             #effective unit weight of soil N/m3
+            #Nq = 10.6
+        
+        if soil_subtype.lower() == 'very high strength':
+            s_u = 20E4               #Undrained strength
+            s_t = 1.2                #soil sensitivity
+            alpha = 1/s_t           #adhesion factor
+            gamma = 9.6138E3             #effective unit weight of soil N/m3
+            #Nq = 10.6
+        
+        return {'s_u':s_u, 's_t' : s_t,'alpha' : alpha,'gamma' : gamma,'Nc' : Nc}
+             
     
     
     
@@ -148,11 +107,11 @@ def soil(soil_type, soil_subtype):
     
     else: #sand
         if soil_subtype.lower() == 'very loose':
-            gamma = 870                                 #Effective unit weight of soil
+            gamma = 8.5347E3                                 #Effective unit weight of soil
             phi = math.radians(25)                      #angle of friction
             rel_density_index = 0.1                     #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-            Nq = 10.66214239                            #bearing capacity factor (overburden)
+                                       #bearing capacity factor (overburden)
             
             
             #missing properties copied from clay above 
@@ -162,14 +121,14 @@ def soil(soil_type, soil_subtype):
             s_u = 2E5
             s_t = 12
             alpha = 1/s_t
-            Nc = 5.14
+    
             
         elif soil_subtype.lower() == 'loose':
-            gamma = 870                                 #Effective unit weight of soil
+            gamma = 8.5347E3                                 #Effective unit weight of soil
             phi = math.radians(30)                      #angle of friction
             rel_density_index = 0.25                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-            Nq = 18.40112222                            #bearing capacity factor (overburden)
+                                       #bearing capacity factor (overburden)
             
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
@@ -178,18 +137,17 @@ def soil(soil_type, soil_subtype):
             s_u = 2E5
             s_t = 12
             alpha = 1/s_t
-            Nc = 5.14
+
             
         
         
         
         elif soil_subtype.lower() == 'medium dense':
-            gamma = 870                                 #Effective unit weight of soil
+            gamma = 8.5347E3                                 #Effective unit weight of soil
             phi = math.radians(32)                      #angle of friction
             rel_density_index = 0.45                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-            Nq = 23.17677621                            #bearing capacity factor (overburden)
-            
+           
             
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
@@ -198,18 +156,16 @@ def soil(soil_type, soil_subtype):
             s_u = 2E5
             s_t = 12
             alpha = 1/s_t
-            Nc = 5.14
+
             
    
             
         elif soil_subtype.lower() == 'dense':
-            gamma = 870                                 #Effective unit weight of soil
+            gamma = 10.3986E3                                 #Effective unit weight of soil
             phi = math.radians(35)                      #angle of friction
             rel_density_index = 0.75                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-            Nq = 33.29609149                            #bearing capacity factor (overburden)
-            
-            
+           
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
             #algorithm execution
@@ -217,15 +173,13 @@ def soil(soil_type, soil_subtype):
             s_u = 2E5
             s_t = 12
             alpha = 1/s_t
-            Nc = 5.14
-            
+
             
         else:
-            gamma = 870                                 #Effective unit weight of soil
+            gamma = 10.3986E3                                 #Effective unit weight of soil
             phi = math.radians(38)                      #angle of friction
             rel_density_index = 0.85                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-            Nq = 48.9332527           #bearing capacity factor (overburden)
             
             
             #missing properties copied from clay above 
@@ -235,9 +189,9 @@ def soil(soil_type, soil_subtype):
             s_u = 2E5
             s_t = 12
             alpha = 1/s_t
-            Nc = 5.14
+
             
             
         return {'gamma':gamma, 'phi':phi, 'rel_density_index':rel_density_index,
-                'delta':delta, 'Nq':Nq,
-                's_u' : s_u, 's_t' : s_t, 'alpha' : alpha, 'Nc' : Nc}
+                'delta':delta, 
+                 'Nc' : Nc, 's_u' : s_u}

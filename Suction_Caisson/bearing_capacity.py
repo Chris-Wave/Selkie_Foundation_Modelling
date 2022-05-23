@@ -22,14 +22,14 @@ def bearing_capacity(foundation_type, input_cache, calc_cache, soil, cap_cache,
  
     
     
-    if foundation_type.lower() == 'anchor' or input_cache['M_LRP'] == 0:
+    if input_cache['M_LRP'] == 0:
         Aeff = math.pi * calc_cache['D']**2 / 4
         Beff = calc_cache['D']
         Leff = Beff
         
-    elif foundation_type.lower() == 'foundation' or input_cache['M_LRP'] > 0:
+    elif input_cache['M_LRP'] > 0:
         e = cap_cache['Mbase'] / cap_cache['Vbase']
-        Aeff = 2*(calc_cache['D'] / 4 * np.acos(2 * e / calc_cache['D']) - e * 
+        Aeff = 2*(calc_cache['D'] / 4 * np.arccos(2 * e / calc_cache['D']) - e * 
                   np.sqrt(calc_cache['D']**2 / 4 - e**2))
         Be = calc_cache['D'] - 2 * e
         Le = np.sqrt(calc_cache['D']**2 - (calc_cache['D'] - Be)**2)
@@ -46,7 +46,7 @@ def bearing_capacity(foundation_type, input_cache, calc_cache, soil, cap_cache,
 
     
 
-    Nc = 2 + math.pi
+
     ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['Hbase']/(
         Aeff * soil['s_u']))
     sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
@@ -54,13 +54,14 @@ def bearing_capacity(foundation_type, input_cache, calc_cache, soil, cap_cache,
     Vbase_R = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
                                 ica) + soil['gamma'] * calc_cache['h'])
     
-    undrained_bear_checker = Vbase_R/gamma_m > cap_cache['Vbase'] * gamma_f
+    undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
+        input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
     del Vbase_R
 
     
     #Perform bearing capacity for drained sand
-    Bcomma = input_cache['D0']
-    Lcomma = calc_cache['h']
+    Bcomma = Beff
+    Lcomma = Leff
     
     Nq = np.tan(math.pi / 4 + soil['phi'] / 2)**2 * np.exp(math.pi * 
                                                     math.tan(soil['phi']))
@@ -75,7 +76,8 @@ def bearing_capacity(foundation_type, input_cache, calc_cache, soil, cap_cache,
     Vbase_R = Aeff * (0.5 * soil['gamma'] * Beff * Ngamma * sgamma * dgamma * 
                       igamma + soil['gamma'] * calc_cache['h'] * Nq * sq * 
                       dq * iq)
-    drained_bear_checker = Vbase_R/gamma_m > cap_cache['Vbase'] * gamma_f
+    drained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
+    input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
     
     
     return {'drained bearing capacity' : drained_bear_checker, 

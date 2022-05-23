@@ -31,22 +31,27 @@ def precalculations(input_cache, rhosteel, rhowater):
     #cache : dict: dictionary with results of all the below calculations
     
     L = np.arange(input_cache['Lmin'],input_cache['Lmax'], input_cache['Ldelta'])
-    h = L - 0.5                     #installed depth
+    h = L - input_cache['h_pert']               #installed depth
     Di = input_cache['D0'] - 2 * input_cache['t']                #inner dia
     D = (Di + input_cache['D0']) / 2              #caisson dia 
     Ac = math.pi * input_cache['D0']**2 / 4         #area caisson
-    Mc = math.pi / 4 * (input_cache['D0']**2 - Di**2) * L * rhosteel #mass caison
-    Mcb = math.pi / 4 * (input_cache['D0']**2 - Di**2) * L * rhowater #buoyancy
-    Mce = Mc - Mcb #effective mass
+    mass_skirt = math.pi * D * input_cache['t'] * L *rhosteel
+    mass_top_plate = 1/4 * math.pi * (D**2) * (2 * input_cache['t']) * rhosteel
+    #Mc = math.pi / 4 * (input_cache['D0']**2 - Di**2) * L * rhosteel #mass caison
+    Mc = mass_skirt + mass_top_plate
+    
+    #Mcb will exist but will not be used. 
+    #Mcb = math.pi / 4 * (input_cache['D0']**2 - Di**2) * L * rhowater #buoyancy
+    
+    Mce = Mc * (rhosteel - rhowater)/rhosteel  # - Mcb #effective mass
     Wc = Mce * 9.81 #weight of caison
-    Vc = 1
     V_comma = input_cache['V_LRP'] + Wc
-    Ph = rhowater * 9.81 * input_cache['d']
+    Ph = rhowater * 9.81 * (input_cache['d'] - input_cache['h_pert'])
     
     if input_cache['d'] > 50:
         SL = 5E5 #N/m**2, pump limit
     else:
         SL = Ph + 5E4 #N/m**2
         
-    return {'L' : L, 'h':h, 'Di':Di, 'D':D, 'Ac':Ac,'Mc': Mc,'Mcb' : Mcb, 
+    return {'L' : L, 'h':h, 'Di':Di, 'D':D, 'Ac':Ac,'Mc': Mc,# 
             'Mce' : Mce, 'Wc':Wc,'V_comma' : V_comma, 'Ph':Ph, 'SL':SL}

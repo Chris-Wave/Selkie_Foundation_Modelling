@@ -53,9 +53,10 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         
     
 
-    Hbase = Hside - input_cache['H_LRP']
+    Hbase = input_cache['H_LRP'] - Hside
     Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
     hside = 2 * calc_cache['h'] /3 
     Mbase = input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase
     
-    return {'Hbase' : Hbase, 'Vbase' : Vbase, 'Mbase' : Mbase}
+    return {'Hbase' : Hbase, 'Vbase' : Vbase, 'Mbase' : Mbase, 'Vside' : Vside}
+    

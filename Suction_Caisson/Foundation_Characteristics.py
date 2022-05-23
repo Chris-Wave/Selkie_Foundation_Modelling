@@ -47,7 +47,7 @@ class Foundation_Definition:
     gamma_uf    = 1.1 #unfavorable safety factor load
     
     
-    def __init__(self, d, D0, L, Lmin, Lmax, Ldelta, t, 
+    def __init__(self, d, D0, L, Lmin, Lmax, Ldelta, h_pert, t, 
                  V_LRP, H_LRP, M_LRP):
         #inputs
         #d      : float : m, water depth
@@ -56,6 +56,7 @@ class Foundation_Definition:
         #Lmin   : float : m, skirt length min
         #Lmax   : float : m, skirt length max
         #Ldelta : float : m, skirt length delta
+        #h_pert : float : m, height of caisson above seabed
         #t      : float : m, wall thickness
         #V_LRP  : float : m, vertical load reference point
         #H_LRP  : float : m, horizontal load reference point
@@ -63,8 +64,9 @@ class Foundation_Definition:
         t = .02 * D0           #assumed to be 2% of outer dia
 
         self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 'Lmin' : Lmin, 
-                            'Lmax' : Lmax, 'Ldelta' : Ldelta, 't' : t, 
-                            'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 'M_LRP' : M_LRP}
+                            'Lmax' : Lmax, 'Ldelta' : Ldelta, 'h_pert' : h_pert,
+                            't' : t, 'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
+                            'M_LRP' : M_LRP}
         
         self.calc_cache = precalculations(self.input_cache, self.rhosteel, 
                                      self.rhowater)
@@ -116,13 +118,15 @@ class Foundation_Definition:
                                        self.soil_prop, self.gamma_m, 
                                        self.gamma_f)
         
-        self.uplift_checker = uplift(self.input_cache, 
-                                        self.calc_cache, 
-                                        self.soil_type,
-                                        self.soil_prop, 
-                                        self.cap_cache, self.K, 
-                                        self.gamma_m, self.gamma_f)
-                                        
+# =============================================================================
+#         self.uplift_checker = uplift(self.input_cache, 
+#                                         self.calc_cache, 
+#                                         self.soil_type,
+#                                         self.soil_prop, 
+#                                         self.cap_cache, self.K, 
+#                                         self.gamma_m, self.gamma_f)
+#                                         
+# =============================================================================
                                         
 
         return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
@@ -131,6 +135,6 @@ class Foundation_Definition:
                 'Suction limit' : self.installation_checker['suction limit check'], 
                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'], 
                 'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
-                'Sliding' : self.sliding_checker, 'Uplift' : self.uplift_checker})
+                'Sliding' : self.sliding_checker})
     
         
