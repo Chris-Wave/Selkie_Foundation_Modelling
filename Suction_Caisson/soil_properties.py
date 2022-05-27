@@ -52,6 +52,7 @@ def soil(soil_type, soil_subtype):
 
 
     if soil_type.lower() == 'clay':
+        phi = 0
         if soil_subtype.lower() == 'extremely low strength':
             s_u = 1E4               #Undrained strength
             s_t = 2                #soil sensitivity
@@ -76,7 +77,7 @@ def soil(soil_type, soil_subtype):
             #Nq = 10.6
         
         if soil_subtype.lower() == 'medium strength':
-            s_u = 5E4               #Undrained strength
+            s_u = 7.5E4               #Undrained strength
             s_t = 1.5               #soil sensitivity
             alpha = 1/s_t           #adhesion factor
             gamma = 9.6138E3             #effective unit weight of soil N/m3
@@ -96,7 +97,8 @@ def soil(soil_type, soil_subtype):
             gamma = 9.6138E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
-        return {'s_u':s_u, 's_t' : s_t,'alpha' : alpha,'gamma' : gamma,'Nc' : Nc}
+        return {'s_u':s_u, 's_t' : s_t,'alpha' : alpha,
+                'gamma' : gamma,'Nc' : Nc, 'phi' : phi}
              
     
     
@@ -118,10 +120,7 @@ def soil(soil_type, soil_subtype):
             #these properties are missing from the table and prevent
             #algorithm execution
             
-            s_u = 2E5
-            s_t = 12
-            alpha = 1/s_t
-    
+            s_u = 2E4
             
         elif soil_subtype.lower() == 'loose':
             gamma = 8.5347E3                                 #Effective unit weight of soil
@@ -134,10 +133,8 @@ def soil(soil_type, soil_subtype):
             #these properties are missing from the table and prevent
             #algorithm execution
             
-            s_u = 2E5
-            s_t = 12
-            alpha = 1/s_t
-
+            s_u = 3E4
+            
             
         
         
@@ -153,10 +150,8 @@ def soil(soil_type, soil_subtype):
             #these properties are missing from the table and prevent
             #algorithm execution
             
-            s_u = 2E5
-            s_t = 12
-            alpha = 1/s_t
-
+            s_u = 4E4
+            
             
    
             
@@ -170,10 +165,8 @@ def soil(soil_type, soil_subtype):
             #these properties are missing from the table and prevent
             #algorithm execution
             
-            s_u = 2E5
-            s_t = 12
-            alpha = 1/s_t
-
+            s_u = 5E4
+            
             
         else:
             gamma = 10.3986E3                                 #Effective unit weight of soil
@@ -186,10 +179,8 @@ def soil(soil_type, soil_subtype):
             #these properties are missing from the table and prevent
             #algorithm execution
             
-            s_u = 2E5
-            s_t = 12
-            alpha = 1/s_t
-
+            s_u = 6E4
+            
             
             
         return {'gamma':gamma, 'phi':phi, 'rel_density_index':rel_density_index,

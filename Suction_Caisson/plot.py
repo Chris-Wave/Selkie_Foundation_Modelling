@@ -8,47 +8,53 @@ Created on Fri Jan 28 09:36:53 2022
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot(dimensions):
-    #Input
+def plot(dimensions, soil_type):
+    dimensions['installation'] = (dimensions['Suction limit'] == True) & (
+        dimensions['Self-weight installation'] == True) 
+    
+    if soil_type == 'sand':
+        dimensions['capacity'] = (dimensions['Drained bearing capacity'] == True) & (
+            dimensions['Sliding'] == True
+            )
+    
+    else:
+        dimensions['capacity'] = (dimensions['Undrained bearing capacity'] == True) & (
+            dimensions['Sliding'] == True
+            )
+        
+        
+        #Input
     #dimensions : pd.DataFrame : df of the relevent diensions and their
     #respective checks
-    plt.scatter(dimensions['D'], dimensions['L'], color = 'black')
+    plt.figure()
+    plt.scatter( dimensions['D'] , dimensions['L'],color = 'black')
     #Plot the results
-    allFalse = dimensions[(dimensions['Buckling']==False) & 
-                    
-                     (dimensions['Sliding']==False) &
-                     (dimensions['Drained bearing capacity']==False) &
-                     (dimensions['Undrained bearing capacity']==False) &
-                     (dimensions['Self-weight installation']==False) &
-                     (dimensions['Suction limit']==False)]
+    
+    #insufficient capacity and uninstallable
 
-    plt.scatter(allFalse['D'], allFalse['L'], color = 'red')
     
-    
-    allTrue = dimensions[(dimensions['Buckling']==True) & 
-                     
-                     (dimensions['Sliding']==True) &
-                     (dimensions['Drained bearing capacity']==True) &
-                     (dimensions['Undrained bearing capacity']==True) &
-                     (dimensions['Self-weight installation']==True) &
-                     (dimensions['Suction limit']==True)]
+    #sufficient capacitty and installable
+    allTrue = dimensions[(dimensions['installation']==True) & 
+                              (dimensions['capacity']==True)]
     plt.scatter(allTrue['D'], allTrue['L'], color = 'green')
 
-    bearingTrue = dimensions[(dimensions['Drained bearing capacity']==True) & 
-                             (dimensions['Undrained bearing capacity']==True) & 
-                             (dimensions['Self-weight installation']==False) &
-                             (dimensions['Buckling']==False) & 
-                             (dimensions['Suction limit']==False)]
-    plt.scatter(bearingTrue['D'], bearingTrue['L'], color = 'orange')
+
+    #sufficient capacity and uninstallable
+    bearingTrue = dimensions[(dimensions['installation']==False) & 
+                              (dimensions['capacity']==True)]
+    plt.scatter(bearingTrue['D'], bearingTrue['L'], color = 'blue')
     
-    installTrue = dimensions[(dimensions['Drained bearing capacity']==False) & 
-                             (dimensions['Undrained bearing capacity']==False) & 
-                             (dimensions['Self-weight installation']==True) &
-                             (dimensions['Buckling']==True) & 
-                             (dimensions['Suction limit']==True)]
-    plt.scatter(installTrue['D'], installTrue['L'], color = 'yellow')
     
+    #insufficient capacity and installable
+    installTrue = dimensions[(dimensions['installation']==True) & 
+                              (dimensions['capacity']==False)]
+    plt.scatter(installTrue['D'],  installTrue['L'], color = 'orange')
+    
+    allFalse = dimensions[(dimensions['installation']==False) & 
+                          (dimensions['capacity']==False)]
+
+    plt.scatter(allFalse['D'], allFalse['L'],  color = 'red')
     
 
-    plt.xlabel('L [m]')
-    plt.ylabel('D [m]')
+    plt.ylabel('L [m]')
+    plt.xlabel(r'$D_c$ [m]')

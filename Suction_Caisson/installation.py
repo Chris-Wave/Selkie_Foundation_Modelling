@@ -46,7 +46,7 @@ def buckling(input_cache, calc_cache, gamma_m, v, E):
     psi = 2
     rho = 0.6
     epsilon = 1.04 * np.sqrt(calc_cache['L']**2 / (calc_cache['D']/2 * 
-                    input_cache['L']) * np.sqrt(1 - v**2))
+                    calc_cache['L']) * np.sqrt(1 - v**2))
     C = psi * np.sqrt(1 + (rho * epsilon/psi)**2)
     f_E = C * np.pi**2 * E * (input_cache['t']/calc_cache['L'])**2 / (12 * 
                                                                 (1 - v**2) )
@@ -96,7 +96,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
     Rinside = clay['alpha'] * math.pi * calc_cache['Di'] * calc_cache['h'] * \
                                                                 clay['s_u']
 
-    Rtip = np.pi * calc_cache['D'] * calc_cache['h'] * (clay['gamma'] * \
+    Rtip = np.pi * calc_cache['D'] * input_cache['t'] * (clay['gamma'] * \
                                 calc_cache['h'] + clay['Nc'] * clay['s_u'])
  
     #solve for suction
@@ -150,6 +150,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     c2 = 0.48
     Nq = math.exp(math.pi * math.tan(sand['phi'])) * (math.tan(math.pi/4 + 
                                                         sand['phi']/2))**2
+    Ngamma = 1.5 * (Nq - 1) * math.tan(sand['phi'])
     
     
     """
@@ -170,7 +171,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
                 K * math.tan(sand['delta'])) * math.pi * calc_cache['Di']
             
             Rtip =  (sand['gamma'] * Zi * (math.exp(h / Zi) - 1) * Nq +
-                     sand['gamma'] * input_cache['t'] * Nq) *  math.pi * \
+                     sand['gamma'] * input_cache['t'] * Ngamma) *  math.pi * \
                         calc_cache['D'] * input_cache['t']
                         
             return (Routside + Rinside + Rtip) * gamma_m / gamma_f - i
@@ -197,22 +198,25 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     s = []
     for i in range(len(calc_cache['h'])):
         def func2(s):
-            Routside = (sand['gamma'] + a[i] * s / calc_cache['h'][i]) * Z0**2 * (
+            Routside = (sand['gamma'] + (a[i] * s / calc_cache['h'][i])) * Z0**2 * (
                 np.exp(calc_cache['h'][i] / Z0) - 1 - calc_cache['h'][i] / Z0)\
                 * (K * math.tan(sand['delta'])) * math.pi * input_cache['D0']
             
-            Rinside = (sand['gamma'] - (1 - a[i]) * s / calc_cache['h'][i]) * \
+            Rinside = (sand['gamma'] - (((1 - a[i]) * s) / calc_cache['h'][i])) * \
                 Zi**2 * (np.exp(calc_cache['h'][i] / Zi) - 1 - 
-                         calc_cache['h'][i] / Zi)\
+                         (calc_cache['h'][i] / Zi))\
                 * (K * math.tan(sand['delta'])) * math.pi * calc_cache['Di']
             
-            Rtip = ((sand['gamma'] - (1 - a[i]) * s / calc_cache['h'][i]) * Zi * (
+            Rtip = ((sand['gamma'] - (((1 - a[i]) * s) / calc_cache['h'][i])) * Zi * (
                 np.exp(calc_cache['h'][i] / Zi) - 1) * Nq + sand['gamma'] * 
-                input_cache['t'] * Nq) * math.pi * input_cache['t'] * calc_cache['D']
+                input_cache['t'] * Ngamma) * math.pi * input_cache['t'] * calc_cache['D']
             
             #solving for suction - s
+# =============================================================================
             return ((Routside + Rtip + Rinside) * gamma_m / gamma_f - 
-                 calc_cache['V_comma'][i]) / calc_cache['Ac']
+                  calc_cache['V_comma'][i]) / calc_cache['Ac']
+# =============================================================================
+            #return ((Rinside))
             
             
         

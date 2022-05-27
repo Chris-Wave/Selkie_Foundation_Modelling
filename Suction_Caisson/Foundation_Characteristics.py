@@ -47,7 +47,7 @@ class Foundation_Definition:
     gamma_uf    = 1.1 #unfavorable safety factor load
     
     
-    def __init__(self, d, D0, L, Lmin, Lmax, Ldelta, h_pert, t, 
+    def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
                  V_LRP, H_LRP, M_LRP):
         #inputs
         #d      : float : m, water depth
@@ -61,12 +61,12 @@ class Foundation_Definition:
         #V_LRP  : float : m, vertical load reference point
         #H_LRP  : float : m, horizontal load reference point
         #M_LRP  : float : m, moment load reference point
-        t = .02 * D0           #assumed to be 2% of outer dia
+        t = 1/200 * D0           #assumed to be 2% of outer dia
 
-        self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 'Lmin' : Lmin, 
+        self.input_cache = {'d' : d, 'D0' : D0, 'Lmin' : Lmin, 
                             'Lmax' : Lmax, 'Ldelta' : Ldelta, 'h_pert' : h_pert,
-                            't' : t, 'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
-                            'M_LRP' : M_LRP}
+                            'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
+                            'M_LRP' : M_LRP, 't' : t}
         
         self.calc_cache = precalculations(self.input_cache, self.rhosteel, 
                                      self.rhowater)
@@ -106,35 +106,53 @@ class Foundation_Definition:
             raise ValueError
          
         #perform bearing capacity checks for drained and undrained soil type    
-        self.bearing_capacity_checker = bearing_capacity(foundation_type, 
-                                                    self.input_cache, 
-                                                    self.calc_cache, 
-                                                    self.soil_prop, 
-                                                    self.cap_cache, 
-                                                    self.gamma_m, self.gamma_f)
-        
-        self.sliding_checker = sliding(self.input_cache, self.cap_cache, 
-                                       self.calc_cache, self.soil_type, 
-                                       self.soil_prop, self.gamma_m, 
-                                       self.gamma_f)
-        
 # =============================================================================
-#         self.uplift_checker = uplift(self.input_cache, 
-#                                         self.calc_cache, 
-#                                         self.soil_type,
-#                                         self.soil_prop, 
-#                                         self.cap_cache, self.K, 
-#                                         self.gamma_m, self.gamma_f)
-#                                         
+        self.bearing_capacity_checker = bearing_capacity(foundation_type, 
+                                                     self.input_cache, 
+                                                     self.calc_cache,
+                                                     self.soil_type.lower(),
+                                                     self.soil_prop, 
+                                                     self.cap_cache, 
+                                                     self.gamma_m, self.gamma_f)
+         
+        self.sliding_checker = sliding(self.input_cache, self.cap_cache, 
+                                        self.calc_cache, self.soil_type, 
+                                        self.soil_prop, self.gamma_m, 
+                                        self.gamma_f)
+         
+# =============================================================================
+# =============================================================================
+        self.uplift_checker = uplift(self.input_cache, 
+                                         self.calc_cache, 
+                                         self.soil_type,
+                                         self.soil_prop, 
+                                         self.cap_cache, self.K, 
+                                         self.gamma_m, self.gamma_f)
+                                         
 # =============================================================================
                                         
 
-        return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
-                'Buckling' : self.installation_checker['buckling check'],
+        if self.soil_type == 'sand':
+            return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
                 'Self-weight installation' : self.installation_checker['sw installation check'], 
-                'Suction limit' : self.installation_checker['suction limit check'], 
-                'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'], 
-                'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
-                'Sliding' : self.sliding_checker})
+                'Suction limit' : self.installation_checker['suction limit check'],
+                'Sliding' : self.sliding_checker,
+                'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'],
+                })
+        else:
+          return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
+              'Self-weight installation' : self.installation_checker['sw installation check'], 
+              'Suction limit' : self.installation_checker['suction limit check'],
+              'Sliding' : self.sliding_checker,
+              'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity']})
+          
     
-        
+# =============================================================================
+#         return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
+#                 'Buckling' : self.installation_checker['buckling check'],
+#                 'Self-weight installation' : self.installation_checker['sw installation check'], 
+#                 'Suction limit' : self.installation_checker['suction limit check'], 
+#                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'], 
+#                 'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
+#                 'Sliding' : self.sliding_checker})
+# =============================================================================

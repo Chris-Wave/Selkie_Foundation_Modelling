@@ -49,19 +49,17 @@ code is reached
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 50
-D0min               = 1
-D0max               = 20
+d                   = 20
+D0min               = 2
+D0max               = 30
 D0delta             = 1
-L = 5 #bus fix it. 
-Lmin                = 5
+Lmin                = 3
 Lmax                = 30
 Ldelta              = 1
-h_pert              = 10
-t                   = 2 # %
-V_LRP               = 10000000
-H_LRP               = 10000000
-M_LRP               = 10000000
+h_pert              = 1
+V_LRP               = 1E7
+H_LRP               = 1E5
+M_LRP               = 1E6
 
 
 
@@ -75,10 +73,11 @@ dimensions = pd.DataFrame(columns={'L', 'h', 'D', 'Buckling',
                                    'Suction limit', 'Drained bearing capacity',
                                    'Undrained bearing capacity', 'Sliding',
                                    'Uplift'})
+
 for i in D:
     #declare FoundationA to be an instance of the class
-    Foundation_A = Foundation_Definition(d, i, L, Lmin, 
-                                         Lmax, Ldelta, h_pert, t, V_LRP, H_LRP, M_LRP)
+    Foundation_A = Foundation_Definition(d, i, Lmin, 
+                                         Lmax, Ldelta, h_pert, V_LRP, H_LRP, M_LRP)
     
     """
     After class decleration, select soil type and soil subtype. For soil type, the 
@@ -112,7 +111,7 @@ for i in D:
     
     """
     soil_type = 'sand'
-    soil_subtype = 'very high strength'
+    soil_subtype = 'dense'
     Foundation_A.soil_selection(soil_type, soil_subtype)
     
     
@@ -131,4 +130,5 @@ for i in D:
     
 
 #Plot the output
-plot(dimensions)
+plot(dimensions, soil_type)
+

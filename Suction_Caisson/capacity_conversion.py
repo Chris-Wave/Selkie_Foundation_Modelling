@@ -37,26 +37,35 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         Hside = calc_cache['D'] * calc_cache['h'] * (soil_prop['gamma'] * 
                                  calc_cache['h'] / 2) #equation left incomplete
                                         
+    
+        Hbase = input_cache['H_LRP'] - Hside
+        Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
+        hside = 2 * calc_cache['h'] /3 
+        Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
+        print(Mbase)
+    
+        return {'Vside' : Vside, 'Mbase' : Mbase,
+                'Hbase' : Hbase, 'Vbase' : Vbase}          
+    
+    
     #sand vertical capacity on outside of caisson
     elif soil_type.lower() == 'sand':
         Vside = np.pi * calc_cache['D'] * calc_cache['h']**2 / 2 * K * \
                             soil_prop['gamma'] * math.tan(soil_prop['delta'])
-        Ka = (1 + math.sin(soil_prop['phi'])) / (1 - math.sin(soil_prop['phi']))
-        Kp = 1 / Ka
+        Kp = (1 + math.sin(soil_prop['phi'])) / (1 - math.sin(soil_prop['phi']))
+        Ka = 1 / Kp
         Hside = soil_prop['gamma'] * calc_cache['h'] ** 2 * calc_cache['D'] \
             / 2 * (Kp - Ka)
                                 
-            
+        Hbase = input_cache['H_LRP'] - Hside
+        Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
+        hside = 2 * calc_cache['h'] /3 
+        Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
+        print(Mbase)
+        return {'Vside' : Vside, 'Ka' : Ka, 'Kp' : Kp, 'Mbase' : Mbase,
+                'Hbase' : Hbase, 'Vbase' : Vbase}          
     
-    else:
-        raise ValueError
         
     
 
-    Hbase = input_cache['H_LRP'] - Hside
-    Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
-    hside = 2 * calc_cache['h'] /3 
-    Mbase = input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase
-    
-    return {'Hbase' : Hbase, 'Vbase' : Vbase, 'Mbase' : Mbase, 'Vside' : Vside}
-    
+      
