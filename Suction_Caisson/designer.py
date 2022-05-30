@@ -50,16 +50,16 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 20
-D0min               = 2
-D0max               = 30
+D0min               = 10
+D0max               = 100
 D0delta             = 1
-Lmin                = 3
-Lmax                = 30
+Lmin                = 20
+Lmax                = 100
 Ldelta              = 1
 h_pert              = 1
-V_LRP               = 1E7
-H_LRP               = 1E5
-M_LRP               = 1E6
+V_LRP               = 1E8
+H_LRP               = 1E6
+M_LRP               = 1E5  #
 
 
 
@@ -67,6 +67,7 @@ M_LRP               = 1E6
 #Vectorization for this will be achieved in the next iteration
 
 D = np.arange(D0min, D0max, D0delta)
+L = np.arange(Lmin, Lmax, Ldelta)
 #declare dataframe to hold dimensions and their checks
 dimensions = pd.DataFrame(columns={'L', 'h', 'D', 'Buckling', 
                                    'Self-weight installation',
@@ -75,60 +76,63 @@ dimensions = pd.DataFrame(columns={'L', 'h', 'D', 'Buckling',
                                    'Uplift'})
 
 for i in D:
+    for l in L:
     #declare FoundationA to be an instance of the class
-    Foundation_A = Foundation_Definition(d, i, Lmin, 
-                                         Lmax, Ldelta, h_pert, V_LRP, H_LRP, M_LRP)
-    
-    """
-    After class decleration, select soil type and soil subtype. For soil type, the 
-    following options are available:
-    1. Sand
-    2. Clay
-    
-    The subtype for sand are:
-    a. very loose
-    b. loose
-    c. medium dense
-    d. dense
-    e. very dense
-    
-    
-    The subtype for clay are:
-    a. extremely low strength
-    b. very low strength
-    c. low strength
-    d. medium strength
-    e. high strength
-    f. very high strength
-    
-    Decleration of soil function does not return any value, however, it enables
-    the next set of functions to perform their calculations and produce a cache
-    of results
-    
-    Soil Properties are hard coded. They depend on the soil typoe and subtype 
-    and the code will use those predefined properties. 
-    
-    
-    """
-    soil_type = 'sand'
-    soil_subtype = 'dense'
-    Foundation_A.soil_selection(soil_type, soil_subtype)
-    
-    
-    """
-    Finally, the smallest dimension that clears all checks are identified. 
-    If in an nth iteration, no dimension which passes all three checks is obtained,
-    nth + 1 iteration is performed. 
-    
-    The designe_check method is called and it returns the dimensions with their 
-    checks. 
-    """
-    checker = Foundation_A.checker('anchor')
-    frames = [checker, dimensions]
-    dimensions = pd.concat(frames, join='inner', axis = 0, 
-                           ignore_index=True, sort=False)
-    
+        Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, H_LRP, M_LRP)
+        
+        """
+        After class decleration, select soil type and soil subtype. For soil type, the 
+        following options are available:
+        1. Sand
+        2. Clay
+        
+        The subtype for sand are:
+        a. very loose
+        b. loose
+        c. medium dense
+        d. dense
+        e. very dense
+        
+        
+        The subtype for clay are:
+        a. extremely low strength
+        b. very low strength
+        c. low strength
+        d. medium strength
+        e. high strength
+        f. very high strength
+        
+        Decleration of soil function does not return any value, however, it enables
+        the next set of functions to perform their calculations and produce a cache
+        of results
+        
+        Soil Properties are hard coded. They depend on the soil typoe and subtype 
+        and the code will use those predefined properties. 
+        
+        
+        """
+        soil_type = 'clay'
+        soil_subtype = 'medium strength'
+        Foundation_A.soil_selection(soil_type, soil_subtype)
+        
+        
+        """
+        Finally, the smallest dimension that clears all checks are identified. 
+        If in an nth iteration, no dimension which passes all three checks is obtained,
+        nth + 1 iteration is performed. 
+        
+        The designe_check method is called and it returns the dimensions with their 
+        checks. 
+        """
+        checker = Foundation_A.checker('anchor')
+        frames = [checker, dimensions]
+        dimensions = pd.concat(frames, join='inner', axis = 0, 
+                               ignore_index=True, sort=False)
+        
 
 #Plot the output
 plot(dimensions, soil_type)
 
+#sand = Foundation_A.soil_prop 
+#calc_cache = Foundation_A.calc_cache#
+#input_cache = Foundation_A.input_cache

@@ -38,7 +38,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
                                  calc_cache['h'] / 2) #equation left incomplete
                                         
     
-        Hbase = input_cache['H_LRP'] - Hside
+        Hbase = [calc_cache['D'] **2 *  np.pi / 4 * soil_prop['s_u']]
         Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
         hside = 2 * calc_cache['h'] /3 
         Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)

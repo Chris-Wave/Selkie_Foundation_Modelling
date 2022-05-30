@@ -30,7 +30,10 @@ def precalculations(input_cache, rhosteel, rhowater):
     #output
     #cache : dict: dictionary with results of all the below calculations
     
-    L = np.arange(input_cache['Lmin'],input_cache['Lmax'], input_cache['Ldelta'])
+    #L = np.arange(input_cache['Lmin'],input_cache['Lmax'], input_cache['Ldelta'])
+    L = input_cache['L']
+    L = np.arange(L, L+1, 1)
+
     h = L - input_cache['h_pert']               #installed depth
     Di = input_cache['D0'] - 2 * input_cache['t']                #inner dia
     D = (Di + input_cache['D0']) / 2              #caisson dia 
@@ -45,7 +48,8 @@ def precalculations(input_cache, rhosteel, rhowater):
     
     Mce = Mc * (rhosteel - rhowater)/rhosteel  # - Mcb #effective mass
     Wc = Mce * 9.81 #weight of caison
-    V_comma = input_cache['V_LRP'] + Wc
+    #V_comma = input_cache['V_LRP'] + Wc
+    V_comma = (input_cache['V_LRP'] + Wc) 
     Ph = rhowater * 9.81 * (input_cache['d'] - input_cache['h_pert'])
     
     if input_cache['d'] > 50:

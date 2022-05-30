@@ -47,9 +47,14 @@ class Foundation_Definition:
     gamma_uf    = 1.1 #unfavorable safety factor load
     
     
-    def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
+    def __init__(self, d, D0, L, h_pert, 
                  V_LRP, H_LRP, M_LRP):
-        #inputs
+    
+# =============================================================================
+#     def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
+#                  V_LRP, H_LRP, M_LRP):
+#         #inputs
+# =============================================================================
         #d      : float : m, water depth
         #D0     : float : m. outer diameter
         #L      : float : m, skirt length
@@ -63,10 +68,18 @@ class Foundation_Definition:
         #M_LRP  : float : m, moment load reference point
         t = 1/200 * D0           #assumed to be 2% of outer dia
 
-        self.input_cache = {'d' : d, 'D0' : D0, 'Lmin' : Lmin, 
-                            'Lmax' : Lmax, 'Ldelta' : Ldelta, 'h_pert' : h_pert,
-                            'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
-                            'M_LRP' : M_LRP, 't' : t}
+        self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 
+                        'h_pert' : h_pert,
+                        'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
+                        'M_LRP' : M_LRP, 't' : t}
+    
+# =============================================================================
+#         self.input_cache = {'d' : d, 'D0' : D0, 'Lmin' : Lmin, 
+#                             'Lmax' : Lmax, 'Ldelta' : Ldelta, 'h_pert' : h_pert,
+#                             'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
+#                             'M_LRP' : M_LRP, 't' : t}
+#         
+# =============================================================================
         
         self.calc_cache = precalculations(self.input_cache, self.rhosteel, 
                                      self.rhowater)

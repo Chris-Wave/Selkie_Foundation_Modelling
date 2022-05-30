@@ -100,23 +100,23 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
                                 calc_cache['h'] + clay['Nc'] * clay['s_u'])
  
     #solve for suction
-    s = ((Routside + Rinside + Rtip)*gamma_m / gamma_f - 
+    s = ((Routside + Rinside + Rtip)- 
          calc_cache['V_comma']) / calc_cache['Ac']
     
     s_checker = s < calc_cache['SL']
     
     
     #buckling check
-    buckling_check = buckling(input_cache, calc_cache, gamma_m, v, E)
+#    buckling_check = buckling(input_cache, calc_cache, gamma_m, v, E)
     
     return {'sw installation check':h_sw_checker, 
-            'suction limit check' : s_checker, 
-            'buckling check' : buckling_check}
+            'suction limit check' : s_checker}
 
     
     
 #import scipy library to solve equations iteratively
 from scipy.optimize import fsolve    
+from scipy import optimize
 def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     
     #Installation Clay function first solves for installation under self weight
@@ -161,11 +161,11 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     """
     h_sw = []
     for i in calc_cache['V_comma']:
-            
+        
         #solve for h iteratively as equation for s is implicit. 
         def func(h):
-            Routside =  sand['gamma'] * Z0**2 * (math.exp(h / Z0) - 1 - h / Z0) * (
-                K * math.tan(sand['delta'])) * math.pi * input_cache['D0']
+            Routside =  sand['gamma'] * Z0**2 * (math.exp(h / Z0) - 1 - (h / Z0)) * (
+                K * math.tan(sand['delta'])) * (math.pi * input_cache['D0'])
             
             Rinside = sand['gamma'] * Zi**2 * (math.exp(h / Zi) - 1 - h / Zi) * (
                 K * math.tan(sand['delta'])) * math.pi * calc_cache['Di']
@@ -174,9 +174,9 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
                      sand['gamma'] * input_cache['t'] * Ngamma) *  math.pi * \
                         calc_cache['D'] * input_cache['t']
                         
-            return (Routside + Rinside + Rtip) * gamma_m / gamma_f - i
+            return (Routside + Rinside + Rtip) - i
         
-        h_sw = np.append(h_sw, fsolve(func, 0))
+        h_sw = np.append(h_sw, fsolve(func, 1))
         h_sw_checker = h_sw > h_sw_min
     
     
@@ -198,6 +198,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     s = []
     for i in range(len(calc_cache['h'])):
         def func2(s):
+            
             Routside = (sand['gamma'] + (a[i] * s / calc_cache['h'][i])) * Z0**2 * (
                 np.exp(calc_cache['h'][i] / Z0) - 1 - calc_cache['h'][i] / Z0)\
                 * (K * math.tan(sand['delta'])) * math.pi * input_cache['D0']
@@ -213,19 +214,16 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
             
             #solving for suction - s
 # =============================================================================
-            return ((Routside + Rtip + Rinside) * gamma_m / gamma_f - 
-                  calc_cache['V_comma'][i]) / calc_cache['Ac']
-# =============================================================================
-            #return ((Rinside))
+            return ((Routside + Rtip + Rinside)  - 
+            calc_cache['V_comma'][i]) / calc_cache['Ac']
+
             
-            
-        
-        s = np.append(s, fsolve(func2, 0))
+        s =  fsolve(func2, 0)
+        print('s = {}'.format(s))
         s_checker = s < calc_cache['SL'] 
     
     #buckling check
-    buckling_check = buckling(input_cache, calc_cache, gamma_m, v, E)
+   # buckling_check = buckling(input_cache, calc_cache, gamma_m, v, E)
     
     return {'sw installation check' : h_sw_checker,
-            'suction limit check' : s_checker,
-           'buckling check' : buckling_check}
+            'suction limit check' : s_checker}

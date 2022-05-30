@@ -42,7 +42,7 @@ def bearing_capacity(foundation_type, input_cache, calc_cache, soil_type, soil, 
                 Vbase_R = np.zeros(len(cap_cache['Mbase']))
                 #plt.figure()
                 
-                for j in range(10):
+                for j in range(3):
                 
                     e = cap_cache['Mbase'][i] / vbase
                     if e > calc_cache['D'] / 2:
@@ -172,8 +172,8 @@ def bearing_capacity(foundation_type, input_cache, calc_cache, soil_type, soil, 
                 Le = np.sqrt(calc_cache['D']**2 - (calc_cache['D'] - Be)**2)
                 Leff = np.sqrt(Aeff * Le / Be)
                 Beff = np.sqrt(Aeff * Be/Le)
-                ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['Hbase'][i]/(
-                    Aeff * soil['s_u']))
+                ica = 0.5 - 0.5 * np.sqrt(1 - (cap_cache['Hbase'][i]/(
+                    Aeff * soil['s_u'])))
                 
                 sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
                 dca = 0.3 * np.arctan(calc_cache['h'][i] / Beff)
