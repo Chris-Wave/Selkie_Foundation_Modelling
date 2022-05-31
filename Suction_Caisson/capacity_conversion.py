@@ -39,13 +39,13 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
                                         
     
         Hbase = [calc_cache['D'] **2 *  np.pi / 4 * soil_prop['s_u']]
-        Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
+        #Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
         hside = 2 * calc_cache['h'] /3 
         Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
-        print(Mbase)
+        H1 = input_cache['H_LRP'] - Hside
     
         return {'Vside' : Vside, 'Mbase' : Mbase,
-                'Hbase' : Hbase, 'Vbase' : Vbase}          
+                'H1' : H1, 'Hbase' : Hbase} #'Vbase' : Vbase}          
     
     
     #sand vertical capacity on outside of caisson
@@ -56,16 +56,26 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         Ka = 1 / Kp
         Hside = soil_prop['gamma'] * calc_cache['h'] ** 2 * calc_cache['D'] \
             / 2 * (Kp - Ka)
-                                
-        Hbase = input_cache['H_LRP'] - Hside
-        Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
         hside = 2 * calc_cache['h'] /3 
-        Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
-        print(Mbase)
+       
+        #initial values for vbase. These will be overwritten and iterated through
+        Vbase = (input_cache['V_LRP'] + calc_cache['Wc'])#initialisation only
+        Hbase = Vbase * math.tan(soil_prop['phi'])
+        Mbase = (input_cache['M_LRP'] + hside* Hside + calc_cache['h'] * Hbase)
+        H1 = input_cache['H_LRP'] - Hside
+        V1 = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
+#the following calculations for capacity conversion are taken out of here and 
+#into the bearing capacity checker for sand
+#these are to be done iteratively with other vbase calculations                                
+#        Hbase = input_cache['H_LRP'] - Hside
+#        hside = 2 * calc_cache['h'] /3 
+##        Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
+#        Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
+
+# =============================================================================
         return {'Vside' : Vside, 'Ka' : Ka, 'Kp' : Kp, 'Mbase' : Mbase,
-                'Hbase' : Hbase, 'Vbase' : Vbase}          
-    
-        
-    
+                 'Hbase' : Hbase, 'Vbase' : Vbase, 'hside' : hside,
+                 'Hside' : Hside, 'H1' : H1, 'V1' : V1}          
+
 
       

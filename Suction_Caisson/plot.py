@@ -36,25 +36,29 @@ def plot(dimensions, soil_type):
     #sufficient capacitty and installable
     allTrue = dimensions[(dimensions['installation']==True) & 
                               (dimensions['capacity']==True)]
-    plt.scatter(allTrue['D'], allTrue['L'], color = 'green')
+    plt.scatter(allTrue['D'], allTrue['L'], color = 'green', label = 'Sufficient Capacity, Installable')
 
 
     #sufficient capacity and uninstallable
     bearingTrue = dimensions[(dimensions['installation']==False) & 
                               (dimensions['capacity']==True)]
-    plt.scatter(bearingTrue['D'], bearingTrue['L'], color = 'blue')
+    plt.scatter(bearingTrue['D'], bearingTrue['L'], color = 'blue',
+                label = 'Sufficient capacity, Non-installable')
     
     
     #insufficient capacity and installable
     installTrue = dimensions[(dimensions['installation']==True) & 
                               (dimensions['capacity']==False)]
-    plt.scatter(installTrue['D'],  installTrue['L'], color = 'orange')
+    plt.scatter(installTrue['D'],  installTrue['L'], color = 'orange',
+                label = 'Insufficient capacity, Installable')
     
     allFalse = dimensions[(dimensions['installation']==False) & 
                           (dimensions['capacity']==False)]
 
-    plt.scatter(allFalse['D'], allFalse['L'],  color = 'red')
+    plt.scatter(allFalse['D'], allFalse['L'],  color = 'red', 
+                label = 'Insufficient capacity, Non-Installable')
     
 
     plt.ylabel('L [m]')
     plt.xlabel(r'$D_c$ [m]')
+    plt.legend()

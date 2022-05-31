@@ -50,16 +50,16 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 20
-D0min               = 10
-D0max               = 100
+D0min               = 2
+D0max               = 50
 D0delta             = 1
-Lmin                = 20
-Lmax                = 100
+Lmin                = 2
+Lmax                = 50
 Ldelta              = 1
 h_pert              = 1
-V_LRP               = 1E8
-H_LRP               = 1E6
-M_LRP               = 1E5  #
+V_LRP               = 1E7
+H_LRP               = 1E7
+M_LRP               = 10000  #
 
 
 
@@ -112,7 +112,7 @@ for i in D:
         
         """
         soil_type = 'clay'
-        soil_subtype = 'medium strength'
+        soil_subtype = 'low strength'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
@@ -134,5 +134,5 @@ for i in D:
 plot(dimensions, soil_type)
 
 #sand = Foundation_A.soil_prop 
-#calc_cache = Foundation_A.calc_cache#
+calc_cache = Foundation_A.calc_cache#
 #input_cache = Foundation_A.input_cache

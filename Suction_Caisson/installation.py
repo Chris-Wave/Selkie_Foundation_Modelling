@@ -83,7 +83,11 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
             input_cache['D0'] * clay['s_u'] + clay['alpha'] * np.pi * 
             calc_cache['Di'] * clay['s_u'] + clay['gamma'] * np.pi * 
             calc_cache['D'] * input_cache['t'])
-    h_sw_checker = h_sw > h_sw_min
+    
+                                                   
+                                                   #two conditions used. second one in case caisson self installs and suction becomes negative
+    
+    h_sw_checker = (h_sw > h_sw_min) & (h_sw < calc_cache['h'])
          
                   
          
@@ -176,9 +180,12 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
                         
             return (Routside + Rinside + Rtip) - i
         
-        h_sw = np.append(h_sw, fsolve(func, 1))
-        h_sw_checker = h_sw > h_sw_min
-    
+        h_sw = np.append(h_sw, fsolve(func, 1, factor = 0.1))
+        
+        #two conditions used. second one in case caisson self installs and suction becomes negative
+        
+        h_sw_checker = (h_sw > h_sw_min) & (h_sw < calc_cache['h'])
+        
     
     
     #Step 2: Calculate if the Sl is violated with different skirt lengths
@@ -218,8 +225,8 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
             calc_cache['V_comma'][i]) / calc_cache['Ac']
 
             
-        s =  fsolve(func2, 0)
-        print('s = {}'.format(s))
+        s =  fsolve(func2, calc_cache['SL'])
+       # print('s = {}'.format(s))
         s_checker = s < calc_cache['SL'] 
     
     #buckling check
