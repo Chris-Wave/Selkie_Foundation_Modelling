@@ -85,8 +85,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
             calc_cache['D'] * input_cache['t'])
     
                                                    
-                                                   #two conditions used. second one in case caisson self installs and suction becomes negative
-    
+  #two conditions used. second one in case caisson self installs and suction becomes negative  
     h_sw_checker = (h_sw > h_sw_min) & (h_sw < calc_cache['h'])
          
                   

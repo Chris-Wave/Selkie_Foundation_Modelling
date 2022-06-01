@@ -52,14 +52,14 @@ code is reached
 d                   = 20
 D0min               = 2
 D0max               = 50
-D0delta             = 1
+D0delta             = 0.5
 Lmin                = 2
 Lmax                = 50
-Ldelta              = 1
-h_pert              = 1
+Ldelta              = 0.5
+h_pert              = .1
 V_LRP               = 1E7
-H_LRP               = 1E7
-M_LRP               = 10000  #
+H_LRP               = 1E4
+M_LRP               = 1E4  #
 
 
 
@@ -112,7 +112,7 @@ for i in D:
         
         """
         soil_type = 'clay'
-        soil_subtype = 'low strength'
+        soil_subtype = 'medium strength'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

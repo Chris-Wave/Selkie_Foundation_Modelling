@@ -27,7 +27,7 @@ def bearing_capacity(foundation_type, input_cache, calc_cache, soil_type, soil, 
             Aeff = math.pi * calc_cache['D']**2 / 4
             Beff = calc_cache['D']
             Leff = Beff
-            ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['Hbase']/(
+            ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['H1']/(
                 Aeff * soil['s_u']))
             sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
             dca = 0.3 * np.arctan(calc_cache['h'] / Beff)
