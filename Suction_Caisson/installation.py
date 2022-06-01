@@ -179,7 +179,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
                         
             return (Routside + Rinside + Rtip) - i
         
-        h_sw = np.append(h_sw, fsolve(func, 1, factor = 0.1))
+        h_sw = np.append(h_sw, fsolve(func, 1, factor = 0.1, xtol=1.0e-03))
         
         #two conditions used. second one in case caisson self installs and suction becomes negative
         
@@ -204,7 +204,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     s = []
     for i in range(len(calc_cache['h'])):
         def func2(s):
-            
+             
             Routside = (sand['gamma'] + (a[i] * s / calc_cache['h'][i])) * Z0**2 * (
                 np.exp(calc_cache['h'][i] / Z0) - 1 - calc_cache['h'][i] / Z0)\
                 * (K * math.tan(sand['delta'])) * math.pi * input_cache['D0']
@@ -224,7 +224,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
             calc_cache['V_comma'][i]) / calc_cache['Ac']
 
             
-        s =  fsolve(func2, calc_cache['SL'])
+        s =  fsolve(func2, calc_cache['SL'], xtol=1.0e-03)
        # print('s = {}'.format(s))
         s_checker = s < calc_cache['SL'] 
     

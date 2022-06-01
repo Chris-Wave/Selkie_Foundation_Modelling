@@ -50,14 +50,14 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 20
-D0min               = 2
-D0max               = 50
-D0delta             = 0.5
-Lmin                = 2
+D0min               = 50
+D0max               = 51
+D0delta             = 1
+Lmin                = 10
 Lmax                = 50
-Ldelta              = 0.5
+Ldelta              = 1
 h_pert              = .1
-V_LRP               = 1E7
+V_LRP               = 1e7
 H_LRP               = 1E4
 M_LRP               = 1E4  #
 
@@ -112,7 +112,7 @@ for i in D:
         
         """
         soil_type = 'sand'
-        soil_subtype = 'medium strength'
+        soil_subtype = 'very loose'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
