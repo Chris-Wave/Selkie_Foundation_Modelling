@@ -49,13 +49,18 @@ def precalculations(input_cache, rhosteel, rhowater):
     Mce = Mc * (rhosteel - rhowater)/rhosteel  # - Mcb #effective mass
     Wc = Mce * 9.81 #weight of caison
     #V_comma = input_cache['V_LRP'] + Wc
-    V_comma = (input_cache['V_LRP'] + Wc) 
+    V_comma = (input_cache['V_LRP'] + Wc)
+    V_comma_install = (input_cache['V_ILRP'] + Wc)
     Ph = rhowater * 9.81 * (input_cache['d'] - input_cache['h_pert'])
     
     if input_cache['d'] > 50:
         SL = 5E5 #N/m**2, pump limit
     else:
         SL = Ph + 5E4 #N/m**2
-        
+    
+    
+    
+
     return {'L' : L, 'h':h, 'Di':Di, 'D':D, 'Ac':Ac,'Mc': Mc,# 
-            'Mce' : Mce, 'Wc':Wc,'V_comma' : V_comma, 'Ph':Ph, 'SL':SL}
+            'Mce' : Mce, 'Wc':Wc,'V_comma' : V_comma, 'Ph':Ph, 'SL':SL,
+            'V_comma_install' : V_comma_install}

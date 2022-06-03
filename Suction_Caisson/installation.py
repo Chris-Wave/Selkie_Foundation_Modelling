@@ -78,7 +78,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
     #Step 1: Self Weight. find the setting height under self weight
     #solve with s = 0
     h_sw_min = 0.1  #minimum self installatino required
-    h_sw = (calc_cache['V_comma'] * gamma_f - clay['Nc'] * clay['s_u'] * np.pi *
+    h_sw = (calc_cache['V_comma_install'] * gamma_f - clay['Nc'] * clay['s_u'] * np.pi *
             calc_cache['D'] * input_cache['t']) / (clay['alpha'] * np.pi * 
             input_cache['D0'] * clay['s_u'] + clay['alpha'] * np.pi * 
             calc_cache['Di'] * clay['s_u'] + clay['gamma'] * np.pi * 
@@ -86,7 +86,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
     
                                                    
   #two conditions used. second one in case caisson self installs and suction becomes negative  
-    h_sw_checker = (h_sw > h_sw_min) & (h_sw < calc_cache['h'])
+    h_sw_checker = (h_sw > h_sw_min)# & (h_sw < calc_cache['h'])
          
                   
          
@@ -104,7 +104,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
  
     #solve for suction
     s = ((Routside + Rinside + Rtip)- 
-         calc_cache['V_comma']) / calc_cache['Ac']
+         calc_cache['V_comma_install']) / calc_cache['Ac']
     
     s_checker = s < calc_cache['SL']
     
@@ -163,7 +163,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     Cant implement a vectorised approach to fsolve. needs a loop. 
     """
     h_sw = []
-    for i in calc_cache['V_comma']:
+    for i in calc_cache['V_comma_install']:
         
         #solve for h iteratively as equation for s is implicit. 
         def func(h):
@@ -183,7 +183,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
         
         #two conditions used. second one in case caisson self installs and suction becomes negative
         
-        h_sw_checker = (h_sw > h_sw_min) & (h_sw < calc_cache['h'])
+        h_sw_checker = (h_sw > h_sw_min)# & (h_sw < calc_cache['h'])
         
     
     
@@ -221,7 +221,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
             #solving for suction - s
 # =============================================================================
             return ((Routside + Rtip + Rinside)  - 
-            calc_cache['V_comma'][i]) / calc_cache['Ac']
+            calc_cache['V_comma_install'][i]) / calc_cache['Ac']
 
             
         s =  fsolve(func2, calc_cache['SL'], xtol=1.0e-03)

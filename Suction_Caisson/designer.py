@@ -53,10 +53,10 @@ code is reached
 d                   = 20
 D0min               = 5
 D0max               = 30
-D0delta             = 0.1
+D0delta             = 1
 Lmin                = 5
 Lmax                = 30
-Ldelta              = 0.1
+Ldelta              = 1
 h_pert              = .1
 V_LRP               = 1e8
 V_ILRP              = 1e5
@@ -133,7 +133,7 @@ for i in D:
         dimensions = pd.concat(frames, join='inner', axis = 0, 
                                ignore_index=True, sort=False)
         
-        print('D = {}\nL = ')
+        #print('D = {}\nL = ')
 
 #Plot the output
 

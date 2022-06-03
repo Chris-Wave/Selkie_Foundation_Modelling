@@ -48,7 +48,7 @@ class Foundation_Definition:
     
     
     def __init__(self, d, D0, L, h_pert, 
-                 V_LRP, H_LRP, M_LRP):
+                 V_LRP, V_ILRP, H_LRP, M_LRP):
     
 # =============================================================================
 #     def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
@@ -64,6 +64,7 @@ class Foundation_Definition:
         #h_pert : float : m, height of caisson above seabed
         #t      : float : m, wall thickness
         #V_LRP  : float : m, vertical load reference point
+        #V_ILRP : float : N, Vertical load under utility
         #H_LRP  : float : m, horizontal load reference point
         #M_LRP  : float : m, moment load reference point
         t = 1/200 * D0           #assumed to be 2% of outer dia
@@ -71,7 +72,7 @@ class Foundation_Definition:
         self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 
                         'h_pert' : h_pert,
                         'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
-                        'M_LRP' : M_LRP, 't' : t}
+                        'M_LRP' : M_LRP, 't' : t, 'V_ILRP' : V_ILRP}
     
 # =============================================================================
 #         self.input_cache = {'d' : d, 'D0' : D0, 'Lmin' : Lmin, 
@@ -135,25 +136,31 @@ class Foundation_Definition:
          
 # =============================================================================
 # =============================================================================
-        self.uplift_checker = uplift(self.input_cache, 
-                                         self.calc_cache, 
-                                         self.soil_type,
-                                         self.soil_prop, 
-                                         self.cap_cache, self.K, 
-                                         self.gamma_m, self.gamma_f)
-                                         
+# =============================================================================
+#         self.uplift_checker = uplift(self.input_cache, 
+#                                          self.calc_cache, 
+#                                          self.soil_type,
+#                                          self.soil_prop, 
+#                                          self.cap_cache, self.K, 
+#                                          self.gamma_m, self.gamma_f)
+#                                          
+# =============================================================================
 # =============================================================================
                                         
 
         if self.soil_type == 'sand':
-            return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
+            return pd.DataFrame({'D' : self.input_cache['D0'], 'L' : self.calc_cache['L'], 
+                                 'M' : self.calc_cache['Mc'], 
+                                 'Cost' : self.calc_cache['Mc'] * 999,
                 'Self-weight installation' : self.installation_checker['sw installation check'], 
                 'Suction limit' : self.installation_checker['suction limit check'],
                 'Sliding' : self.sliding_checker,
                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'],
                 })
         else:
-          return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
+          return pd.DataFrame({'D' : self.input_cache['D0'], 'L' : self.calc_cache['L'], 
+                               'M' : self.calc_cache['Mc'], 
+                               'Cost' : self.calc_cache['Mc'] * 999,
               'Self-weight installation' : self.installation_checker['sw installation check'], 
               'Suction limit' : self.installation_checker['suction limit check'],
               'Sliding' : self.sliding_checker,
