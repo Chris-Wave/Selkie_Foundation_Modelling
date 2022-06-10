@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
-def plot(dimensions, soil_type):
+def plot(dimensions, soil_type, anchor:False):
     #Input
     #dimensions : pd.DataFrame : df of the relevent diensions and their
 

@@ -44,7 +44,9 @@ V_LRP  : float : N, vertical load reference point
 V_ILRP : float : N, Vertical load under utility
 H_LRP  : float : N, horizontal load reference point
 M_LRP  : float : N, moment load reference point
-
+Huls : float : N, horizontal loading from anchor
+Vuls : float : N, Vertical loading from anchor
+db     : float : m, chain diameter
 The next set of inputs required will be stated when the specific portion of the
 code is reached 
 """
@@ -52,18 +54,19 @@ code is reached
 #Values here are only assumed and might not present any realistic picture
 d                   = 20
 D0min               = 5
-D0max               = 30
+D0max               = 50
 D0delta             = 1
 Lmin                = 5
-Lmax                = 30
+Lmax                = 50
 Ldelta              = 1
 h_pert              = .1
 V_LRP               = 1e8
 V_ILRP              = 1e5
 H_LRP               = 1E4
 M_LRP               = 1E4  #
-
-
+Huls                = 1E4 
+Vuls                = 1e1
+db                  = 0.05 
 
 #Iterations over an array of D0 are achieved through a for loop
 #Vectorization for this will be achieved in the next iteration
@@ -75,14 +78,15 @@ dimensions = pd.DataFrame(columns={'D', 'L', 'M', 'Cost',
                                    'Self-weight installation',
                                    'Suction limit', 'Sliding',
                                    'Undrained bearing capacity', 
-                                   'Drained bearing capacity'
+                                   'Drained bearing capacity',
+                                   'Eccentricity'
                                    })
 
 for i in D:
     for l in L:
     #declare FoundationA to be an instance of the class
         Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
-                                             H_LRP, M_LRP)
+                                             H_LRP, M_LRP, Huls, Vuls, db)
         
         """
         After class decleration, select soil type and soil subtype. For soil type, the 
@@ -115,8 +119,8 @@ for i in D:
         
         
         """
-        soil_type = 'clay'
-        soil_subtype = 'medium strength'
+        soil_type = 'sand'
+        soil_subtype = 'dense'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

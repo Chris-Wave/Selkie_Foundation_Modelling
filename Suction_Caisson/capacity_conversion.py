@@ -44,9 +44,31 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
         H1 = input_cache['H_LRP'] - Hside
     
+    
+# =============================================================================
+#     
+#   Code adaptation from dtocean for anchor based   
+#     
+#         
+# =============================================================================
+
+        if input_cache['L']/input_cache['D0'] <= 4.5:
+            Nc = 6.2 * (1 + 0.34 * np.arctan(input_cache['L']/input_cache['D0']))
+        else:
+            Nc = 9
+        As = np.pi * input_cache['D0'] * input_cache['L']
+        Vu_dto = calc_cache['Ac'] * Nc * soil_prop['s_u'] + 0.65 * As + calc_cache['Wc'] 
         
+        
+        #lateral capacity, cohesive soils
+        z = 0.7 * input_cache['L']
+        Np = 3.6 / np.sqrt((0.75 - (z/input_cache['L']))**2 + (0.45 - (z/input_cache['L']))**2)
+        Hu_dto = input_cache['L'] * input_cache['D0'] * Np * soil_prop['s_u']
+       
+
         return {'Vside' : Vside, 'Mbase' : Mbase,
-                'H1' : H1, 'Hbase' : Hbase} #'Vbase' : Vbase}          
+                'H1' : H1, 'Hbase' : Hbase, 'Vu_dto' : Vu_dto,
+                'Hu_dto' : Hu_dto} #'Vbase' : Vbase}          
     
     
     #sand vertical capacity on outside of caisson
@@ -72,14 +94,30 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
 #        hside = 2 * calc_cache['h'] /3 
 ##        Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
 #        Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
-
-    
-         
-    
 # =============================================================================
+
+# =============================================================================
+# 
+# dtocean adaptation for anchor based  
+# 
+# =============================================================================
+        K = 1 - np.sin(soil_prop['phi'])
+        delta = 0.5 * soil_prop['phi']
+        Vu_dto = np.pi * (input_cache['D0'] - calc_cache['Di']) * \
+            input_cache['L'] ** 2 * soil_prop['gamma'] * K * np.tan(delta)
+        
+        #lateral force
+        #order changed to conform with our own equations. 
+        Nq =  np.tan(math.radians(45) + (soil_prop['phi']/2))**2 * np.exp(np.pi * np.tan(soil_prop['phi']))
+        Hu_dto = 0.5 * input_cache['D0'] * Nq * soil_prop['gamma'] * input_cache['L']**2
+
+
+
+
         return {'Vside' : Vside, 'Ka' : Ka, 'Kp' : Kp, 'Mbase' : Mbase,
                  'Hbase' : Hbase, 'Vbase' : Vbase, 'hside' : hside,
-                 'Hside' : Hside, 'H1' : H1, 'V1' : V1}          
+                 'Hside' : Hside, 'H1' : H1, 'V1' : V1, 'Hu_dto' : Hu_dto, 
+                 'Vu_dto' : Vu_dto}          
 
 
       

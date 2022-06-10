@@ -31,8 +31,7 @@ from capacity_conversion import capacity_conversions as cc #to avoid naming conf
 from installation import installation_sand, installation_clay
 from bearing_capacity import bearing_capacity
 from sliding import sliding
-from uplift import uplift
-
+from eccentricity import eccentricity
 class Foundation_Definition:
     #these properties can be changed for the class instance if needed
     
@@ -48,7 +47,7 @@ class Foundation_Definition:
     
     
     def __init__(self, d, D0, L, h_pert, 
-                 V_LRP, V_ILRP, H_LRP, M_LRP):
+                 V_LRP, V_ILRP, H_LRP, M_LRP, Huls : False, Vuls : False, db : False):
     
 # =============================================================================
 #     def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
@@ -67,13 +66,17 @@ class Foundation_Definition:
         #V_ILRP : float : N, Vertical load under utility
         #H_LRP  : float : m, horizontal load reference point
         #M_LRP  : float : m, moment load reference point
+        #Huls : float : N, horizontal loading from anchor
+        #Vuls : float : N, Vertical loading from anchor
+        #db     : float : m, Chain diametr
         t = 1/200 * D0           #assumed to be 2% of outer dia
 
         self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 
                         'h_pert' : h_pert,
                         'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
                         'M_LRP' : M_LRP, 't' : t, 'V_ILRP' : V_ILRP}
-    
+        self.mooring_cache = {'Huls' : Huls, 'Vuls' : Vuls, 'db' : db}
+        
 # =============================================================================
 #         self.input_cache = {'d' : d, 'D0' : D0, 'Lmin' : Lmin, 
 #                             'Lmax' : Lmax, 'Ldelta' : Ldelta, 'h_pert' : h_pert,
@@ -81,9 +84,8 @@ class Foundation_Definition:
 #                             'M_LRP' : M_LRP, 't' : t}
 #         
 # =============================================================================
-        
-        self.calc_cache = precalculations(self.input_cache, self.rhosteel, 
-                                     self.rhowater)
+      
+
         
         
     def soil_selection(self, soil_type, soil_subtype):
@@ -92,10 +94,13 @@ class Foundation_Definition:
         #soil_subtype : string : choose from the different types of soils
         self.soil_type = soil_type
         self.soil_prop = soil(soil_type, soil_subtype)
-        
+
         
         #function to perform capacity conversions
         #output is a cache after capacity conversions. 
+        self.calc_cache = precalculations(self.input_cache, self.soil_type, 
+                                          self.soil_prop, self.rhosteel, 
+                                     self.rhowater, self.mooring_cache)  
         self.cap_cache = cc(self.input_cache, self.calc_cache, self.soil_type, 
                        self.soil_prop, self.K)
         
@@ -133,6 +138,16 @@ class Foundation_Definition:
                                         self.calc_cache, self.soil_type, 
                                         self.soil_prop, self.gamma_m, 
                                         self.gamma_f)
+        
+        if self.mooring_cache['Huls']:
+            #execute eccentricty checks only if the mooring inputs were provided. 
+            #otherwise return N/A. eccentricity will still exist in the outcome 
+            #dict because otherwise the code is unnecessarily lengthened by
+            #selection statements
+            self.eccentricity = eccentricity(self.input_cache, self.calc_cache,
+                                    self.cap_cache, self.mooring_cache)
+        else:
+            self.eccentricity = {'N/A'}
          
 # =============================================================================
 # =============================================================================
@@ -156,6 +171,7 @@ class Foundation_Definition:
                 'Suction limit' : self.installation_checker['suction limit check'],
                 'Sliding' : self.sliding_checker,
                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'],
+                'Eccentricity' : self.eccentricity
                 })
         else:
           return pd.DataFrame({'D' : self.input_cache['D0'], 'L' : self.calc_cache['L'], 
@@ -164,7 +180,8 @@ class Foundation_Definition:
               'Self-weight installation' : self.installation_checker['sw installation check'], 
               'Suction limit' : self.installation_checker['suction limit check'],
               'Sliding' : self.sliding_checker,
-              'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity']})
+              'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
+              'Eccentricity' : self.eccentricity})
           
     
 # =============================================================================

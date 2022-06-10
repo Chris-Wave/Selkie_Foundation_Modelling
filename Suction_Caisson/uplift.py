@@ -15,42 +15,27 @@ Feeds into the Foundation_characteristics
 Uplift calculations using OWA commented out
 
 New uplift calculations using DTOcean document put in here
+
+
+#uplift and lateral checks are incldued within entricity checks. ignore this file. will be deleted.
 """
 import numpy as np
 import math
 
-def uplift_lateral_check(input_cache, calc_cache, soil_type, soil_prop, cap_cache, k, gamma_m, gamma_f):
-    #perform capacity convrsions for dtocean document
-    #vertical uplift force, cohesive soils
-    if soil_type.lower() == 'clay':
-        if input_cache['L']/input_cache['D0'] <= 4.5:
-            Nc = 6.2 * (1 + 0.34 * np.arctan(input_cache['L']/input_cache['D0']))
-        else:
-            Nc = 4.5
-        As = np.pi * input_cache['D0'] * input_cache['L']
-        Vu_dto = calc_cache['Ac'] * Nc * soil_prop['s_u'] + 0.65 * As + calc_cache['Wc'] 
-        
-        
-        #lateral capacity, cohesive soils
-        z = 0.7 * input_cache['L']
-        Np = 3.6 / np.sqrt((0.75 - (z/input_cache['L']))**2 + (0.45 - (z/input_cache['L']))**2)
-        Hu_dto = input_cache['L'] * input_cache['D0'] * Np * soil_prop['s_u']
-       
-    elif soil_type.lower() =='sand':
-        #uplift force
-        K = 1 - np.sin(soil_prop['phi'])
-        delta = 0.5 * soil_prop['phi']
-        Vu_dto = np.pi * (input_cache['D0'] - calc_cache['Di']) * \
-            input_cache['L'] ** 2 * soil_prop['gamma'] * K * np.tan(delta)
-        
-        #lateral force
-        Nq = np.exp(np.pi * np.tan(soil_prop['phi'])) * np.tan(math.radians(45) + 
-                                                    (soil_prop['phi']/2))**2
-        Hu_dto = 0.5 * input_cache['D0'] * Nq * soil_prop['gamma'] * input_cache['L']**2
-        
-    else:
-        raise ValueError
-        
+def uplift_check(calc_cache, cap_cache, gamma_m, gamma_f):
+    #perform uplift and lateral checks
+    #Inputs
+    #calc__cache : {}  : dictioinary with precalucalations
+    #cap_cache  : {}  : dictionary with capacity conversions
+    return ()
+
+def lateral_check(calc_cache, cap_cache, gamma_m, gamma_f):
+    #perform uplift and lateral checks
+    #Inputs
+    #calc__cache : {}  : dictioinary with precalucalations
+    #cap_cache  : {}  : dictionary with capacity conversions
+    pass
+    #return Vult/gamma_m >= (cap_cache['Vd'])
  
 #    ===========================================================================
 # def uplift(input_cache, calc_cache, soil_type, soil, cap_cache, K,
