@@ -10,7 +10,35 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
-def plot(dimensions, soil_type, anchor:False):
+def sand_anchor(dimensions):
+    #input
+    #dimensions : dict : result of the designer script
+     return ((dimensions['Drained bearing capacity']==True) & (dimensions['Sliding']==True) & (
+        dimensions['Eccentricity'] == True))
+
+
+def sand_foundation(dimensions):
+    #input
+    #dimensions : dict : result of the designer script
+     return ((dimensions['Drained bearing capacity']==True) & (dimensions['Sliding']==True))
+
+def clay_anchor(dimensions):
+    return ((dimensions['Undrained bearing capacity']==True) & (dimensions['Sliding']==True) & (
+       dimensions['Eccentricity'] == True))
+
+def clay_foundation(dimensions):
+    return ((dimensions['Undrained bearing capacity']==True) & (dimensions['Sliding']==True))
+
+def operate(dimensions, option):
+    op = {
+        'sand_anchor' : sand_anchor,
+        'sand_foundation' : sand_foundation,
+        'clay_anchor' : clay_anchor,
+        'clay_foundation' : clay_foundation
+        }
+    chosen_op = 
+    
+def plot(dimensions, soil_type, anchor = False):
     #Input
     #dimensions : pd.DataFrame : df of the relevent diensions and their
 
@@ -22,13 +50,12 @@ def plot(dimensions, soil_type, anchor:False):
     
     if soil_type == 'sand':
         dimensions['capacity'] = (dimensions['Drained bearing capacity'] == True) & (
-            dimensions['Sliding'] == True
-            )
+            dimensions['Sliding'] == True) 
     
     else:
         dimensions['capacity'] = (dimensions['Undrained bearing capacity'] == True) & (
-            dimensions['Sliding'] == True
-            )
+            dimensions['Sliding'] == True)
+            
         
 
 

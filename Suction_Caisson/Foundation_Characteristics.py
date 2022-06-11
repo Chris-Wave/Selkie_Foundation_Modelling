@@ -105,9 +105,9 @@ class Foundation_Definition:
                        self.soil_prop, self.K)
         
      
-    def checker(self, foundation_type):
+    def checker(self):
         #perform installation checks
-        #foundation_type     : str   : option for it to be 'anchor' or 'foundation'
+        #inputs will determine the foundatioin type
         if self.soil_type.lower() == 'clay':
             self.installation_checker = installation_clay(self.soil_prop, 
                                                      self.input_cache, 
@@ -126,7 +126,7 @@ class Foundation_Definition:
          
         #perform bearing capacity checks for drained and undrained soil type    
 # =============================================================================
-        self.bearing_capacity_checker = bearing_capacity(foundation_type, 
+        self.bearing_capacity_checker = bearing_capacity(
                                                      self.input_cache, 
                                                      self.calc_cache,
                                                      self.soil_type.lower(),
@@ -139,7 +139,11 @@ class Foundation_Definition:
                                         self.soil_prop, self.gamma_m, 
                                         self.gamma_f)
         
-        if self.mooring_cache['Huls']:
+        #check if any of the 3 parameters are provied. If they are, then
+        #the problem will be treated as an anchor foundation
+        #otherwise it will be a regular foundation and the eccentricity check
+        #will return as N/A
+        if self.mooring_cache['Huls'] or self.mooring_cache['Vuls'] or self.mooring_cache['db']:
             #execute eccentricty checks only if the mooring inputs were provided. 
             #otherwise return N/A. eccentricity will still exist in the outcome 
             #dict because otherwise the code is unnecessarily lengthened by

@@ -10,10 +10,9 @@ function untested, unintegrated.
 import  math
 import numpy as np
 import matplotlib.pyplot as plt
-def bearing_capacity(foundation_type, input_cache, calc_cache, soil_type, soil, cap_cache,
+def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                      gamma_m, gamma_f):
     #Input
-    #foundation_type     : str   : option for it to be 'anchor' or 'foundation'
     #input_cache: dict {} : dictionary of input cache
     #soil       : dict {} : dictionary of soil properties
     #calc_cache : dict {} : dictionary of pre calculations

@@ -108,17 +108,28 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
                     dummy = theta_a                
         elif soil_type.lower() =='sand':
             #Ta needs iteration
+            mu = 0.4 #value taken frmo clay. different for sand but dont have it right now. 
             Nq =  np.tan(math.radians(45) + (soil_prop['phi']/2))**2 * np.exp(np.pi * np.tan(soil_prop['phi']))
-            Ta = Tm/2
+            theta_a = theta_m * 2
             dummy = 0
+            Ta = Tm
             for i in range(10):
                 Q = 2.5 * mooring_cache['db'] * Nq * soil_prop['gamma'] * za
-                theta_a = np.sqrt(theta_m**2 + ((2 * Q * za))/Ta)
-                Ta = Tm / (np.exp(mu * (theta_a - theta_m)))
-                if abs(dummy - Ta) < 1:
+                
+                #if the solution blows up, assign values and exit the loop
+                #eccentrity checks will recognize the nan, inf and 0 as a sign of divergence and the check will pass
+                if np.exp(mu * (theta_a - theta_m)) ==float('inf'):
+                    Ta = 0
+                    theta_a = float('inf')
                     break
                 else:
-                    dummy = Ta
+                    Ta = Tm / (np.exp(mu * (theta_a - theta_m)))
+                    theta_a = np.sqrt(theta_m**2 + ((2 * Q * za )/Ta))
+                
+                if abs(dummy - theta_a) < 0.01:
+                    break
+                else:
+                    dummy = theta_a         
         
         return {'L' : L, 'h':h, 'Di':Di, 'D':D, 'Ac':Ac,'Mc': Mc,# 
                 'Mce' : Mce, 'Wc':Wc,'V_comma' : V_comma, 'Ph':Ph, 'SL':SL,
@@ -128,3 +139,5 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
         return {'L' : L, 'h':h, 'Di':Di, 'D':D, 'Ac':Ac,'Mc': Mc,# 
                 'Mce' : Mce, 'Wc':Wc,'V_comma' : V_comma, 'Ph':Ph, 'SL':SL,
                 'V_comma_install' : V_comma_install}
+    
+    

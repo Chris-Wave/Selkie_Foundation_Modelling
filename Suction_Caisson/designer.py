@@ -85,9 +85,21 @@ dimensions = pd.DataFrame(columns={'D', 'L', 'M', 'Cost',
 for i in D:
     for l in L:
     #declare FoundationA to be an instance of the class
+    #if foundation type is an anchor, please specify Huls, Vuls and db. 
+    #these are introduced as optional arguments and allow the code to 
+    #perform regular calculations for just a simple foundation
+    #provision of these will initiate the additional calculations for the 
+    #anchor type foundation. 
         Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
                                              H_LRP, M_LRP, Huls, Vuls, db)
         
+        
+# =============================================================================
+#To be used when simple foundation is used.        
+#  Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
+#                                              H_LRP, M_LRP)
+#         
+# =============================================================================
         """
         After class decleration, select soil type and soil subtype. For soil type, the 
         following options are available:
@@ -132,7 +144,7 @@ for i in D:
         The designe_check method is called and it returns the dimensions with their 
         checks. 
         """
-        checker = Foundation_A.checker('anchor')
+        checker = Foundation_A.checker()
         frames = [checker, dimensions]
         dimensions = pd.concat(frames, join='inner', axis = 0, 
                                ignore_index=True, sort=False)
