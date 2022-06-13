@@ -47,7 +47,7 @@ class Foundation_Definition:
     
     
     def __init__(self, d, D0, L, h_pert, 
-                 V_LRP, V_ILRP, H_LRP, M_LRP, Huls = False, Vuls = False, db = False):
+                 V_LRP, V_ILRP, H_LRP, M_LRP, foundation_type, Huls = False, Vuls = False, db = False):
     
 # =============================================================================
 #     def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
@@ -66,6 +66,7 @@ class Foundation_Definition:
         #V_ILRP : float : N, Vertical load under utility
         #H_LRP  : float : m, horizontal load reference point
         #M_LRP  : float : m, moment load reference point
+        #foundation:type : str : Can be either anchor or foundation
         #Huls : float : N, horizontal loading from anchor
         #Vuls : float : N, Vertical loading from anchor
         #db     : float : m, Chain diametr
@@ -108,6 +109,7 @@ class Foundation_Definition:
     def checker(self):
         #perform installation checks
         #inputs will determine the foundatioin type
+        
         if self.soil_type.lower() == 'clay':
             self.installation_checker = installation_clay(self.soil_prop, 
                                                      self.input_cache, 
@@ -197,3 +199,6 @@ class Foundation_Definition:
 #                 'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
 #                 'Sliding' : self.sliding_checker})
 # =============================================================================
+
+    def anchor_checker(self):
+        pass
