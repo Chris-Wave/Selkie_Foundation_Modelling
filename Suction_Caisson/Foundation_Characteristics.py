@@ -47,7 +47,7 @@ class Foundation_Definition:
     
     
     def __init__(self, d, D0, L, h_pert, 
-                 V_LRP, V_ILRP, H_LRP, M_LRP, Huls : False, Vuls : False, db : False):
+                 V_LRP, V_ILRP, H_LRP, M_LRP, Huls = False, Vuls = False, db = False):
     
 # =============================================================================
 #     def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
@@ -151,7 +151,7 @@ class Foundation_Definition:
             self.eccentricity = eccentricity(self.input_cache, self.calc_cache,
                                     self.cap_cache, self.mooring_cache)
         else:
-            self.eccentricity = {'N/A'}
+            self.eccentricity = 'N/A'
          
 # =============================================================================
 # =============================================================================

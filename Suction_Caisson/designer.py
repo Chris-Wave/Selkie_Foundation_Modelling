@@ -96,7 +96,9 @@ for i in D:
         
 # =============================================================================
 #To be used when simple foundation is used.        
-#  Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
+# 
+#
+# Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
 #                                              H_LRP, M_LRP)
 #         
 # =============================================================================
@@ -153,5 +155,9 @@ for i in D:
 
 #Plot the output
 
-
-plot(dimensions, soil_type)
+#if anchor type foundation used, last argument of the plotting function 
+#should be anchor
+#otherwise, replace it with 'foundation'
+#default value set at anchor in the plotting function. 
+#adding this here is redundant but important for user understanding
+plot(dimensions, soil_type, foundation_type = 'anchor')

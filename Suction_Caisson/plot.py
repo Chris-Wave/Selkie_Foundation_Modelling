@@ -7,8 +7,12 @@ Created on Fri Jan 28 09:36:53 2022
 """
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
-from sklearn.preprocessing import MinMaxScaler
+#import numpy as np
+#from sklearn.preprocessing import MinMaxScaler
+
+#capacity checks are implemented through functions instead of nested if else
+#to avoid cluttering and make code more readable. 
+
 
 def sand_anchor(dimensions):
     #input
@@ -36,26 +40,38 @@ def operate(dimensions, option):
         'clay_anchor' : clay_anchor,
         'clay_foundation' : clay_foundation
         }
-    chosen_op = 
+    option = op.get(option)
+    return (option(dimensions))
+
     
-def plot(dimensions, soil_type, anchor = False):
+def plot(dimensions, soil_type, foundation_type = 'anchor'):
     #Input
     #dimensions : pd.DataFrame : df of the relevent diensions and their
+    #soil_type  : str          : lower case string, either sand or clay
+    #foundation_type : str     : lower case string, anchor or foundation
 
-    Mc = np.reshape(np.array(dimensions['M']), (-1, 1))
-    scalar = MinMaxScaler(feature_range=(0.1, 1))
-    dimensions['M_resc'] = scalar.fit_transform(Mc) * 50
+    #commented out the scatter plot weighted size averageing code. 
+    
+    #Mc = np.reshape(np.array(dimensions['M']), (-1, 1))
+    #scalar = MinMaxScaler(feature_range=(0.1, 1))
+    #dimensions['M_resc'] = scalar.fit_transform(Mc) * 50
     dimensions['installation'] = (dimensions['Suction limit'] == True) & (
         dimensions['Self-weight installation'] == True) 
     
-    if soil_type == 'sand':
-        dimensions['capacity'] = (dimensions['Drained bearing capacity'] == True) & (
-            dimensions['Sliding'] == True) 
     
-    else:
-        dimensions['capacity'] = (dimensions['Undrained bearing capacity'] == True) & (
-            dimensions['Sliding'] == True)
-            
+    #use dict and .get to run selection structures instead of nested if else
+    dimensions['capacity'] = operate(dimensions, soil_type + '_' + foundation_type)
+    
+# =============================================================================
+#     if soil_type == 'sand':
+#         dimensions['capacity'] = (dimensions['Drained bearing capacity'] == True) & (
+#             dimensions['Sliding'] == True) 
+#     
+#     else:
+#         dimensions['capacity'] = (dimensions['Undrained bearing capacity'] == True) & (
+#             dimensions['Sliding'] == True)
+#             
+# =============================================================================
         
 
 
