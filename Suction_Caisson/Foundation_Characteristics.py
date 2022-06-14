@@ -106,7 +106,7 @@ class Foundation_Definition:
                        self.soil_prop, self.K)
         
      
-    def checker(self):
+    def foundation_checker(self):
         #perform installation checks
         #inputs will determine the foundatioin type
         
@@ -141,19 +141,6 @@ class Foundation_Definition:
                                         self.soil_prop, self.gamma_m, 
                                         self.gamma_f)
         
-        #check if any of the 3 parameters are provied. If they are, then
-        #the problem will be treated as an anchor foundation
-        #otherwise it will be a regular foundation and the eccentricity check
-        #will return as N/A
-        if self.mooring_cache['Huls'] or self.mooring_cache['Vuls'] or self.mooring_cache['db']:
-            #execute eccentricty checks only if the mooring inputs were provided. 
-            #otherwise return N/A. eccentricity will still exist in the outcome 
-            #dict because otherwise the code is unnecessarily lengthened by
-            #selection statements
-            self.eccentricity = eccentricity(self.input_cache, self.calc_cache,
-                                    self.cap_cache, self.mooring_cache)
-        else:
-            self.eccentricity = 'N/A'
          
 # =============================================================================
 # =============================================================================
@@ -177,7 +164,6 @@ class Foundation_Definition:
                 'Suction limit' : self.installation_checker['suction limit check'],
                 'Sliding' : self.sliding_checker,
                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'],
-                'Eccentricity' : self.eccentricity
                 })
         else:
           return pd.DataFrame({'D' : self.input_cache['D0'], 'L' : self.calc_cache['L'], 
@@ -186,19 +172,73 @@ class Foundation_Definition:
               'Self-weight installation' : self.installation_checker['sw installation check'], 
               'Suction limit' : self.installation_checker['suction limit check'],
               'Sliding' : self.sliding_checker,
-              'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
-              'Eccentricity' : self.eccentricity})
+              'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'],})
           
+    #duplication involved for this function as some of the checks are common
+    #for both foundation types.
     
-# =============================================================================
-#         return pd.DataFrame({'L' : self.calc_cache['L'], 'h' : self.calc_cache['h'],'D' : self.calc_cache['D'], 
-#                 'Buckling' : self.installation_checker['buckling check'],
-#                 'Self-weight installation' : self.installation_checker['sw installation check'], 
-#                 'Suction limit' : self.installation_checker['suction limit check'], 
-#                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'], 
-#                 'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
-#                 'Sliding' : self.sliding_checker})
-# =============================================================================
-
     def anchor_checker(self):
-        pass
+         #perform installation checks
+         #inputs will determine the foundatioin type
+         
+         if self.soil_type.lower() == 'clay':
+             self.installation_checker = installation_clay(self.soil_prop, 
+                                                      self.input_cache, 
+                                                      self.calc_cache, 
+                                                      self.v, self.E, 
+                                                      self.gamma_m, self.gamma_f)
+
+         elif self.soil_type.lower() == 'sand':
+             self.installation_checker = installation_sand(self.soil_prop, 
+                                                      self.input_cache, 
+                                                      self.calc_cache,
+                                                      self.v, self.E, self.K, 
+                                                      self.gamma_m, self.gamma_f)
+         else:
+             raise ValueError
+          
+         #perform bearing capacity checks for drained and undrained soil type    
+ # =============================================================================
+         self.bearing_capacity_checker = bearing_capacity(
+                                                      self.input_cache, 
+                                                      self.calc_cache,
+                                                      self.soil_type.lower(),
+                                                      self.soil_prop, 
+                                                      self.cap_cache, 
+                                                      self.gamma_m, self.gamma_f)
+          
+         self.eccentricity = eccentricity(self.input_cache, self.calc_cache,
+                                     self.cap_cache, self.mooring_cache)
+          
+ # =============================================================================
+ # =============================================================================
+ # =============================================================================
+ #         self.uplift_checker = uplift(self.input_cache, 
+ #                                          self.calc_cache, 
+ #                                          self.soil_type,
+ #                                          self.soil_prop, 
+ #                                          self.cap_cache, self.K, 
+ #                                          self.gamma_m, self.gamma_f)
+ #                                          
+ # =============================================================================
+ # =============================================================================
+                                         
+
+         if self.soil_type == 'sand':
+             return pd.DataFrame({'D' : self.input_cache['D0'], 'L' : self.calc_cache['L'], 
+                                  'M' : self.calc_cache['Mc'], 
+                                  'Cost' : self.calc_cache['Mc'] * 999,
+                 'Self-weight installation' : self.installation_checker['sw installation check'], 
+                 'Suction limit' : self.installation_checker['suction limit check'],
+                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'],
+                 'Eccentricity' : self.eccentricity
+                 })
+         else:
+           return pd.DataFrame({'D' : self.input_cache['D0'], 'L' : self.calc_cache['L'], 
+                                'M' : self.calc_cache['Mc'], 
+                                'Cost' : self.calc_cache['Mc'] * 999,
+               'Self-weight installation' : self.installation_checker['sw installation check'], 
+               'Suction limit' : self.installation_checker['suction limit check'],
+               'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
+               'Eccentricity' : self.eccentricity})
+           

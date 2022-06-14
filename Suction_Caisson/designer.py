@@ -44,6 +44,7 @@ V_LRP  : float : N, vertical load reference point
 V_ILRP : float : N, Vertical load under utility
 H_LRP  : float : N, horizontal load reference point
 M_LRP  : float : N, moment load reference point
+founation_type : str : 'anchor' or 'foundation'
 Huls : float : N, horizontal loading from anchor
 Vuls : float : N, Vertical loading from anchor
 db     : float : m, chain diameter
@@ -53,17 +54,18 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 20
-D0min               = 5
+D0min               = 49
 D0max               = 50
 D0delta             = 1
-Lmin                = 5
+Lmin                = 49
 Lmax                = 50
 Ldelta              = 1
 h_pert              = .1
-V_LRP               = 1e8
-V_ILRP              = 1e5
-H_LRP               = 1E4
-M_LRP               = 1E4  #
+V_LRP               = 0
+V_ILRP              = 0
+H_LRP               = 0
+M_LRP               = 0E4  #
+foundation_type     = 'anchor' 
 Huls                = 1E4 
 Vuls                = 1e1
 db                  = 0.05 
@@ -90,9 +92,13 @@ for i in D:
     #perform regular calculations for just a simple foundation
     #provision of these will initiate the additional calculations for the 
     #anchor type foundation. 
-        Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
-                                             H_LRP, M_LRP, Huls, Vuls, db)
-        
+        if foundation_type.lower() == 'anchor':
+            Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
+                                                 H_LRP, M_LRP, foundation_type,
+                                                 Huls, Vuls, db)
+        else:
+            Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
+                                                 H_LRP, M_LRP, 'foundation')
         
 # =============================================================================
 #To be used when simple foundation is used.        
@@ -134,7 +140,7 @@ for i in D:
         
         """
         soil_type = 'sand'
-        soil_subtype = 'dense'
+        soil_subtype = 'very dense'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
@@ -146,12 +152,16 @@ for i in D:
         The designe_check method is called and it returns the dimensions with their 
         checks. 
         """
-        checker = Foundation_A.checker()
+        if foundation_type.lower() == 'anchor':
+            checker = Foundation_A.anchor_checker()
+        else:
+            checker = Foundation_A.foundation_checker()
+      
         frames = [checker, dimensions]
         dimensions = pd.concat(frames, join='inner', axis = 0, 
                                ignore_index=True, sort=False)
         
-        #print('D = {}\nL = ')
+        
 
 #Plot the output
 
@@ -160,4 +170,4 @@ for i in D:
 #otherwise, replace it with 'foundation'
 #default value set at anchor in the plotting function. 
 #adding this here is redundant but important for user understanding
-plot(dimensions, soil_type, foundation_type = 'anchor')
+plot(dimensions, soil_type, foundation_type = foundation_type)

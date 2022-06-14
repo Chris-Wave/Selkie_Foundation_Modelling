@@ -17,7 +17,7 @@ import pandas as pd
 def sand_anchor(dimensions):
     #input
     #dimensions : dict : result of the designer script
-     return ((dimensions['Drained bearing capacity']==True) & (dimensions['Sliding']==True) & (
+     return ((dimensions['Drained bearing capacity']==True) & (
         dimensions['Eccentricity'] == True))
 
 
@@ -27,7 +27,7 @@ def sand_foundation(dimensions):
      return ((dimensions['Drained bearing capacity']==True) & (dimensions['Sliding']==True))
 
 def clay_anchor(dimensions):
-    return ((dimensions['Undrained bearing capacity']==True) & (dimensions['Sliding']==True) & (
+    return ((dimensions['Undrained bearing capacity']==True) & (
        dimensions['Eccentricity'] == True))
 
 def clay_foundation(dimensions):
