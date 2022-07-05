@@ -28,6 +28,8 @@ import pandas as pd
 from plot import plot
 from Foundation_Characteristics import Foundation_Definition
 from sklearn.preprocessing import MinMaxScaler
+import os
+
 """
 The following properties must be defined in order to get the calculations going
 d      : float : m, water depth
@@ -48,28 +50,29 @@ founation_type : str : 'anchor' or 'foundation'
 Huls : float : N, horizontal loading from anchor
 Vuls : float : N, Vertical loading from anchor
 db     : float : m, chain diameter
+Cost   : float : €/kg of Steel
 The next set of inputs required will be stated when the specific portion of the
 code is reached 
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 20
-D0min               = 49
+d                   = 50
+D0min               = 5
 D0max               = 50
 D0delta             = 1
-Lmin                = 49
+Lmin                = 5
 Lmax                = 50
 Ldelta              = 1
 h_pert              = .1
-V_LRP               = 0
+V_LRP               = 1E8
 V_ILRP              = 0
 H_LRP               = 0
-M_LRP               = 0E4  #
-foundation_type     = 'anchor' 
-Huls                = 1E4 
-Vuls                = 1e1
+M_LRP               = 0  #
+foundation_type     = 'foundation' 
+Huls                = 1E9 
+Vuls                = 0
 db                  = 0.05 
-
+Cost                = 6 
 #Iterations over an array of D0 are achieved through a for loop
 #Vectorization for this will be achieved in the next iteration
 
@@ -94,11 +97,11 @@ for i in D:
     #anchor type foundation. 
         if foundation_type.lower() == 'anchor':
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
-                                                 H_LRP, M_LRP, foundation_type,
+                                                 H_LRP, M_LRP, foundation_type, Cost,
                                                  Huls, Vuls, db)
         else:
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
-                                                 H_LRP, M_LRP, 'foundation')
+                                                 H_LRP, M_LRP, 'foundation', Cost)
         
 # =============================================================================
 #To be used when simple foundation is used.        
@@ -139,8 +142,8 @@ for i in D:
         
         
         """
-        soil_type = 'sand'
-        soil_subtype = 'very dense'
+        soil_type = 'clay'
+        soil_subtype = 'medium strength'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
@@ -162,7 +165,9 @@ for i in D:
                                ignore_index=True, sort=False)
         
         
-
+#reverse the dataframe. concatenate adds latest first and pushes the smaller
+#dimensions down bloew
+dimensions = dimensions.iloc[::-1]
 #Plot the output
 
 #if anchor type foundation used, last argument of the plotting function 
@@ -171,3 +176,9 @@ for i in D:
 #default value set at anchor in the plotting function. 
 #adding this here is redundant but important for user understanding
 plot(dimensions, soil_type, foundation_type = foundation_type)
+
+#Output the results in a csv file for later use
+output_direc = 'Results/'
+if not os.path.isdir(output_direc):
+    os.mkdir(output_direc)
+dimensions.to_csv(output_direc + 'dimensions.csv', index  = False)

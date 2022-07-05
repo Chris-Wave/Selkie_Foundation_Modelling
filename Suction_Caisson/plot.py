@@ -116,6 +116,7 @@ def plot(dimensions, soil_type, foundation_type = 'anchor'):
     plt.ylabel('Length [m]') #user defined lengths
     plt.xlabel('Diameter [m]') #user defined diameter
     plt.legend(bbox_to_anchor=(1, 1))
-    plt.title('Suction Anchor Preliminary Design Space')
+    plt.title('Suction Installed Caisson {} Concept'.format(
+        foundation_type))
     plt.axis('scaled')
     #plt.gca().set_aspect('equal', adjustable='box')

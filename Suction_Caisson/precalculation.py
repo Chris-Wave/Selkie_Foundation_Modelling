@@ -21,7 +21,7 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 import math
 import numpy as np
 import warnings
-#warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore")
 def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater, 
                     mooring_cache : False):
     #input
