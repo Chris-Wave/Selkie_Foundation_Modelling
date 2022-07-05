@@ -52,12 +52,16 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                 #check for eccentricicty. break the loop and return a failed check for this particular set of dimensions
                 e = cap_cache['Mbase'][i] / vbase 
                     
-                
-                                
+                j = 0
+                error = 999         
                 #run iterations for convergence of vbase
-                for j in range(3):
+                while error >1:
+                    j+=1
+                    print('j=',j)
                     if e > calc_cache['D'] / 2 :
+                        
                         undrained_bear_checker = False
+                        print(undrained_bear_checker)
                         return {'undrained bearing capacity' : undrained_bear_checker}
                     
                     Aeff = 2*((calc_cache['D'] ** 2 / 4) * np.arccos((2 * e) / calc_cache['D']) - (e * 
@@ -85,21 +89,24 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                         vbase_r = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
                                                     ica) + soil['gamma'] * calc_cache['h'][i])
                         
-                        if abs(vbase_r - temp) < 1:
-                            Vbase_R[i] = vbase_r
-                        else:
-                            temp = vbase_r
-                            e = cap_cache['Mbase'][i] / vbase_r 
+                        error = abs(vbase_r - temp) 
+                            
+                       
+                        temp = vbase_r
+                        e = cap_cache['Mbase'][i] / vbase_r 
+                        Vbase_R[i] = vbase_r
+                        print('e=',e)
                     #this statement has to be outside the for loop
                     #‘hence the check has to be reimposed. 
                     #the several loops are making the code untidy
                     #once  vectorization implemented, code can 
                     #be cleaner
 
-                    undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
+                undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
                         input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
-
-                    return {'undrained bearing capacity' : undrained_bear_checker}
+                print(undrained_bear_checker)
+                    
+                return {'undrained bearing capacity' : undrained_bear_checker}
 
     if soil_type=='sand' :     
 

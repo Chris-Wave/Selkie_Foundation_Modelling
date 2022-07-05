@@ -56,20 +56,20 @@ code is reached
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 50
-D0min               = 5
-D0max               = 50
+d                   = 30
+D0min               = 2
+D0max               = 3
 D0delta             = 1
-Lmin                = 5
-Lmax                = 50
-Ldelta              = 1
+Lmin                = 2
+Lmax                = 3
+Ldelta              = 2
 h_pert              = .1
-V_LRP               = 1E8
-V_ILRP              = 0
-H_LRP               = 0
-M_LRP               = 0  #
+V_LRP               = 1e0 
+V_ILRP              = 1e0
+H_LRP               = 1e0 
+M_LRP               = 1e100 #
 foundation_type     = 'foundation' 
-Huls                = 1E9 
+Huls                = 0
 Vuls                = 0
 db                  = 0.05 
 Cost                = 6 
@@ -143,7 +143,7 @@ for i in D:
         
         """
         soil_type = 'clay'
-        soil_subtype = 'medium strength'
+        soil_subtype = 'extremely low strength'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
