@@ -56,21 +56,21 @@ code is reached
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 20
-D0min               = 1
+d                   = 30
+D0min               = 2
 D0max               = 50
 D0delta             = 1
-Lmin                = 1
+Lmin                = 0.5
 Lmax                = 50
-Ldelta              = 2
+Ldelta              = 1
 h_pert              = .1
-V_LRP               = 1e6
+V_LRP               = 1e06
 V_ILRP              = 1e0
-H_LRP               = 1e6
-M_LRP               = 120e6 #
+H_LRP               = 1e6 
+M_LRP               = 100e6 #
 foundation_type     = 'foundation' 
-Huls                = 12e6
-Vuls                = 0
+Huls                = 12e5
+Vuls                = 2e5
 db                  = 0.05 
 Cost                = 6 
 #Iterations over an array of D0 are achieved through a for loop
@@ -97,7 +97,7 @@ for i in D:
     #anchor type foundation. 
         if foundation_type.lower() == 'anchor':
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
-                                                 H_LRP, M_LRP, foundation_type, Cost,
+                                                 H_LRP, M_LRP, foundation_type,
                                                  Huls, Vuls, db)
         else:
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
@@ -142,8 +142,8 @@ for i in D:
         
         
         """
-        soil_type = 'clay'
-        soil_subtype = 'medium strength'
+        soil_type = 'sand'
+        soil_subtype = 'very dense'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

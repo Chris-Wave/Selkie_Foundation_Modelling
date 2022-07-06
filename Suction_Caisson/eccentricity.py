@@ -32,7 +32,7 @@ def eccentricity(input_cache, calc_cache, cap_cache, mooring_cache):
         
         a = input_cache['L'] / calc_cache['D'] + 0.5
         b = input_cache['L'] / (3 * calc_cache['D']) + 4.5
-
-        return ((Hd/mooring_cache['Huls'])**a + (Vd / mooring_cache['Vuls'])**b ) < 1
+       # print('left-side = {}'.format(Hd/mooring_cache['Huls'])**a + (Vd / mooring_cache['Vuls'])**b)
+        return ((Hd/cap_cache['Hu_dto'])**a + (Vd / cap_cache['Vu_dto'])**b ) < 1
     else:
         return True
