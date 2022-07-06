@@ -57,9 +57,9 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                 #run iterations for convergence of vbase
                 while error >1:
                     j+=1
-                    print('j=',j)
+                    print('error=',error)
                     if e > calc_cache['D'] / 2 :
-                        
+                        print('exit')
                         undrained_bear_checker = False
                         print(undrained_bear_checker)
                         return {'undrained bearing capacity' : undrained_bear_checker}
@@ -76,6 +76,7 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                         #undrained_bear_checker = False
                         #return {'undrained bearing capacity' : undrained_bear_checker}
                         ica = 0.5
+                        print('ica')
                     else:
                         if input_cache['H_LRP'] == 0:
                             ica = 0
@@ -84,18 +85,18 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                             Aeff * soil['s_u']))
                         
                         
-                        sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
-                        dca = 0.3 * np.arctan(calc_cache['h'][i] / Beff)
-                        vbase_r = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
+                    sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
+                    dca = 0.3 * np.arctan(calc_cache['h'][i] / Beff)
+                    vbase_r = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
                                                     ica) + soil['gamma'] * calc_cache['h'][i])
                         
-                        error = abs(vbase_r - temp) 
-                            
+                    error = abs(vbase_r - temp) 
+                    print(vbase_r)    
                        
-                        temp = vbase_r
-                        e = cap_cache['Mbase'][i] / vbase_r 
-                        Vbase_R[i] = vbase_r
-                        print('e=',e)
+                    temp = vbase_r
+                    e = cap_cache['Mbase'][i] / vbase_r 
+                    Vbase_R[i] = vbase_r
+                    print('e=',e)
                     #this statement has to be outside the for loop
                     #‘hence the check has to be reimposed. 
                     #the several loops are making the code untidy
