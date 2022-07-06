@@ -55,13 +55,13 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                 j = 0
                 error = 999         
                 #run iterations for convergence of vbase
-                while error >1:
+                while error > 1:
                     j+=1
-                    print('j=',j)
+                    #print('j=',j)
                     if e > calc_cache['D'] / 2 :
                         
                         undrained_bear_checker = False
-                        print(undrained_bear_checker)
+                        #print(undrained_bear_checker)
                         return {'undrained bearing capacity' : undrained_bear_checker}
                     
                     Aeff = 2*((calc_cache['D'] ** 2 / 4) * np.arccos((2 * e) / calc_cache['D']) - (e * 
@@ -95,7 +95,7 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                         temp = vbase_r
                         e = cap_cache['Mbase'][i] / vbase_r 
                         Vbase_R[i] = vbase_r
-                        print('e=',e)
+                        #print('e=',e)
                     #this statement has to be outside the for loop
                     #‘hence the check has to be reimposed. 
                     #the several loops are making the code untidy
@@ -104,7 +104,7 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
 
                 undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
                         input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
-                print(undrained_bear_checker)
+               # print(undrained_bear_checker)
                     
                 return {'undrained bearing capacity' : undrained_bear_checker}
 
