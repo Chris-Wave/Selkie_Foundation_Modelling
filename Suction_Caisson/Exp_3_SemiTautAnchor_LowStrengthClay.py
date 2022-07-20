@@ -69,8 +69,8 @@ V_ILRP              = 1e0
 H_LRP               = 1e0
 M_LRP               = 1e0 #
 foundation_type     = 'anchor' 
-Huls                = 4e6
-Vuls                = 0
+Huls                = 6e6
+Vuls                = 6e6
 db                  = 0.05 
 Cost                = 6 
 #Iterations over an array of D0 are achieved through a for loop
@@ -143,7 +143,7 @@ for i in D:
         
         """
         soil_type = 'clay'
-        soil_subtype = 'medium strength'
+        soil_subtype = 'low strength'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

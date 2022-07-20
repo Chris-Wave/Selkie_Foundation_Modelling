@@ -14,6 +14,7 @@ Feeds into the Foundation_characteristic
 This script is used to calculte the eccentricity checks
 """
 import numpy as np
+import math
 def eccentricity(input_cache, calc_cache, cap_cache, mooring_cache):
     #Inputs
     #input_cache : {}  : dictioinary with input cache    
@@ -24,9 +25,11 @@ def eccentricity(input_cache, calc_cache, cap_cache, mooring_cache):
     #output
     #returns an outpyt vector of boolean. True if condition is satisfied. 
     
-    #checks are only performed if solution converges in precalcs, otherwise
+    #checks are only performed if solution for Ta converges in precalcs, otherwise
     #the check passes as Hd and Vd would be zero and less than 1
-    if calc_cache['Ta'] != 0:
+    
+    #Angle theta_a must be less than 90 degrees.
+    if calc_cache['Ta'] != 0 and calc_cache['theta_a']< math.pi/2:
         Hd = calc_cache['Ta'] * np.cos(calc_cache['theta_a'])
         Vd = calc_cache['Ta'] * np.sin(calc_cache['theta_a'])
         
