@@ -84,17 +84,17 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                             Aeff * soil['s_u']))
                         
                         
-                        sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
-                        dca = 0.3 * np.arctan(calc_cache['h'][i] / Beff)
-                        vbase_r = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
-                                                    ica) + soil['gamma'] * calc_cache['h'][i])
+                    sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
+                    dca = 0.3 * np.arctan(calc_cache['h'][i] / Beff)
+                    vbase_r = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
+                                                ica) + soil['gamma'] * calc_cache['h'][i])
+                    
+                    error = abs(vbase_r - temp) 
                         
-                        error = abs(vbase_r - temp) 
-                            
-                       
-                        temp = vbase_r
-                        e = cap_cache['Mbase'][i] / vbase_r 
-                        Vbase_R[i] = vbase_r
+                   
+                    temp = vbase_r
+                    e = cap_cache['Mbase'][i] / vbase_r 
+                    Vbase_R[i] = vbase_r
                         #print('e=',e)
                     #this statement has to be outside the for loop
                     #‘hence the check has to be reimposed. 
