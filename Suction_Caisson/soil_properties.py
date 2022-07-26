@@ -77,7 +77,7 @@ def soil(soil_type, soil_subtype):
             #Nq = 10.6
         
         if soil_subtype.lower() == 'medium strength':
-            s_u = 7.5E4               #Undrained strength
+            s_u = 5.0E4               #Undrained strength
             s_t = 1.5               #soil sensitivity
             alpha = 1/s_t           #adhesion factor
             gamma = 9.6138E3             #effective unit weight of soil N/m3

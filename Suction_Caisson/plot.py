@@ -12,7 +12,7 @@ import pandas as pd
 
 #capacity checks are implemented through functions instead of nested if else
 #to avoid cluttering and make code more readable. 
-
+plt.style.use('dark_background')
 
 def sand_anchor(dimensions):
     #input
@@ -116,7 +116,7 @@ def plot(dimensions, soil_type, foundation_type = 'anchor'):
     plt.ylabel('Length [m]') #user defined lengths
     plt.xlabel('Diameter [m]') #user defined diameter
     plt.legend(bbox_to_anchor=(1, 1))
-    plt.title('Suction Installed Caisson {} Concept'.format(
+    plt.title('Suction Installed Caisson {} Design Space'.format(
         foundation_type))
     plt.axis('scaled')
     #plt.gca().set_aspect('equal', adjustable='box')

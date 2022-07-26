@@ -72,7 +72,10 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
 # =============================================================================
     if mooring_cache['Huls']:
         za = input_cache['L'] * 0.7
-        Tm = 1.8 * np.sqrt(mooring_cache['Huls']**2 + mooring_cache['Vuls']**2)
+        
+        #removed 1.8 SF from here, the user will be recommedned to include the SF in their input forces.
+        Tm = np.sqrt(mooring_cache['Huls']**2 + mooring_cache['Vuls']**2)
+        
         theta_m = np.arctan(mooring_cache['Vuls'] / mooring_cache['Huls'])
         
         if soil_type.lower() == 'clay':

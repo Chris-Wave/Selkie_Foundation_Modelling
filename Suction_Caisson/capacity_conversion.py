@@ -34,8 +34,8 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
     if soil_type.lower() == 'clay':
         Vside = np.pi * calc_cache['D'] * calc_cache['h'] * \
                                         soil_prop['alpha'] * soil_prop['s_u']
-        Hside = calc_cache['D'] * calc_cache['h'] * (soil_prop['gamma'] * 
-                                 calc_cache['h'] / 2) #equation left incomplete
+        Hside = calc_cache['D'] * calc_cache['h'] * ((soil_prop['gamma'] * 
+                                 calc_cache['h'] / 2) + ( 2* soil_prop['s_u'] ))
                                         
     
         Hbase = [calc_cache['D'] **2 *  np.pi / 4 * soil_prop['s_u']]
@@ -65,10 +65,11 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         Np = 3.6 / np.sqrt((0.75 - (z/input_cache['L']))**2 + (0.45 - (z/input_cache['L']))**2)
         Hu_dto = input_cache['L'] * input_cache['D0'] * Np * soil_prop['s_u']
        
-
+        
+        Vbase = (input_cache['V_LRP'] + calc_cache['Wc']) - Vside
         return {'Vside' : Vside, 'Mbase' : Mbase,
                 'H1' : H1, 'Hbase' : Hbase, 'Vu_dto' : Vu_dto,
-                'Hu_dto' : Hu_dto} #'Vbase' : Vbase}          
+                'Hu_dto' : Hu_dto,'Vbase' : Vbase}          
     
     
     #sand vertical capacity on outside of caisson
@@ -82,7 +83,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         hside = 2 * calc_cache['h'] /3 
        
         #initial values for vbase. These will be overwritten and iterated through
-        Vbase = (input_cache['V_LRP'] + calc_cache['Wc'])#initialisation only
+        Vbase = (input_cache['V_LRP'] + calc_cache['Wc']) - Vside
         Hbase = Vbase * math.tan(soil_prop['phi'])
         Mbase = (input_cache['M_LRP'] + hside* Hside + calc_cache['h'] * Hbase)
         H1 = input_cache['H_LRP'] - Hside

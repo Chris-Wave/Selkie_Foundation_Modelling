@@ -32,46 +32,45 @@ import os
 
 """
 The following properties must be defined in order to get the calculations going
-founation_type : str : 'anchor' or 'foundation'
 d      : float : m, water depth
 D0min  : float : m, outer diameter min
 D0max  : float : m, outer diameter max
+D0min  : float : m, outer diameter min
 D0delta: float : m, outer diameter delta
 Lmin   : float : m, skirt length min
 Lmax   : float : m, skirt length max
 Ldelta : float : m, skirt length delta
 h_pert : float : m, height of caisson above seabed
-
+t      : float : m, wall thickness
 V_LRP  : float : N, vertical load reference point
-V_ILRP : float : N, Vertical load under installation
+V_ILRP : float : N, Vertical load under utility
 H_LRP  : float : N, horizontal load reference point
 M_LRP  : float : N, moment load reference point
-
+founation_type : str : 'anchor' or 'foundation'
 Huls : float : N, horizontal loading from anchor
 Vuls : float : N, Vertical loading from anchor
 db     : float : m, chain diameter
-
 Cost   : float : €/kg of Steel
 The next set of inputs required will be stated when the specific portion of the
 code is reached 
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 100
+d                   = 30
 D0min               = 0.5
-D0max               = 40
+D0max               = 60
 D0delta             = 1
 Lmin                = 0.5
-Lmax                = 40
+Lmax                = 60
 Ldelta              = 1
 h_pert              = .1
-V_LRP               = 1e0
-V_ILRP              = 1e0
-H_LRP               = 1e0
-M_LRP               = 1e0 #
-foundation_type     = 'anchor' 
-Huls                = 4e6
-Vuls                = 0
+V_LRP               = 1e6
+V_ILRP              = 0.1e6
+H_LRP               = 1e6
+M_LRP               = 6e6 #
+foundation_type     = 'foundation' 
+Huls                = 0e6
+Vuls                = 0e6
 db                  = 0.05 
 Cost                = 6 
 #Iterations over an array of D0 are achieved through a for loop
@@ -138,13 +137,13 @@ for i in D:
         the next set of functions to perform their calculations and produce a cache
         of results
         
-        Soil Properties are hard coded. They depend on the soil typoe and subtype 
+        Soil Properties are hard coded. They depend on the soil type and subtype 
         and the code will use those predefined properties. 
         
         
         """
-        soil_type = 'clay'
-        soil_subtype = 'medium strength'
+        soil_type = 'sand'
+        soil_subtype = 'very loose'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

@@ -57,15 +57,15 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 100
-D0min               = 0.5
-D0max               = 40
+D0min               = 2
+D0max               = 3
 D0delta             = 1
-Lmin                = 0.5
-Lmax                = 40
+Lmin                = 3
+Lmax                = 4
 Ldelta              = 1
 h_pert              = .1
 V_LRP               = 1e0
-V_ILRP              = 1e0
+V_ILRP              = 1e5 #Include weight of padeye here
 H_LRP               = 1e0
 M_LRP               = 1e0 #
 foundation_type     = 'anchor' 

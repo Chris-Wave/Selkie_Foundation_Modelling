@@ -22,22 +22,22 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
  
     
     if soil_type == 'clay':
-        if input_cache['M_LRP'] == 0:
-            Aeff = math.pi * calc_cache['D']**2 / 4
-            Beff = calc_cache['D']
-            Leff = Beff
-            ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['H1']/(
-                Aeff * soil['s_u']))
-            sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
-            dca = 0.3 * np.arctan(calc_cache['h'] / Beff)
-            Vbase_R = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
-                                        ica) + soil['gamma'] * calc_cache['h'])
-            undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
-                            input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
+        # if input_cache['M_LRP'] == 0:
+        #     Aeff = math.pi * calc_cache['D']**2 / 4
+        #     Beff = calc_cache['D']
+        #     Leff = Beff
+        #     ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['H1']/(
+        #         Aeff * soil['s_u']))
+        #     sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
+        #     dca = 0.3 * np.arctan(calc_cache['h'] / Beff)
+        #     Vbase_R = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
+        #                                 ica) + soil['gamma'] * calc_cache['h'])
+        #     undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
+        #                     input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
 
-            return {'undrained bearing capacity' : undrained_bear_checker}
+        #     return {'undrained bearing capacity' : undrained_bear_checker}
         
-        elif input_cache['M_LRP'] > 0:
+        # elif input_cache['M_LRP'] > 0:
             for i in range(len(cap_cache['Mbase'])):
                 #th following method is not matrix friendly. 
                 #for matrix multiplication a few changes will have to be made
@@ -50,7 +50,7 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                 
                 
                 #check for eccentricicty. break the loop and return a failed check for this particular set of dimensions
-                e = cap_cache['Mbase'][i] / vbase 
+                e = cap_cache['Mbase'][i] / cap_cache['Vbase'] 
                     
                 j = 0
                 error = 999         
@@ -58,55 +58,70 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                 while error > 1:
                     j+=1
                     #print('j=',j)
-                    if e > calc_cache['D'] / 2 :
+                    if e < 0 :
+                        Aeff = math.pi * calc_cache['D']**2 / 4
+                        Beff = calc_cache['D']
+                        Leff = Beff
+                        ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['H1']/(Aeff * soil['s_u']))
+                        sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
+                        dca = 0.3 * np.arctan(calc_cache['h'] / Beff)
+                        Vbase_R = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
+                                             ica) + soil['gamma'] * calc_cache['h'])
+                        undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
+                                 input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
+
+                        return {'undrained bearing capacity' : undrained_bear_checker}    
+                        
+                    elif e > calc_cache['D'] / 2 :
                         
                         undrained_bear_checker = False
                         #print(undrained_bear_checker)
                         return {'undrained bearing capacity' : undrained_bear_checker}
                     
-                    Aeff = 2*((calc_cache['D'] ** 2 / 4) * np.arccos((2 * e) / calc_cache['D']) - (e * 
-                              np.sqrt((calc_cache['D']**2 / 4) - e**2)))
-                    
-                    Be = calc_cache['D'] - 2 * e
-                    Le = np.sqrt(calc_cache['D']**2 - (calc_cache['D'] - Be)**2)
-                    Leff = np.sqrt(Aeff * (Le / Be))
-                    Beff = np.sqrt(Aeff * (Be/Le))
-                    
-                    if cap_cache['H1'][i]/(Aeff * soil['s_u'])>1:
-                        #undrained_bear_checker = False
-                        #return {'undrained bearing capacity' : undrained_bear_checker}
-                        ica = 0.5
                     else:
-                        if input_cache['H_LRP'] == 0:
-                            ica = 0
+                        Aeff = 2*((calc_cache['D'] ** 2 / 4) * np.arccos((2 * e) / calc_cache['D']) - (e * 
+                                  np.sqrt((calc_cache['D']**2 / 4) - e**2)))
+                        
+                        Be = calc_cache['D'] - 2 * e
+                        Le = np.sqrt(calc_cache['D']**2 - (calc_cache['D'] - Be)**2)
+                        Leff = np.sqrt(Aeff * (Le / Be))
+                        Beff = np.sqrt(Aeff * (Be/Le))
+                        
+                        if cap_cache['H1'][i]/(Aeff * soil['s_u'])>1:
+                            #undrained_bear_checker = False
+                            #return {'undrained bearing capacity' : undrained_bear_checker}
+                            ica = 0.5
                         else:
-                            ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['H1'][i]/(
-                            Aeff * soil['s_u']))
+                            if input_cache['H_LRP'] == 0:
+                                ica = 0
+                            else:
+                                ica = 0.5 - 0.5 * np.sqrt(1 - cap_cache['H1'][i]/(
+                                Aeff * soil['s_u']))
+                            
+                            
+                        sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
+                        dca = 0.3 * np.arctan(calc_cache['h'][i] / Beff)
+                        vbase_r = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
+                                                    ica) + soil['gamma'] * calc_cache['h'][i])
                         
+                        error = abs(vbase_r - temp) 
+                            
+                       
+                        temp = vbase_r
+                        #e = cap_cache['Mbase'][i] / vbase_r #removed as eccentricity wont change
+                        Vbase_R[i] = vbase_r
+                            #print('e=',e)
+                        #this statement has to be outside the for loop
+                        #‘hence the check has to be reimposed. 
+                        #the several loops are making the code untidy
+                        #once  vectorization implemented, code can 
+                        #be cleaner
+    
+                    undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
+                            input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
+                   # print(undrained_bear_checker)
                         
-                    sca = 0.2 * ( 1 -2 * ica) * Beff/Leff
-                    dca = 0.3 * np.arctan(calc_cache['h'][i] / Beff)
-                    vbase_r = Aeff * (soil['Nc'] * soil['s_u']*(1 + sca + dca - 
-                                                ica) + soil['gamma'] * calc_cache['h'][i])
-                    
-                    error = abs(vbase_r - temp) 
-                        
-                   
-                    temp = vbase_r
-                    e = cap_cache['Mbase'][i] / vbase_r 
-                    Vbase_R[i] = vbase_r
-                        #print('e=',e)
-                    #this statement has to be outside the for loop
-                    #‘hence the check has to be reimposed. 
-                    #the several loops are making the code untidy
-                    #once  vectorization implemented, code can 
-                    #be cleaner
-
-                undrained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
-                        input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
-               # print(undrained_bear_checker)
-                    
-                return {'undrained bearing capacity' : undrained_bear_checker}
+                    return {'undrained bearing capacity' : undrained_bear_checker}
 
     if soil_type=='sand' :     
 
@@ -122,7 +137,8 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
             
             #check for eccentricicty. break the loop and return a failed check for this particular set of dimensions
             
-            e = calc_cache['D'] / 8 #
+            e = cap_cache['Mbase'][i] / cap_cache['Vbase'] 
+            #e = calc_cache['D'] / 8 #
             if e > calc_cache['D'] / 2 :
                 drained_bear_checker = False
                 break
@@ -195,7 +211,7 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
                         vbase = vbase_r
                         Hbase = vbase * math.tan(soil['phi'])
                         Mbase = (input_cache['M_LRP'] + cap_cache['Hside'] * cap_cache['hside'] + calc_cache['h'] * Hbase)
-                        e = Mbase/vbase
+                        # e = Mbase/vbase
                         x = 1
 
                 

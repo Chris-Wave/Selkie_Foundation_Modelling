@@ -47,7 +47,7 @@ V_ILRP : float : N, Vertical load under utility
 H_LRP  : float : N, horizontal load reference point
 M_LRP  : float : N, moment load reference point
 founation_type : str : 'anchor' or 'foundation'
-Huls : float : N, horizontal loading from anchor
+Huls : float : N, horizontal loading  from anchor
 Vuls : float : N, Vertical loading from anchor
 db     : float : m, chain diameter
 Cost   : float : €/kg of Steel
@@ -56,18 +56,18 @@ code is reached
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 100
-D0min               = 4
-D0max               = 5
+d                   = 30
+D0min               = 0.5
+D0max               = 60
 D0delta             = 1
 Lmin                = 0.5
-Lmax                = 4
-Ldelta              = 5
+Lmax                = 60
+Ldelta              = 1
 h_pert              = .1
-V_LRP               = 0.1e6
+V_LRP               = 1e6
 V_ILRP              = 0.1e6
-H_LRP               = 0.2e6
-M_LRP               = 1e6 #
+H_LRP               = 1e6
+M_LRP               = 6e6 #
 foundation_type     = 'foundation' 
 Huls                = 0e6
 Vuls                = 0e6
@@ -143,7 +143,7 @@ for i in D:
         
         """
         soil_type = 'clay'
-        soil_subtype = 'low strength'
+        soil_subtype = 'very low strength'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

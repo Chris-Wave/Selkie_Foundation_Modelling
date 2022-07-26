@@ -57,10 +57,10 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 100
-D0min               = 0.5
+D0min               = 20
 D0max               = 40
 D0delta             = 1
-Lmin                = 0.5
+Lmin                = 10
 Lmax                = 40
 Ldelta              = 1
 h_pert              = .1
