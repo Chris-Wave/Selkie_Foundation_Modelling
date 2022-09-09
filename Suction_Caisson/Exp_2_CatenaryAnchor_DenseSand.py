@@ -57,7 +57,7 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 100
-D0min               = 20
+D0min               = 10
 D0max               = 40
 D0delta             = 1
 Lmin                = 10
@@ -69,7 +69,7 @@ V_ILRP              = 1e0
 H_LRP               = 1e0
 M_LRP               = 1e0 #
 foundation_type     = 'anchor' 
-Huls                = 4e6
+Huls                = 1
 Vuls                = 0
 db                  = 0.05 
 Cost                = 6 
@@ -143,7 +143,7 @@ for i in D:
         
         """
         soil_type = 'sand'
-        soil_subtype = 'dense'
+        soil_subtype = 'medium dense'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

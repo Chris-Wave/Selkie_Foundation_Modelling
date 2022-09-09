@@ -62,7 +62,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         
         #lateral capacity, cohesive soils
         z = 0.7 * input_cache['L']
-        Np = 3.6 / np.sqrt((0.75 - (z/input_cache['L']))**2 + (0.45 - (z/input_cache['L']))**2)
+        Np = 3.6 / np.sqrt((0.75 - (z/input_cache['L']))**2 + (0.45 *(z/input_cache['L']))**2) #Changed "0.45 -" to "0.45 *"
         Hu_dto = input_cache['L'] * input_cache['D0'] * Np * soil_prop['s_u']
        
         
@@ -104,14 +104,14 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
 # =============================================================================
         K = 1 - np.sin(soil_prop['phi'])
         delta = 0.5 * soil_prop['phi']
-        Vu_dto = np.pi * (input_cache['D0'] - calc_cache['Di']) * \
-            input_cache['L'] ** 2 * soil_prop['gamma'] * K * np.tan(delta)
+        Vu_dto = calc_cache['Wc']+ np.pi / 2 * (input_cache['D0'] + calc_cache['Di']) * \
+            input_cache['L'] ** 2 * soil_prop['gamma'] * K * np.tan(delta) #Corrected this 07/09/22 added division by 2 and (input_cache['D0'] + calc_cache['Di']) and added calc_cache['Wc']
         
         #lateral force
         #order changed to conform with our own equations. 
-        Nq =  np.tan(math.radians(45) + (soil_prop['phi']/2))**2 * np.exp(np.pi * np.tan(soil_prop['phi']))
-        Hu_dto = 0.5 * input_cache['D0'] * Nq * soil_prop['gamma'] * input_cache['L']**2
-
+        # Removed this due to Stfans comments, only applicable to bearing caNq =  np.tan(math.radians(45) + (soil_prop['phi']/2))**2 * np.exp(np.pi * np.tan(soil_prop['phi']))
+        # Hu_dto = 0.5 * input_cache['D0'] * Nq * soil_prop['gamma'] * input_cache['L']**2
+        Hu_dto = Hside #Using same method as OWA
 
 
 

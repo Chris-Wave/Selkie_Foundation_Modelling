@@ -216,7 +216,7 @@ def bearing_capacity(input_cache, calc_cache, soil_type, soil, cap_cache,
 
                 
             drained_bear_checker = (Vbase_R + cap_cache['Vside'])/gamma_m > (
-        input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
+                input_cache['V_LRP'] + calc_cache['Wc']) * gamma_f
 
 
 
