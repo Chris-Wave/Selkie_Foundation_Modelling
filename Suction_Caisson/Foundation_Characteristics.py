@@ -32,6 +32,10 @@ from installation import installation_sand, installation_clay
 from bearing_capacity import bearing_capacity
 from sliding import sliding
 from eccentricity import eccentricity
+
+import logging
+
+
 class Foundation_Definition:
     #these properties can be changed for the class instance if needed
     
@@ -85,7 +89,9 @@ class Foundation_Definition:
 #                             'M_LRP' : M_LRP, 't' : t}
 #         
 # =============================================================================
-      
+        logging.info('d = {}\nD0 = {}\nL = {}\nh_pert = {}\nV_LRP = {}\nH_LRP = {}\n\M_LRP = {}\nt = {}\nV_ILRP = {}\nHuls = {}\nVuls = {}\ndb = {}\n'.format(d, D0, L, h_pert, V_LRP, H_LRP, 
+                                                    M_LRP, t, V_ILRP, Huls, Vuls, 
+                                                    db))      
 
         
         
@@ -104,7 +110,8 @@ class Foundation_Definition:
                                      self.rhowater, self.mooring_cache)  
         self.cap_cache = cc(self.input_cache, self.calc_cache, self.soil_type, 
                        self.soil_prop, self.K)
-        
+        logging.info('\nSoil Type: {}\nSoil Properties: {}'.format(self.soil_type, 
+                                                                  self.soil_prop))
      
     def foundation_checker(self):
         #perform installation checks

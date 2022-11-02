@@ -28,6 +28,7 @@ For questions regarding the code, please contact gshoukat@gdgeo.com
 
 import math
 import numpy as np
+import logging
 
 
 
@@ -84,30 +85,40 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
             calc_cache['Di'] * clay['s_u'] + clay['gamma'] * np.pi * 
             calc_cache['D'] * input_cache['t'])
     
+    logging.info('\n\n\n****Clay Self Installation Check****')                                                
+    logging.info('\nh_sw = {}'.format(h_sw))
                                                    
   #two conditions used. second one in case caisson self installs and suction becomes negative  
     h_sw_checker = (h_sw > h_sw_min)# & (h_sw < calc_cache['h'])
-         
+    logging.info('\nh_sw > h_sw_min = {}'.format(h_sw_checker))     
                   
          
             
     #Step 2. Determine the suction required for the installed depth
-    
+    logging.info('\n****Clay suction installation check****')
     Routside = clay['alpha'] * math.pi * input_cache['D0'] * calc_cache['h'] \
                                                                 * clay['s_u']
+    logging.info('\nRoutside = {}'.format(Routside))
     
     Rinside = clay['alpha'] * math.pi * calc_cache['Di'] * calc_cache['h'] * \
                                                                 clay['s_u']
-
+    logging.info('\nRinside = {}'.format(Rinside))
+    
     Rtip = np.pi * calc_cache['D'] * input_cache['t'] * (clay['gamma'] * \
                                 calc_cache['h'] + clay['Nc'] * clay['s_u'])
- 
+    logging.info('\nRtip = {}'.format(Rtip))
+    
+    logging.info('Routside + Rtip + Rinside = {}'.format(Routside + Rtip + Rinside))
+    logging.info('\nV_comma_installation = {}'.format(calc_cache['V_comma_install']))
+    logging.info('\nAc = {}'.format(calc_cache['Ac']))
     #solve for suction
     s = ((Routside + Rinside + Rtip)- 
          calc_cache['V_comma_install']) / calc_cache['Ac']
     
-    s_checker = s < calc_cache['SL']
+    logging.info('\ns = {}'.format(s))
     
+    s_checker = s < calc_cache['SL']
+    logging.info('s < Sl = {}'.format(s_checker))
     
     #buckling check
 #    buckling_check = buckling(input_cache, calc_cache, gamma_m, v, E)
@@ -139,7 +150,7 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     #check      : {}      : dictionary with pass/fail check for 3 installation
     #checks. self-weight, installed height suction requirement and buckling check
 
-
+    logging.info('****\n\n\nSand Self Installation Check****')
     #Step 1: Self Weight. find the setting height under self weight
     #solve with s = 0
     h_sw_min = 0.1  #minimum self installatino required
@@ -155,6 +166,8 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
                                                         sand['phi']/2))**2
     Ngamma = 1.5 * (Nq - 1) * math.tan(sand['phi'])
     
+    logging.info('\nm = {}\nZi = {}\nZ0 = {}\nc0 = {}\nc1 = {}\nc2 = {}\nNq = {}\nNgamma = {}'.format(
+                                            m, Zi, Z0, c0, c1, c2, Nq, Ngamma))
     
     """
     Need a better implemantation of root finding technique here. 
@@ -163,8 +176,8 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     Cant implement a vectorised approach to fsolve. needs a loop. 
     """
     h_sw = []
+    logging.info('\n****Solve for embedment under self weight****')
     for i in calc_cache['V_comma_install']:
-        
         #solve for h iteratively as equation for s is implicit. 
         def func(h):
             Routside =  sand['gamma'] * Z0**2 * (math.exp(h / Z0) - 1 - (h / Z0)) * (
@@ -180,17 +193,18 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
             return (Routside + Rinside + Rtip) - i
         
         h_sw = np.append(h_sw, fsolve(func, 1, factor = 0.1, xtol=1.0e-03))
-        
+        logging.info('\nh_sw = {}'.format(h_sw))
         #two conditions used. second one in case caisson self installs and suction becomes negative
         
         h_sw_checker = (h_sw > h_sw_min)# & (h_sw < calc_cache['h'])
+        logging.info('h_sw > h_sw_min = {}'.format(h_sw_checker))
         
-    
     
     #Step 2: Calculate if the Sl is violated with different skirt lengths
     #h is now a vector calculated from calc_cache
+    logging.info('***\nSolve for embeddment under suction force***')
     a = c0 - c1 * (1 - np.exp(-calc_cache['h']/(c2 * calc_cache['D'])))
-
+    logging.info('\na = {}'.format(a))
     
     """
     Need a better implemantation of root finding technique here. 
@@ -202,7 +216,10 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
     since this is a vector, needs a for loop. 
     """
     s = []
+    
     for i in range(len(calc_cache['h'])):
+        logging.info('\nSubiteration : {}'.format(i))
+
         def func2(s):
              
             Routside = (sand['gamma'] + (a[i] * s / calc_cache['h'][i])) * Z0**2 * (
@@ -225,9 +242,10 @@ def installation_sand(sand, input_cache, calc_cache, v, E, K, gamma_m, gamma_f):
 
             
         s =  fsolve(func2, calc_cache['SL'], xtol=1.0e-03)
-       # print('s = {}'.format(s))
+        logging.info('\ns = {}'.format(s))
+        # print('s = {}'.format(s))
         s_checker = s < calc_cache['SL'] 
-    
+        logging.info('s < SL = {}'.format(s_checker))
     #buckling check
    # buckling_check = buckling(input_cache, calc_cache, gamma_m, v, E)
     

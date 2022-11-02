@@ -29,7 +29,9 @@ from plot import plot
 from Foundation_Characteristics import Foundation_Definition
 from sklearn.preprocessing import MinMaxScaler
 import os
+import logging
 
+logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
 """
 The following properties must be defined in order to get the calculations going
 founation_type : str : 'anchor' or 'foundation'
@@ -88,6 +90,7 @@ dimensions = pd.DataFrame(columns={'D', 'L', 'M', 'Cost',
                                    'Eccentricity'
                                    })
 
+j = 0
 for i in D:
     for l in L:
     #declare FoundationA to be an instance of the class
@@ -96,6 +99,8 @@ for i in D:
     #perform regular calculations for just a simple foundation
     #provision of these will initiate the additional calculations for the 
     #anchor type foundation. 
+        j += 1    
+        logging.info('\n\nIteration {}'.format(j))
         if foundation_type.lower() == 'anchor':
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
                                                  H_LRP, M_LRP, foundation_type,
@@ -143,8 +148,8 @@ for i in D:
         
         
         """
-        soil_type = 'clay'
-        soil_subtype = 'medium strength'
+        soil_type = 'sand'
+        soil_subtype = 'loose'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
@@ -165,7 +170,7 @@ for i in D:
         dimensions = pd.concat(frames, join='inner', axis = 0, 
                                ignore_index=True, sort=False)
         
-        
+        logging.info('*******************************************************\n\n')
 #reverse the dataframe. concatenate adds latest first and pushes the smaller
 #dimensions down bloew
 dimensions = dimensions.iloc[::-1]

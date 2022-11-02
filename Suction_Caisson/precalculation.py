@@ -22,6 +22,7 @@ import math
 import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
+import logging
 def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater, 
                     mooring_cache : False):
     #input
@@ -33,7 +34,7 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
     #mooring_cache : {} dict : dictionary of mooring forces
     #output
      #cache : dict: dictionary with results of all the below calculations
-    
+    logging.info('\n\n***Precalculations***')
     #L = np.arange(input_cache['Lmin'],input_cache['Lmax'], input_cache['Ldelta'])
     L = input_cache['L']
     L = np.arange(L, L+1, 1)
@@ -56,12 +57,13 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
     V_comma = (input_cache['V_LRP'] + Wc)
     V_comma_install = (input_cache['V_ILRP'] + Wc)
     Ph = rhowater * 9.81 * (input_cache['d'] - input_cache['h_pert'])
-    
+
     if input_cache['d'] > 50:
         SL = 5E5 #N/m**2, pump limit
     else:
         SL = Ph + 5E4 #N/m**2
-    
+    logging.info('h = {}\nDi = {}\nD = {}\nAc = {}\nmass_skirt = {}\nmass_top_plates = {}\nMc = {}\nMCE = {}\nV_comma = {}\nV_comma_installation = {}\nPh = {}\nSL = {}'.format(
+        Di, D, Ac, mass_skirt, mass_top_plate, Mc, Mce, Wc, V_comma, V_comma_install, Ph, SL))    
     
     
 # =============================================================================
@@ -70,6 +72,7 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
 #     Will be executed if mooring cache exists
 #     otherwise entire block will be skipped
 # =============================================================================
+    logging.info('\n\n***Precalculation for anchor based***')
     if mooring_cache['Huls']:
         za = input_cache['L'] * 0.7
         
@@ -77,6 +80,7 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
         Tm = np.sqrt(mooring_cache['Huls']**2 + mooring_cache['Vuls']**2)
         
         theta_m = np.arctan(mooring_cache['Vuls'] / mooring_cache['Huls'])
+
         
         if soil_type.lower() == 'clay':
             mu = 0.4 #value is adopted directly
@@ -88,13 +92,16 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
             #therefore check should pass
             #Ta calculations wil then be bypassed to prevent an error
             #alternatively warning message can be supressed. 
-            
+            logging.info('\nSubiteration 0')
             theta_a = theta_m * 2
             dummy = 0
             Ta = Tm
+            logging.info('\nza = {}\nTm = {}\ntheta_m = {}\ntheta_a = {}'.format(za, Tm, theta_m, theta_a))
             for i in range(10):
-                Q = 2.5 * mooring_cache['db'] * 11.5 * soil_prop['s_u']
+                logging.info('\nSubiteration {}'.format(i+1))
                 
+                Q = 2.5 * mooring_cache['db'] * 11.5 * soil_prop['s_u']
+                    
                 #if the solution blows up, assign values and exit the loop
                 #eccentrity checks will recognize the nan, inf and 0 as a sign of divergence and the check will pass
                 if np.exp(mu * (theta_a - theta_m)) ==float('inf'):
@@ -109,16 +116,23 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
                     break
                 else:
                     dummy = theta_a                
+                logging.info('\nQ = {} \nTa = {}\ntheta_a = {}'.format(Q, Ta, theta_a))
+            logging.info('\nAfter final subiteration:\nQa = {}\nTa = {}\ntheta_a = {}'.format(Q, Ta, theta_a))
         elif soil_type.lower() =='sand':
             #Ta needs iteration
+            logging.info('\nSubiteration 0')
             mu = 0.4 #value taken frmo clay. different for sand but dont have it right now. 
             Nq =  np.tan(math.radians(45) + (soil_prop['phi']/2))**2 * np.exp(np.pi * np.tan(soil_prop['phi']))
             theta_a = theta_m * 2
             dummy = 0
             Ta = Tm
+            logging.info('\nmu = {}\nNq = {}\ntheta_m = {}\ntheta_a = {}\Tm = {}\nTa = {}'.format(
+                mu, Nq, theta_m, theta_a, Tm, Ta))
+            
             for i in range(10):
                 Q = 2.5 * mooring_cache['db'] * Nq * soil_prop['gamma'] * za
-                
+                logging.info('\nSubiteration {}'.format(i+1))    
+                logging.info('\nQ = {}'.format(Q))
                 #if the solution blows up, assign values and exit the loop
                 #eccentrity checks will recognize the nan, inf and 0 as a sign of divergence and the check will pass
                 if np.exp(mu * (theta_a - theta_m)) ==float('inf'):
@@ -133,7 +147,10 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
                     break
                 else:
                     dummy = theta_a         
+                logging.info('\nQ = {} \nTa = {}\ntheta_a = {}'.format(Q, Ta, theta_a))
+            logging.info('\nAfter final subiteration:\nQ = {}\nTa = {}\ntheta_a = {}'.format(Q, Ta, theta_a))
         
+                    
         return {'L' : L, 'h':h, 'Di':Di, 'D':D, 'Ac':Ac,'Mc': Mc,# 
                 'Mce' : Mce, 'Wc':Wc,'V_comma' : V_comma, 'Ph':Ph, 'SL':SL,
                 'V_comma_install' : V_comma_install, 'Ta' : Ta, 'theta_a' : theta_a}

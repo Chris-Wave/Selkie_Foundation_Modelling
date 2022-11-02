@@ -20,6 +20,7 @@ Notes: Check with Chris what K is.
 """
 import math
 import numpy as np
+import logging
 def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
     #Input
     #input_cache: {}  : dictionary of user defined inputs 
@@ -43,7 +44,8 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         hside = 2 * calc_cache['h'] /3 
         Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
         H1 = input_cache['H_LRP'] - Hside
-    
+        logging.info('\n\n\n****Clay Capacity Conversions****')
+        logging.info('\n Vside = {}\n Hside = {}\n Hbase = {}\n hside = {}\n Mbase = {}\n H1 = {}'.format(Vside, Hside, Hbase, hside, Mbase, H1))
     
 # =============================================================================
 #     
@@ -56,6 +58,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
             Nc = 6.2 * (1 + 0.34 * np.arctan(input_cache['L']/input_cache['D0']))
         else:
             Nc = 9
+        logging.info('\nNc = {}'.format(Nc))
         As = np.pi * input_cache['D0'] * input_cache['L']
         Vu_dto = calc_cache['Ac'] * Nc * soil_prop['s_u'] + 0.65 * As + calc_cache['Wc'] 
         
@@ -67,6 +70,8 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
        
         
         Vbase = (input_cache['V_LRP'] + calc_cache['Wc']) - Vside
+        logging.info('\n As = {}\n Vu_dto = {}\n z = {}\n  Np = {}\n Hu_dto = {}\n Vbase = {}'.format(
+            As, Vu_dto, z, Np, Hu_dto, Vbase))
         return {'Vside' : Vside, 'Mbase' : Mbase,
                 'H1' : H1, 'Hbase' : Hbase, 'Vu_dto' : Vu_dto,
                 'Hu_dto' : Hu_dto,'Vbase' : Vbase}          
@@ -74,6 +79,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
     
     #sand vertical capacity on outside of caisson
     elif soil_type.lower() == 'sand':
+        logging.info('\n\n***Sand Capacity Conversion***')
         Vside = np.pi * calc_cache['D'] * calc_cache['h']**2 / 2 * K * \
                             soil_prop['gamma'] * math.tan(soil_prop['delta'])
         Kp = (1 + math.sin(soil_prop['phi'])) / (1 - math.sin(soil_prop['phi']))
@@ -88,6 +94,8 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         Mbase = (input_cache['M_LRP'] + hside* Hside + calc_cache['h'] * Hbase)
         H1 = input_cache['H_LRP'] - Hside
         V1 = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
+        logging.info('Vside = {}\nKp = {}\nKa = {}\nHside = {}\nhside = {}\nVbase = {}\nHbase = {}\nMbase = {}\nH1 = {}\nV1 = {}'.format(
+            Vside, Kp, Ka, Hside, hside, Vbase, Hbase, Mbase, H1, V1))
 #the following calculations for capacity conversion are taken out of here and 
 #into the bearing capacity checker for sand
 #these are to be done iteratively with other vbase calculations                                
@@ -112,7 +120,8 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         # Removed this due to Stfans comments, only applicable to bearing caNq =  np.tan(math.radians(45) + (soil_prop['phi']/2))**2 * np.exp(np.pi * np.tan(soil_prop['phi']))
         # Hu_dto = 0.5 * input_cache['D0'] * Nq * soil_prop['gamma'] * input_cache['L']**2
         Hu_dto = Hside #Using same method as OWA
-
+        logging.info('K = {}\ndelta = {}\nVu_dtop = {}\nHu_dto = {}'.format(
+            K, delta, Vu_dto, Hu_dto))
 
 
         return {'Vside' : Vside, 'Ka' : Ka, 'Kp' : Kp, 'Mbase' : Mbase,
