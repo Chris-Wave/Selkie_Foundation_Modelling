@@ -163,9 +163,10 @@ for i in D:
         """
         if foundation_type.lower() == 'anchor':
             checker = Foundation_A.anchor_checker()
+            logging.info('\nAnchor based foundation')
         else:
             checker = Foundation_A.foundation_checker()
-      
+            logging.info('\nFixed foundation')
         frames = [checker, dimensions]
         dimensions = pd.concat(frames, join='inner', axis = 0, 
                                ignore_index=True, sort=False)

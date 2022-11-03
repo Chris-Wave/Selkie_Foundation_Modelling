@@ -62,8 +62,9 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
         SL = 5E5 #N/m**2, pump limit
     else:
         SL = Ph + 5E4 #N/m**2
-    logging.info('h = {}\nDi = {}\nD = {}\nAc = {}\nmass_skirt = {}\nmass_top_plates = {}\nMc = {}\nMCE = {}\nV_comma = {}\nV_comma_installation = {}\nPh = {}\nSL = {}'.format(
-        Di, D, Ac, mass_skirt, mass_top_plate, Mc, Mce, Wc, V_comma, V_comma_install, Ph, SL))    
+     
+    logging.info('h = {}\nDi = {}\nD = {}\nAc = {}\nmass_skirt = {}\nmass_top_plates = {}\nMc = {}\nMCE = {}\nWc = {}\nV_comma = {}\nV_comma_installation = {}\nPh = {}\nSL = {}'.format(
+        h, Di, D, Ac, mass_skirt, mass_top_plate, Mc, Mce, Wc, V_comma, V_comma_install, Ph, SL))    
     
     
 # =============================================================================
@@ -72,8 +73,8 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
 #     Will be executed if mooring cache exists
 #     otherwise entire block will be skipped
 # =============================================================================
-    logging.info('\n\n***Precalculation for anchor based***')
     if mooring_cache['Huls']:
+        logging.info('\n\n***Precalculation for anchor based***')
         za = input_cache['L'] * 0.7
         
         #removed 1.8 SF from here, the user will be recommedned to include the SF in their input forces.
