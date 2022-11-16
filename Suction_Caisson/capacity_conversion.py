@@ -42,7 +42,9 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         Hbase = [calc_cache['D'] **2 *  np.pi / 4 * soil_prop['s_u']]
         #Vbase = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
         hside = 2 * calc_cache['h'] /3 
-        Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
+        #Mbase = (input_cache['M_LRP'] + hside * Hside + calc_cache['h'] * Hbase)
+        Mbase = input_cache['M_LRP'] + input_cache['H_LRP']*calc_cache['h']-Hside*(calc_cache['h']-hside)
+        
         H1 = input_cache['H_LRP'] - Hside
         logging.info('\n\n\n****Clay Capacity Conversions****')
         logging.info('\n Vside = {}\n Hside = {}\n Hbase = {}\n hside = {}\n Mbase = {}\n H1 = {}'.format(Vside, Hside, Hbase, hside, Mbase, H1))
@@ -69,6 +71,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
         Hu_dto = input_cache['L'] * input_cache['D0'] * Np * soil_prop['s_u']
        
         
+        #Vbase = (input_cache['V_LRP'] + calc_cache['Wc']) - Vside
         Vbase = (input_cache['V_LRP'] + calc_cache['Wc']) - Vside
         logging.info('\n As = {}\n Vu_dto = {}\n z = {}\n  Np = {}\n Hu_dto = {}\n Vbase = {}'.format(
             As, Vu_dto, z, Np, Hu_dto, Vbase))
@@ -90,11 +93,15 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
        
         #initial values for vbase. These will be overwritten and iterated through
         Vbase = (input_cache['V_LRP'] + calc_cache['Wc']) - Vside
+        
         Hbase = Vbase * math.tan(soil_prop['phi'])
-        Mbase = (input_cache['M_LRP'] + hside* Hside + calc_cache['h'] * Hbase)
+        #Mbase = (input_cache['M_LRP'] + hside* Hside + calc_cache['h'] * Hbase)
+        Mbase = input_cache['M_LRP'] + input_cache['H_LRP']*calc_cache['h']-Hside*(calc_cache['h']-hside)
+        
+        
         H1 = input_cache['H_LRP'] - Hside
         V1 = input_cache['V_LRP'] + calc_cache['Wc'] - Vside
-        logging.info('Vside = {}\nKp = {}\nKa = {}\nHside = {}\nhside = {}\nVbase = {}\nHbase = {}\nMbase = {}\nH1 = {}\nV1 = {}'.format(
+        logging.info('\nVside = {}\nKp = {}\nKa = {}\nHside = {}\nhside = {}\nVbase = {}\nHbase = {}\nMbase = {}\nH1 = {}\nV1 = {}'.format(
             Vside, Kp, Ka, Hside, hside, Vbase, Hbase, Mbase, H1, V1))
 #the following calculations for capacity conversion are taken out of here and 
 #into the bearing capacity checker for sand

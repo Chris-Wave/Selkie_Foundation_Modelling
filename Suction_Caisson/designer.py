@@ -30,8 +30,10 @@ from Foundation_Characteristics import Foundation_Definition
 from sklearn.preprocessing import MinMaxScaler
 import os
 import logging
+import logging.handlers
 
-logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
+
+logging.basicConfig(filename="loggy112.log", encoding='utf-8', level=logging.DEBUG)
 """
 The following properties must be defined in order to get the calculations going
 founation_type : str : 'anchor' or 'foundation'
@@ -60,20 +62,20 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 100
-D0min               = 0.5
-D0max               = 40
+D0min               = 1
+D0max               = 30
 D0delta             = 1
-Lmin                = 0.5
-Lmax                = 40
+Lmin                = 1
+Lmax                = 30
 Ldelta              = 1
 h_pert              = .1
-V_LRP               = 1e0
-V_ILRP              = 1e0
-H_LRP               = 1e0
-M_LRP               = 1e0 #
-foundation_type     = 'anchor' 
-Huls                = 4e6
-Vuls                = 0
+V_LRP               = 4e6
+V_ILRP              = 4e6
+H_LRP               = 8e5
+M_LRP               = 8e6 #
+foundation_type     = 'foundation' 
+Huls                = 0e6
+Vuls                = 0e6
 db                  = 0.05 
 Cost                = 6 
 #Iterations over an array of D0 are achieved through a for loop
@@ -149,7 +151,7 @@ for i in D:
         
         """
         soil_type = 'sand'
-        soil_subtype = 'loose'
+        soil_subtype = 'very dense'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
@@ -189,3 +191,4 @@ output_direc = 'Results/'
 if not os.path.isdir(output_direc):
     os.mkdir(output_direc)
 dimensions.to_csv(output_direc + 'dimensions.csv', index  = False)
+logging.shutdown()

@@ -33,8 +33,9 @@ def eccentricity(input_cache, calc_cache, cap_cache, mooring_cache):
         Hd = calc_cache['Ta'] * np.cos(calc_cache['theta_a'])
         Vd = calc_cache['Ta'] * np.sin(calc_cache['theta_a'])
         
-        a = input_cache['L'] / calc_cache['D'] + 0.5
-        b = input_cache['L'] / (3 * calc_cache['D']) + 4.5
+        a = calc_cache['h'] / calc_cache['D'] + 0.5#a = input_cache['L'] / calc_cache['D'] + 0.5
+        b = calc_cache['h'] / (3 * calc_cache['D']) + 4.5#b = input_cache['L'] / (3 * calc_cache['D']) + 4.5
+        
        # print('left-side = {}'.format(Hd/mooring_cache['Huls'])**a + (Vd / mooring_cache['Vuls'])**b)
         return ((Hd/cap_cache['Hu_dto'])**a + (Vd / cap_cache['Vu_dto'])**b ) < 1
     else:

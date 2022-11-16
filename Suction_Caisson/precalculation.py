@@ -63,7 +63,7 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
     else:
         SL = Ph + 5E4 #N/m**2
      
-    logging.info('h = {}\nDi = {}\nD = {}\nAc = {}\nmass_skirt = {}\nmass_top_plates = {}\nMc = {}\nMCE = {}\nWc = {}\nV_comma = {}\nV_comma_installation = {}\nPh = {}\nSL = {}'.format(
+    logging.info('\nh = {}\nDi = {}\nD = {}\nAc = {}\nmass_skirt = {}\nmass_top_plates = {}\nMc = {}\nMCE = {}\nWc = {}\nV_comma = {}\nV_comma_installation = {}\nPh = {}\nSL = {}'.format(
         h, Di, D, Ac, mass_skirt, mass_top_plate, Mc, Mce, Wc, V_comma, V_comma_install, Ph, SL))    
     
     

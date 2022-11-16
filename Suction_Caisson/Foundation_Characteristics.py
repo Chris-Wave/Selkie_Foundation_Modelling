@@ -89,9 +89,12 @@ class Foundation_Definition:
 #                             'M_LRP' : M_LRP, 't' : t}
 #         
 # =============================================================================
-        logging.info('d = {}\nD0 = {}\nL = {}\nh_pert = {}\nV_LRP = {}\nH_LRP = {}\n\M_LRP = {}\nt = {}\nV_ILRP = {}\nHuls = {}\nVuls = {}\ndb = {}\n'.format(d, D0, L, h_pert, V_LRP, H_LRP, 
-                                                    M_LRP, t, V_ILRP, Huls, Vuls, 
-                                                    db))      
+                                                
+        logging.info('\nUser Inputs')
+        logging.info('\nd = {}\nD0 = {}\nL = {}\nh_pert = {}\nV_LRP = {}\nH_LRP = {}\n\M_LRP = {}\nt = {}\nV_ILRP = {}\nHuls = {}\nVuls = {}\ndb = {}\n'.format(d, D0, L, h_pert, V_LRP, H_LRP, 
+                                                    M_LRP, t, V_ILRP, Huls, Vuls, db))
+                                                    
+            
 
         
         
@@ -110,8 +113,8 @@ class Foundation_Definition:
                                      self.rhowater, self.mooring_cache)  
         self.cap_cache = cc(self.input_cache, self.calc_cache, self.soil_type, 
                        self.soil_prop, self.K)
-        logging.info('\nSoil Type: {}\nSoil Properties: {}'.format(self.soil_type, 
-                                                                  self.soil_prop))
+        logging.info('\nSoil Type: {}\nSoil Properties: {}\nK: {}'.format(self.soil_type, 
+                                                                  self.soil_prop,self.K))
      
     def foundation_checker(self):
         #perform installation checks
@@ -206,13 +209,14 @@ class Foundation_Definition:
           
          #perform bearing capacity checks for drained and undrained soil type    
  # =============================================================================
-         self.bearing_capacity_checker = bearing_capacity(
-                                                      self.input_cache, 
-                                                      self.calc_cache,
-                                                      self.soil_type.lower(),
-                                                      self.soil_prop, 
-                                                      self.cap_cache, 
-                                                      self.gamma_m, self.gamma_f)
+         # Removed bearing capacity check because of eccentricity issue. e = Mbase/Vbase, Both are negative so getting large e
+         #self.bearing_capacity_checker = bearing_capacity(
+         #                                             self.input_cache, 
+          #                                            self.calc_cache,
+           #                                           self.soil_type.lower(),
+            #                                          self.soil_prop, 
+             #                                         self.cap_cache, 
+              #                                        self.gamma_m, self.gamma_f)
           
          self.eccentricity = eccentricity(self.input_cache, self.calc_cache,
                                      self.cap_cache, self.mooring_cache)
@@ -237,7 +241,7 @@ class Foundation_Definition:
                                   'Cost' : self.calc_cache['Mc'] * 999,
                  'Self-weight installation' : self.installation_checker['sw installation check'], 
                  'Suction limit' : self.installation_checker['suction limit check'],
-                 'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'],
+                 #'Drained bearing capacity' : self.bearing_capacity_checker['drained bearing capacity'],
                  'Eccentricity' : self.eccentricity
                  })
          else:
@@ -246,6 +250,6 @@ class Foundation_Definition:
                                 'Cost' : self.calc_cache['Mc'] * 999,
                'Self-weight installation' : self.installation_checker['sw installation check'], 
                'Suction limit' : self.installation_checker['suction limit check'],
-               'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
+               #'Undrained bearing capacity' : self.bearing_capacity_checker['undrained bearing capacity'], 
                'Eccentricity' : self.eccentricity})
            
