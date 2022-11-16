@@ -33,7 +33,7 @@ import logging
 import logging.handlers
 
 
-logging.basicConfig(filename="loggy112.log", encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename="log.log", encoding='utf-8', level=logging.DEBUG)
 """
 The following properties must be defined in order to get the calculations going
 founation_type : str : 'anchor' or 'foundation'

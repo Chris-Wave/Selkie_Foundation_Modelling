@@ -15,6 +15,7 @@ This script is used to calculte the eccentricity checks
 """
 import numpy as np
 import math
+import logging
 def eccentricity(input_cache, calc_cache, cap_cache, mooring_cache):
     #Inputs
     #input_cache : {}  : dictioinary with input cache    
@@ -36,7 +37,11 @@ def eccentricity(input_cache, calc_cache, cap_cache, mooring_cache):
         a = calc_cache['h'] / calc_cache['D'] + 0.5#a = input_cache['L'] / calc_cache['D'] + 0.5
         b = calc_cache['h'] / (3 * calc_cache['D']) + 4.5#b = input_cache['L'] / (3 * calc_cache['D']) + 4.5
         
+        logging.info('**** \nEccentricity Checks ****')
+        logging.info('\nHd = {}\nVd = {}\na = {}\nb = {}'.format(Hd, Vd, a, b))
+        logging.info('\nEccentricity check = {}'.format(((Hd/cap_cache['Hu_dto'])**a + (Vd / cap_cache['Vu_dto'])**b ) < 1))
        # print('left-side = {}'.format(Hd/mooring_cache['Huls'])**a + (Vd / mooring_cache['Vuls'])**b)
         return ((Hd/cap_cache['Hu_dto'])**a + (Vd / cap_cache['Vu_dto'])**b ) < 1
     else:
+        logging.info('\nEccentricity check = True')
         return True
