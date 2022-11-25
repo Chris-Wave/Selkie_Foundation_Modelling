@@ -61,20 +61,20 @@ code is reached
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 95
-D0min               = 1
-D0max               = 10
-D0delta             = 0.5
-Lmin                = 1
-Lmax                = 25
-Ldelta              = 0.5
+d                   = 50
+D0min               = 12
+D0max               = 13
+D0delta             = 1
+Lmin                = 5
+Lmax                = 6
+Ldelta              = 1
 h_pert              = .1
 V_LRP               = 0
-V_ILRP              = 0
+V_ILRP              = -278588
 H_LRP               = 0
 M_LRP               = 0 #
-foundation_type     = 'anchor' 
-Huls                = 23.1e6
+foundation_type     = 'foundation' 
+Huls                = 0
 Vuls                = 0e6
 db                  = 0.05 
 Cost                = 6 
@@ -133,6 +133,7 @@ for i in D:
         e. very dense
         
         
+        
         The subtype for clay are:
         a. extremely low strength
         b. very low strength
@@ -140,6 +141,7 @@ for i in D:
         d. medium strength
         e. high strength
         f. very high strength
+        g. user defined
         
         Decleration of soil function does not return any value, however, it enables
         the next set of functions to perform their calculations and produce a cache
@@ -151,7 +153,7 @@ for i in D:
         
         """
         soil_type = 'clay'
-        soil_subtype = 'low strength'
+        soil_subtype = 'user defined'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
