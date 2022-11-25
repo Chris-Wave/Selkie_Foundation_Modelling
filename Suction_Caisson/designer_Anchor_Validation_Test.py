@@ -66,7 +66,7 @@ D0min               = 1
 D0max               = 10
 D0delta             = 0.5
 Lmin                = 1
-Lmax                = 25
+Lmax                = 40
 Ldelta              = 0.5
 h_pert              = .1
 V_LRP               = 0
@@ -150,8 +150,8 @@ for i in D:
         
         
         """
-        soil_type = 'clay'
-        soil_subtype = 'low strength'
+        soil_type = 'sand'
+        soil_subtype = 'loose'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         

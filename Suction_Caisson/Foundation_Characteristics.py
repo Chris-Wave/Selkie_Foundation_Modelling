@@ -74,7 +74,8 @@ class Foundation_Definition:
         #Huls : float : N, horizontal loading from anchor
         #Vuls : float : N, Vertical loading from anchor
         #db     : float : m, Chain diametr
-        t = 1/200 * D0           #assumed to be 2% of outer dia
+        t = 0.045#1/200 * D0           #assumed to be 2% of outer dia   just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 
         self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 
                         'h_pert' : h_pert,

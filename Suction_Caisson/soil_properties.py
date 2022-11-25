@@ -97,6 +97,13 @@ def soil(soil_type, soil_subtype):
             gamma = 9.6138E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
+        if soil_subtype.lower() == 'user defined':
+            s_u = 2E4               #Undrained strength
+            s_t = 1.2                #soil sensitivity
+            alpha = 0.6          #adhesion factor
+            gamma = 6E3             #effective unit weight of soil N/m3
+            #Nq = 10.6
+        
         return {'s_u':s_u, 's_t' : s_t,'alpha' : alpha,
                 'gamma' : gamma,'Nc' : Nc, 'phi' : phi}
              

@@ -58,6 +58,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
 
         if input_cache['L']/input_cache['D0'] <= 4.5:
             Nc = 6.2 * (1 + 0.34 * np.arctan(input_cache['L']/input_cache['D0']))
+            Nc = 9 #just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         else:
             Nc = 9
         logging.info('\nNc = {}'.format(Nc))
