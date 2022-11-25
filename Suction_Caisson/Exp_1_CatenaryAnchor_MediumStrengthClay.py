@@ -57,11 +57,11 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 100
-D0min               = 2
-D0max               = 3
+D0min               = 1
+D0max               = 40
 D0delta             = 1
-Lmin                = 3
-Lmax                = 4
+Lmin                = 1
+Lmax                = 40
 Ldelta              = 1
 h_pert              = .1
 V_LRP               = 1e0

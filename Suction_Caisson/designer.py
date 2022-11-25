@@ -69,6 +69,7 @@ Lmin                = 1
 Lmax                = 30
 Ldelta              = 1
 h_pert              = .1
+<<<<<<< Updated upstream
 V_LRP               = 4e6
 V_ILRP              = 4e6
 H_LRP               = 8e5
@@ -76,6 +77,15 @@ M_LRP               = 8e6 #
 foundation_type     = 'foundation' 
 Huls                = 0e6
 Vuls                = 0e6
+=======
+V_LRP               = 1e0
+V_ILRP              = 1e0
+H_LRP               = 1e0
+M_LRP               = 1e0 #
+foundation_type     = 'anchor' 
+Huls                = 6e6
+Vuls                = 0
+>>>>>>> Stashed changes
 db                  = 0.05 
 Cost                = 6 
 #Iterations over an array of D0 are achieved through a for loop
@@ -150,8 +160,13 @@ for i in D:
         
         
         """
+<<<<<<< Updated upstream
         soil_type = 'sand'
         soil_subtype = 'very dense'
+=======
+        soil_type = 'clay'
+        soil_subtype = 'very high strength'
+>>>>>>> Stashed changes
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
@@ -187,7 +202,7 @@ dimensions = dimensions.iloc[::-1]
 plot(dimensions, soil_type, foundation_type = foundation_type)
 
 #Output the results in a csv file for later use
-output_direc = 'Results/'
+output_direc = 'Results2/'
 if not os.path.isdir(output_direc):
     os.mkdir(output_direc)
 dimensions.to_csv(output_direc + 'dimensions.csv', index  = False)
