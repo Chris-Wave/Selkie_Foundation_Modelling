@@ -25,7 +25,7 @@ provide the smallest dimensions which pass all three tests
 
 import numpy as np
 import pandas as pd
-from plot import plotAndSort
+from plot import plotAndSort, interface
 from Foundation_Characteristics import Foundation_Definition
 from sklearn.preprocessing import MinMaxScaler
 import os
@@ -62,11 +62,11 @@ code is reached
 
 #Values here are only assumed and might not present any realistic picture
 d                   = 50
-D0min               = 12
-D0max               = 13
+D0min               = 1
+D0max               = 10
 D0delta             = 1
-Lmin                = 5
-Lmax                = 6
+Lmin                = 1
+Lmax                = 10
 Ldelta              = 1
 h_pert              = .1
 V_LRP               = 0
@@ -187,11 +187,12 @@ dimensions = dimensions.iloc[::-1]
 #default value set at anchor in the plotting function. 
 #adding this here is redundant but important for user understanding
 cheapestDim = plotAndSort(dimensions, soil_type, foundation_type = foundation_type)
-
+inter = interface(dimensions, D, L)
 #Output the results in a csv file for later use
 output_direc = 'Results/'
 if not os.path.isdir(output_direc):
     os.mkdir(output_direc)
 dimensions.to_csv(output_direc + 'dimensions.csv', index  = False)
 cheapestDim.to_csv(output_direc + 'Smallest Dimensions.csv')
+inter.to_csv(output_direc + 'interface.csv')
 logging.shutdown()

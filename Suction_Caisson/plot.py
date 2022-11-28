@@ -60,6 +60,9 @@ def plotAndSort(dimensions, soil_type, foundation_type = 'anchor'):
     #Mc = np.reshape(np.array(dimensions['M']), (-1, 1))
     #scalar = MinMaxScaler(feature_range=(0.1, 1))
     #dimensions['M_resc'] = scalar.fit_transform(Mc) * 50
+    
+    #the following two operations are performed on opriginal df which
+    #update the original dimensions 
     dimensions['installation'] = (dimensions['Suction limit'] == True) & (
         dimensions['Self-weight installation'] == True) 
     
@@ -129,3 +132,33 @@ def plotAndSort(dimensions, soil_type, foundation_type = 'anchor'):
     cheapest = allTrue.sort_values(by = ['Cost']).iloc[0]
     print('\nCheapest Design Dimensions: {}'.format(cheapest))
     return cheapest
+
+
+def interface(dimensions, D, L):
+    
+    
+    #Function sorts out the results into four different categories
+    #function plots the results
+    #function identifies the smallest dimensions which pass all checks and
+    #retures the dimensions
+    #Input
+    #dimensions : pd.DataFrame : df of the relevent diensions and their
+    #D          : np.ndarray   : array of the different diameters considered
+    #L          : np.ndarray   : array of the different lengths consider#
+ 
+
+    
+    interface = pd.DataFrame()
+
+    #first fix the Diameter and iterate over the entire length. 
+    for l in L: 
+        #filter dimensions to extract only relevant rows with length l
+        df = dimensions[dimensions['L']==l]
+        allTrue = df[(df['installation']==True) & 
+                              (df['capacity']==True)]
+        if len(allTrue) > 0:
+            inter = pd.DataFrame(allTrue.sort_values(by = ['D']).reset_index(drop=True))
+            interface = pd.concat([inter.iloc[[0]], interface], join='outer', axis = 0, 
+                                   ignore_index=True, sort=False)
+            
+    return interface
