@@ -7,6 +7,7 @@ Created on Fri Jan 28 09:36:53 2022
 """
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 #import numpy as np
 #from sklearn.preprocessing import MinMaxScaler
 
@@ -42,7 +43,13 @@ def operate(dimensions, option):
     return (option(dimensions))
 
     
-def plot(dimensions, soil_type, foundation_type = 'anchor'):
+def plotAndSort(dimensions, soil_type, foundation_type = 'anchor'):
+    
+    
+    #Function sorts out the results into four different categories
+    #function plots the results
+    #function identifies the smallest dimensions which pass all checks and
+    #retures the dimensions
     #Input
     #dimensions : pd.DataFrame : df of the relevent diensions and their
     #soil_type  : str          : lower case string, either sand or clay
@@ -88,6 +95,7 @@ def plot(dimensions, soil_type, foundation_type = 'anchor'):
     #sufficient capacitty and installable
     allTrue = dimensions[(dimensions['installation']==True) & 
                               (dimensions['capacity']==True)]
+    
     plt.scatter(allTrue['D'], allTrue['L'], color = 'green', label = 'Sufficient Capacity, Installable')#,  s= allTrue['M_resc'])
 
 
@@ -118,3 +126,6 @@ def plot(dimensions, soil_type, foundation_type = 'anchor'):
         foundation_type))
     plt.axis('scaled')
     #plt.gca().set_aspect('equal', adjustable='box')
+    cheapest = allTrue.sort_values(by = ['Cost']).iloc[0]
+    print('\nCheapest Design Dimensions: {}'.format(cheapest))
+    return cheapest
