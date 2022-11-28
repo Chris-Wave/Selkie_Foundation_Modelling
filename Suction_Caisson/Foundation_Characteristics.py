@@ -45,13 +45,14 @@ class Foundation_Definition:
     rhosteel    = 8050 
     E           = 210E6    #young's modulus
     rhowater    = 1025 #density of water
+    gamma_w     = 10E3 #unit weight of sea water
     gamma_m     = 1.15 #safety factor of material
     gamma_f     = 0.9 #favorable safety factor load factor
     gamma_uf    = 1.1 #unfavorable safety factor load
-    
+    rhoAtmos    = 100E3
     
     def __init__(self, d, D0, L, h_pert, 
-                 V_LRP, V_ILRP, H_LRP, M_LRP, foundation_type, Huls = False, Vuls = False, db = False):
+                 V_LRP, V_ILRP, H_LRP, M_LRP, foundation_type, rhoVoid = 0, Huls = False, Vuls = False, db = False):
     
 # =============================================================================
 #     def __init__(self, d, D0, Lmin, Lmax, Ldelta, h_pert, 
@@ -74,13 +75,14 @@ class Foundation_Definition:
         #Huls : float : N, horizontal loading from anchor
         #Vuls : float : N, Vertical loading from anchor
         #db     : float : m, Chain diametr
+        #rhoVoid : float : 0, if vaccuum is assumed
         t = 0.045#1/200 * D0           #assumed to be 2% of outer dia   just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
 
         self.input_cache = {'d' : d, 'D0' : D0, 'L' : L, 
                         'h_pert' : h_pert,
                         'V_LRP' : V_LRP, 'H_LRP' : H_LRP, 
-                        'M_LRP' : M_LRP, 't' : t, 'V_ILRP' : V_ILRP}
+                        'M_LRP' : M_LRP, 't' : t, 'V_ILRP' : V_ILRP, 'rhoVoid' : rhoVoid}
         self.mooring_cache = {'Huls' : Huls, 'Vuls' : Vuls, 'db' : db}
         
 # =============================================================================
@@ -113,7 +115,7 @@ class Foundation_Definition:
                                           self.soil_prop, self.rhosteel, 
                                      self.rhowater, self.mooring_cache)  
         self.cap_cache = cc(self.input_cache, self.calc_cache, self.soil_type, 
-                       self.soil_prop, self.K)
+                       self.soil_prop, self.K, self.rhoAtmos, self.gamma_w)
         logging.info('\nSoil Type: {}\nSoil Properties: {}\nK: {}'.format(self.soil_type, 
                                                                   self.soil_prop,self.K))
      

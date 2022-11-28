@@ -116,12 +116,12 @@ def soil(soil_type, soil_subtype):
     
     else: #sand
         if soil_subtype.lower() == 'very loose':
-            gamma = 8.5347E3                                 #Effective unit weight of soil
+            gamma_dash = 8.5347E3                                 #Effective unit weight of soil
             phi = math.radians(25)                      #angle of friction
             rel_density_index = 0.1                     #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
                                        #bearing capacity factor (overburden)
-            
+            gamma = 11                                  #unit weight of soil
             
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
@@ -130,12 +130,12 @@ def soil(soil_type, soil_subtype):
             s_u = 2E4
             
         elif soil_subtype.lower() == 'loose':
-            gamma = 8.5347E3                                 #Effective unit weight of soil
+            gamma_dash = 8.5347E3                                 #Effective unit weight of soil
             phi = math.radians(30)                      #angle of friction
             rel_density_index = 0.25                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
                                        #bearing capacity factor (overburden)
-            
+            gamma = 11                                  #unit weight of soil
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
             #algorithm execution
@@ -147,11 +147,11 @@ def soil(soil_type, soil_subtype):
         
         
         elif soil_subtype.lower() == 'medium dense':
-            gamma = 8.5347E3                                 #Effective unit weight of soil
+            gamma_dash = 8.5347E3                                 #Effective unit weight of soil
             phi = math.radians(32)                      #angle of friction
             rel_density_index = 0.45                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-           
+            gamma = 11                                  #unit weight of soil
             
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
@@ -163,11 +163,11 @@ def soil(soil_type, soil_subtype):
    
             
         elif soil_subtype.lower() == 'dense':
-            gamma = 10.3986E3                                 #Effective unit weight of soil
+            gamma_dash = 10.3986E3                                 #Effective unit weight of soil
             phi = math.radians(35)                      #angle of friction
             rel_density_index = 0.75                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-           
+            gamma = 11                                  #unit weight of soil
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
             #algorithm execution
@@ -176,11 +176,11 @@ def soil(soil_type, soil_subtype):
             
             
         else:
-            gamma = 10.3986E3                                 #Effective unit weight of soil
+            gamma_dash = 10.3986E3                                 #Effective unit weight of soil
             phi = math.radians(38)                      #angle of friction
             rel_density_index = 0.85                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-            
+            gamma = 11                                  #unit weight of soil
             
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
@@ -190,6 +190,6 @@ def soil(soil_type, soil_subtype):
             
             
             
-        return {'gamma':gamma, 'phi':phi, 'rel_density_index':rel_density_index,
+        return {'gamma_dash':gamma_dash, 'phi':phi, 'rel_density_index':rel_density_index,
                 'delta':delta, 
-                 'Nc' : Nc, 's_u' : s_u}
+                 'Nc' : Nc, 's_u' : s_u, 'gamma':gamma}

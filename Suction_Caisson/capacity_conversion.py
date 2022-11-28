@@ -21,13 +21,15 @@ Notes: Check with Chris what K is.
 import math
 import numpy as np
 import logging
-def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
+def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K, 
+                         rho_a, gamma_w):
     #Input
     #input_cache: {}  : dictionary of user defined inputs 
     #soil_type  : str : string specifiying either clay or sand
     #calc_cache : {}  : dictionary from the precalc function
     #soil_prop  : {}  : dictionary with soil properties of the sub-type 
     #K          : float : to be checked with Chris
+    #rho_a      : float : reference atmospheric pressure
     #Output
     #cache : {} : dictionary with 3 important capacity conversion variables
     
@@ -63,12 +65,25 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
             Nc = 9
         logging.info('\nNc = {}'.format(Nc))
         As = np.pi * input_cache['D0'] * input_cache['L']
-        Vu_dto = calc_cache['Ac'] * Nc * soil_prop['s_u'] + 0.65 * As + calc_cache['Wc'] 
         
-        
-        #lateral capacity, cohesive soils
+        Vu_1 = calc_cache['Ac'] * Nc * soil_prop['s_u'] + 0.65 * As + calc_cache['Wc'] 
+       
+        Vu_2 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
+            np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
+                rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
+                 np.pi * 0.65 * input_cache['D0'] * input_cache['L'] * soil_prop['s_u']
+                
+        Vu_3 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] * (
+        rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
+        2 * np.pi * 0.65 * input_cache['D0'] * input_cache['L'] * soil_prop['s_u']
+       
+            #lateral capacity, cohesive soils
         z = 0.7 * input_cache['L']
         Np = 3.6 / np.sqrt((0.75 - (z/input_cache['L']))**2 + (0.45 *(z/input_cache['L']))**2) #Changed "0.45 -" to "0.45 *"
+        
+        #overwrite Vu_dto with the minimum from the three Vu calculated above to prevent additional changes in other scripts
+        Vu_dto = np.min([Vu_1, Vu_2, Vu_3])
+        
         Hu_dto = input_cache['L'] * input_cache['D0'] * Np * soil_prop['s_u']
        
         
@@ -120,9 +135,28 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K):
 # =============================================================================
         K = 1 - np.sin(soil_prop['phi'])
         delta = 0.5 * soil_prop['phi']
-        Vu_dto = calc_cache['Wc']+ np.pi / 2 * (input_cache['D0'] + calc_cache['Di']) * \
-            input_cache['L'] ** 2 * soil_prop['gamma'] * K * np.tan(delta) #Corrected this 07/09/22 added division by 2 and (input_cache['D0'] + calc_cache['Di']) and added calc_cache['Wc']
         
+        #equation removed after the new 4 equations added
+        
+        #\Vu_dto = calc_cache['Wc']+ np.pi / 2 * (input_cache['D0'] + calc_cache['Di']) * \
+        #    input_cache['L'] ** 2 * soil_prop['gamma'] * K * np.tan(delta) #Corrected this 07/09/22 added division by 2 and (input_cache['D0'] + calc_cache['Di']) and added calc_cache['Wc']
+        
+        Vu_1 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
+            np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
+                rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
+                np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
+        
+        Vu_2 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
+            rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
+           np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] * K * np.tan(soil_prop['delta'])
+   
+        Vu_3 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
+            np.pi * calc_cache['D'] ** 2/ 4 * input_cache['d'] * calc_cache['h'] + \
+            np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
+       
+        Vu_4 = np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] * K * np.tan(soil_prop['delta'])
+   
+        Vu_dto = np.min([Vu_1, Vu_2, Vu_3, Vu_4])
         #lateral force
         #order changed to conform with our own equations. 
         # Removed this due to Stfans comments, only applicable to bearing caNq =  np.tan(math.radians(45) + (soil_prop['phi']/2))**2 * np.exp(np.pi * np.tan(soil_prop['phi']))
