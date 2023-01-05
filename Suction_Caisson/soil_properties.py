@@ -174,7 +174,18 @@ def soil(soil_type, soil_subtype):
             
             s_u = 5E4
             
+        elif soil_subtype.lower() == 'user defined':
+            gamma_dash = 9E3                                 #Effective unit weight of soil
+            phi = math.radians(30)                      #angle of friction
+            rel_density_index = 0.75                    #relative density index
+            delta = math.radians(math.degrees(phi) - 5) #interface friction angle
+            gamma = 11                                  #unit weight of soil
+            #missing properties copied from clay above 
+            #these properties are missing from the table and prevent
+            #algorithm execution
             
+            s_u = 5E4
+                
         else:
             gamma_dash = 10.3986E3                                 #Effective unit weight of soil
             phi = math.radians(38)                      #angle of friction

@@ -25,7 +25,7 @@ provide the smallest dimensions which pass all three tests
 
 import numpy as np
 import pandas as pd
-from plot import plot
+from plot import plotAndSort, interface
 from Foundation_Characteristics import Foundation_Definition
 from sklearn.preprocessing import MinMaxScaler
 import os
@@ -33,7 +33,7 @@ import logging
 import logging.handlers
 
 
-logging.basicConfig(filename="log.log", encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename="log_050123.log", encoding='utf-8', level=logging.DEBUG)
 """
 The following properties must be defined in order to get the calculations going
 founation_type : str : 'anchor' or 'foundation'
@@ -65,10 +65,10 @@ d                   = 95
 D0min               = 1
 D0max               = 10
 D0delta             = 0.5
-Lmin                = 1
-Lmax                = 40
+Lmin                = 10
+Lmax                = 25
 Ldelta              = 0.5
-h_pert              = .1
+h_pert              = 0
 V_LRP               = 0
 V_ILRP              = 0
 H_LRP               = 0
@@ -151,7 +151,7 @@ for i in D:
         
         """
         soil_type = 'sand'
-        soil_subtype = 'loose'
+        soil_subtype = 'user defined'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
