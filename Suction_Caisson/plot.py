@@ -129,9 +129,13 @@ def plotAndSort(dimensions, soil_type, foundation_type = 'anchor'):
         foundation_type))
     plt.axis('scaled')
     #plt.gca().set_aspect('equal', adjustable='box')
-    cheapest = allTrue.sort_values(by = ['Cost']).iloc[0]
-    print('\nCheapest Design Dimensions: {}'.format(cheapest))
-    return cheapest
+    try:
+        cheapest = allTrue.sort_values(by = ['Cost']).iloc[0]
+        print('\nCheapest Design Dimensions: {}'.format(cheapest))
+        return cheapest
+    except:
+        return pd.DataFrame(data = [-1])
+    
 
 
 def interface(dimensions, D, L):

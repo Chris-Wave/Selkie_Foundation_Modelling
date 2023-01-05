@@ -144,17 +144,17 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K,
         Vu_1 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
             np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
                 rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
-                np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
+                np.pi * calc_cache['D'] * calc_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
         
         Vu_2 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
             rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
-           np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] * K * np.tan(soil_prop['delta'])
+           np.pi * calc_cache['D'] * calc_cache['h'] ** 2 * soil_prop['gamma_dash'] * K * np.tan(soil_prop['delta'])
    
         Vu_3 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
             np.pi * calc_cache['D'] ** 2/ 4 * input_cache['d'] * calc_cache['h'] + \
-            np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
+            np.pi * calc_cache['D'] * calc_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
        
-        Vu_4 = np.pi * calc_cache['D'] * input_cache['h'] ** 2 * soil_prop['gamma_dash'] * K * np.tan(soil_prop['delta'])
+        Vu_4 = np.pi * calc_cache['D'] * calc_cache['h'] ** 2 * soil_prop['gamma_dash'] * K * np.tan(soil_prop['delta'])
    
         Vu_dto = np.min([Vu_1, Vu_2, Vu_3, Vu_4])
         #lateral force

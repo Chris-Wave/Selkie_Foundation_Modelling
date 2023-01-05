@@ -152,8 +152,8 @@ for i in D:
         
         
         """
-        soil_type = 'clay'
-        soil_subtype = 'user defined'
+        soil_type = 'sand'
+        soil_subtype = 'loose'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
