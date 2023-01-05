@@ -134,7 +134,7 @@ def plotAndSort(dimensions, soil_type, foundation_type = 'anchor'):
         print('\nCheapest Design Dimensions: {}'.format(cheapest))
         return cheapest
     except:
-        return pd.DataFrame(data = [-1])
+        return pd.DataFrame(data = ['No caisson passed all tests'])
     
 
 
