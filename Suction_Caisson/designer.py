@@ -106,7 +106,7 @@ for i in D:
         if foundation_type.lower() == 'anchor':
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
                                                  H_LRP, M_LRP, foundation_type,
-                                                 Huls, Vuls, db)
+                                                 Huls=Huls, Vuls=Vuls, db=db)
         else:
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
                                                  H_LRP, M_LRP, 'foundation', Cost)
