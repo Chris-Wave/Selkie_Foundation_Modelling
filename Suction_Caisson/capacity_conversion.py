@@ -37,7 +37,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K,
     if soil_type.lower() == 'clay':
         Vside = np.pi * calc_cache['D'] * calc_cache['h'] * \
                                         soil_prop['alpha'] * soil_prop['s_u']
-        Hside = calc_cache['D'] * calc_cache['h'] * ((soil_prop['gamma'] * 
+        Hside = calc_cache['D'] * calc_cache['h'] * ((soil_prop['gamma_dash'] * 
                                  calc_cache['h'] / 2) + ( 2* soil_prop['s_u'] ))
                                         
     
@@ -60,7 +60,7 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K,
 
         if input_cache['L']/input_cache['D0'] <= 4.5:
             Nc = 6.2 * (1 + 0.34 * np.arctan(input_cache['L']/input_cache['D0']))
-            Nc = 9 #just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            #Nc = 9 #just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         else:
             Nc = 9
         logging.info('\nNc = {}'.format(Nc))
@@ -68,12 +68,12 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K,
         
         Vu_1 = calc_cache['Ac'] * Nc * soil_prop['s_u'] + 0.65 * As + calc_cache['Wc'] 
        
-        Vu_2 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
-            np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
+        Vu_2 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma_dash'] * calc_cache['h'] + \
+            np.pi * calc_cache['D'] ** 2/ 4  *(
                 rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
                  np.pi * 0.65 * input_cache['D0'] * input_cache['L'] * soil_prop['s_u']
                 
-        Vu_3 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] * (
+        Vu_3 = np.pi * calc_cache['D'] ** 2/ 4  * (
         rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
         2 * np.pi * 0.65 * input_cache['D0'] * input_cache['L'] * soil_prop['s_u']
        
@@ -100,10 +100,10 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K,
     elif soil_type.lower() == 'sand':
         logging.info('\n\n***Sand Capacity Conversion***')
         Vside = np.pi * calc_cache['D'] * calc_cache['h']**2 / 2 * K * \
-                            soil_prop['gamma'] * math.tan(soil_prop['delta'])
+                            soil_prop['gamma_dash'] * math.tan(soil_prop['delta'])
         Kp = (1 + math.sin(soil_prop['phi'])) / (1 - math.sin(soil_prop['phi']))
         Ka = 1 / Kp
-        Hside = soil_prop['gamma'] * calc_cache['h'] ** 2 * calc_cache['D'] \
+        Hside = soil_prop['gamma_dash'] * calc_cache['h'] ** 2 * calc_cache['D'] \
             / 2 * (Kp - Ka)
         hside = 2 * calc_cache['h'] /3 
        
@@ -142,15 +142,15 @@ def capacity_conversions(input_cache, calc_cache, soil_type, soil_prop, K,
         #    input_cache['L'] ** 2 * soil_prop['gamma'] * K * np.tan(delta) #Corrected this 07/09/22 added division by 2 and (input_cache['D0'] + calc_cache['Di']) and added calc_cache['Wc']
         
         Vu_1 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
-            np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
+            np.pi * calc_cache['D'] ** 2/ 4  *(
                 rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
                 np.pi * calc_cache['D'] * calc_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
         
-        Vu_2 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] *(
+        Vu_2 = np.pi * calc_cache['D'] ** 2/ 4 *(
             rho_a + gamma_w * input_cache['d'] - input_cache['rhoVoid']) + \
            np.pi * calc_cache['D'] * calc_cache['h'] ** 2 * soil_prop['gamma_dash'] * K * np.tan(soil_prop['delta'])
    
-        Vu_3 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] + \
+        Vu_3 = np.pi * calc_cache['D'] ** 2/ 4 * soil_prop['gamma'] * calc_cache['h'] - \
             np.pi * calc_cache['D'] ** 2/ 4 * input_cache['d'] * calc_cache['h'] + \
             np.pi * calc_cache['D'] * calc_cache['h'] ** 2 * soil_prop['gamma_dash'] /2 * K * np.tan(soil_prop['delta'])
        

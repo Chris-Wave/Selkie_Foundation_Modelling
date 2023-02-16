@@ -75,7 +75,7 @@ def precalculations(input_cache, soil_type, soil_prop, rhosteel, rhowater,
 # =============================================================================
     if mooring_cache['Huls']:
         logging.info('\n\n***Precalculation for anchor based***')
-        za = input_cache['L'] * 0.7
+        za = input_cache['L'] * 0.5
         
         #removed 1.8 SF from here, the user will be recommedned to include the SF in their input forces.
         Tm = np.sqrt(mooring_cache['Huls']**2 + mooring_cache['Vuls']**2)

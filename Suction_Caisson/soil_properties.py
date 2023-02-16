@@ -57,7 +57,7 @@ def soil(soil_type, soil_subtype):
             s_u = 1E4               #Undrained strength
             s_t = 2                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 7.0362E3             #effective unit weight of soil N/m3
+            gamma_dash = 7.0362E3             #effective unit weight of soil N/m3
             #Nq = 10.6
             
         
@@ -65,7 +65,7 @@ def soil(soil_type, soil_subtype):
             s_u = 1.5E4               #Undrained strength
             s_t = 2                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 7.0362E3             #effective unit weight of soil N/m3
+            gamma_dash = 7.0362E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
        
@@ -73,39 +73,39 @@ def soil(soil_type, soil_subtype):
             s_u = 3E4               #Undrained strength
             s_t = 1.5                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 7.0362E3             #effective unit weight of soil N/m3
+            gamma_dash = 7.0362E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
         if soil_subtype.lower() == 'medium strength':
             s_u = 5.0E4               #Undrained strength
             s_t = 1.5               #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 9.6138E3             #effective unit weight of soil N/m3
+            gamma_dash = 9.6138E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
         if soil_subtype.lower() == 'high strength':
             s_u = 10E4               #Undrained strength
             s_t = 1.2                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 9.6138E3             #effective unit weight of soil N/m3
+            gamma_dash = 9.6138E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
         if soil_subtype.lower() == 'very high strength':
             s_u = 20E4               #Undrained strength
             s_t = 1.2                #soil sensitivity
             alpha = 1/s_t           #adhesion factor
-            gamma = 9.6138E3             #effective unit weight of soil N/m3
+            gamma_dash = 9.6138E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
         if soil_subtype.lower() == 'user defined':
-            s_u = 2E4               #Undrained strength
+            s_u = 3E4               #Undrained strength
             s_t = 1.2                #soil sensitivity
             alpha = 0.6          #adhesion factor
-            gamma = 6E3             #effective unit weight of soil N/m3
+            gamma_dash = 6E3             #effective unit weight of soil N/m3
             #Nq = 10.6
         
         return {'s_u':s_u, 's_t' : s_t,'alpha' : alpha,
-                'gamma' : gamma,'Nc' : Nc, 'phi' : phi}
+                'gamma_dash' : gamma_dash,'Nc' : Nc, 'phi' : phi}
              
     
     
@@ -130,7 +130,7 @@ def soil(soil_type, soil_subtype):
             s_u = 2E4
             
         elif soil_subtype.lower() == 'loose':
-            gamma_dash = 8.5347E3                                 #Effective unit weight of soil
+            gamma_dash = 8.5347E3                       #Effective unit weight of soil
             phi = math.radians(30)                      #angle of friction
             rel_density_index = 0.25                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
@@ -179,7 +179,7 @@ def soil(soil_type, soil_subtype):
             phi = math.radians(30)                      #angle of friction
             rel_density_index = 0.75                    #relative density index
             delta = math.radians(math.degrees(phi) - 5) #interface friction angle
-            gamma = 11                                  #unit weight of soil
+            gamma = 11E3                                  #unit weight of soil
             #missing properties copied from clay above 
             #these properties are missing from the table and prevent
             #algorithm execution

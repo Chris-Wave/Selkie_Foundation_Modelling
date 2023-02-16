@@ -82,7 +82,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
     h_sw = (calc_cache['V_comma_install'] * gamma_f - clay['Nc'] * clay['s_u'] * np.pi *
             calc_cache['D'] * input_cache['t']) / (clay['alpha'] * np.pi * 
             input_cache['D0'] * clay['s_u'] + clay['alpha'] * np.pi * 
-            calc_cache['Di'] * clay['s_u'] + clay['gamma'] * np.pi * 
+            calc_cache['Di'] * clay['s_u'] + clay['gamma_dash'] * np.pi * 
             calc_cache['D'] * input_cache['t'])
     
     logging.info('\n\n\n****Clay Self Installation Check****')                                                
@@ -104,7 +104,7 @@ def installation_clay(clay, input_cache, calc_cache, v, E, gamma_m, gamma_f):
                                                                 clay['s_u']
     logging.info('\nRinside = {}'.format(Rinside))
     
-    Rtip = np.pi * calc_cache['D'] * input_cache['t'] * (clay['gamma'] * \
+    Rtip = np.pi * calc_cache['D'] * input_cache['t'] * (clay['gamma_dash'] * \
                                 calc_cache['h'] + clay['Nc'] * clay['s_u'])
     logging.info('\nRtip = {}'.format(Rtip))
     

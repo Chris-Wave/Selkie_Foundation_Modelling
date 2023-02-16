@@ -33,7 +33,7 @@ import logging
 import logging.handlers
 
 
-logging.basicConfig(filename="log.log", encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename="log_050123.log", encoding='utf-8', level=logging.DEBUG)
 """
 The following properties must be defined in order to get the calculations going
 founation_type : str : 'anchor' or 'foundation'
@@ -61,14 +61,14 @@ code is reached
 """
 
 #Values here are only assumed and might not present any realistic picture
-d                   = 50
-D0min               = 5
+d                   = 95
+D0min               = 1
 D0max               = 10
-D0delta             = 2
-Lmin                = 5
-Lmax                = 20
-Ldelta              = 4
-h_pert              = .1
+D0delta             = 0.5
+Lmin                = 10
+Lmax                = 25
+Ldelta              = 0.5
+h_pert              = 0
 V_LRP               = 0
 V_ILRP              = 0
 H_LRP               = 0
@@ -106,7 +106,7 @@ for i in D:
         if foundation_type.lower() == 'anchor':
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
                                                  H_LRP, M_LRP, foundation_type,
-                                                 Huls=Huls, Vuls=Vuls, db=db)
+                                                 Huls = Huls,Vuls= Vuls, db=db)
         else:
             Foundation_A = Foundation_Definition(d, i, l, h_pert, V_LRP, V_ILRP, 
                                                  H_LRP, M_LRP, 'foundation', Cost)
@@ -133,7 +133,6 @@ for i in D:
         e. very dense
         
         
-        
         The subtype for clay are:
         a. extremely low strength
         b. very low strength
@@ -141,7 +140,6 @@ for i in D:
         d. medium strength
         e. high strength
         f. very high strength
-        g. user defined
         
         Decleration of soil function does not return any value, however, it enables
         the next set of functions to perform their calculations and produce a cache
@@ -152,8 +150,8 @@ for i in D:
         
         
         """
-        soil_type = 'sand'
-        soil_subtype = 'loose'
+        soil_type = 'clay'
+        soil_subtype = 'user defined'
         Foundation_A.soil_selection(soil_type, soil_subtype)
         
         
@@ -186,13 +184,28 @@ dimensions = dimensions.iloc[::-1]
 #otherwise, replace it with 'foundation'
 #default value set at anchor in the plotting function. 
 #adding this here is redundant but important for user understanding
-cheapestDim = plotAndSort(dimensions, soil_type, foundation_type = foundation_type)
-inter = interface(dimensions, D, L)
+plotAndSort(dimensions, soil_type, foundation_type = foundation_type)
+
 #Output the results in a csv file for later use
 output_direc = 'Results/'
 if not os.path.isdir(output_direc):
     os.mkdir(output_direc)
 dimensions.to_csv(output_direc + 'dimensions.csv', index  = False)
-cheapestDim.to_csv(output_direc + 'Smallest Dimensions.csv')
-inter.to_csv(output_direc + 'interface.csv')
 logging.shutdown()
+
+import matplotlib.pyplot as plt
+
+#clay
+#x_axis = [5, 6.35, 5.65, 5.2, 4.8, 4.5, 4.25, 4.05, 3.85, 3.7]
+
+#y_axis = [16, 12.7, 14.1, 15.6,	16.8, 18, 19.1, 20.3, 21.2,	22.2]
+
+#plt.plot(x_axis, y_axis, 'x', color='white')
+
+
+#clay
+x_axis = [5, 6.35, 5.65, 5.2, 4.8, 4.5, 4.25, 4.05, 3.85, 3.7]
+
+y_axis = [16, 12.7, 14.1, 15.6,	16.8, 18, 19.1, 20.3, 21.2,	22.2]
+
+plt.plot(x_axis, y_axis, 'x', color='white')

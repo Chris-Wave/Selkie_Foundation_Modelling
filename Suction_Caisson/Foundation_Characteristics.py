@@ -76,7 +76,7 @@ class Foundation_Definition:
         #Vuls : float : N, Vertical loading from anchor
         #db     : float : m, Chain diametr
         #rhoVoid : float : 0, if vaccuum is assumed
-        #t = 0.045#1/200 * D0           #assumed to be 2% of outer dia   just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #t = 0.045#1/200 * D0           #assumed to be 0.5% of outer dia   just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         t = 1/70 * D0           #assumed to be 2% of outer dia   just  added for validation pourposes REMOVE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
 
