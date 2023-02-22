@@ -22,10 +22,10 @@ import math
 import numpy as np
 import pandas as pd
 
-def eccent(ext_loads_dict, geom):
+def eccent(ext_loads_dict, geom, tf = 0.3):
     #ext_loads_dict : dictionary : user specified moments and forces
     #geom     : float : m, user-specified
-
+    #tf       : float : thickness factor
     #output
     #returns a dictionary with all the calculations done, one data frame to
     #consolidate the vector calculations done starting with L_vect and then
@@ -60,7 +60,7 @@ def eccent(ext_loads_dict, geom):
 
 
     #row by row min max selection, eliminates the need for for loop
-    t = np.max([0.3 * np.min([L_vect, B_vect], axis = 0), 
+    t = np.max([tf * np.min([L_vect, B_vect], axis = 0), 
                 np.ones(np.shape(A_comma))], axis = 0)
     v = A_comma * t
     W = v * 24
@@ -68,6 +68,3 @@ def eccent(ext_loads_dict, geom):
 
     return {'Calc':pd.DataFrame({'L':L_vect, 'B':B_vect, 'A':A_comma, 't':t, 'v':v, 'W':W, 'Wb':Wb}),
          'ex':ex, 'ey':ey, 'Ix_min':Ix_min, 'Iy_min':Iy_min}
-
-
-   

@@ -27,18 +27,21 @@ from overturning_resistance import overturning
 
 
 class Foundation_Definition:
-    def __init__(self, weight_concrete, weight_slag, slope, device_geometry, SF):
+    def __init__(self, weight_concrete, weight_slag, slope, device_geometry, SF,
+                 thickness_factor):
         #weight_concrete : float   : kN/m**3
         #weight_slab     : float   : kN/m**3
         #slope           : float   : degrees
         #device_geometry : float   : unspecified, Pault to confirm
         #SF              : float   : safety factor for beariing capacity
+        #thickness_factor: float   : thickness factor
         
         self.weight_concrete = weight_concrete
         self.weight_slag = weight_slag
         self.slope = slope
         self.geom = device_geometry #read off the excel. dont know how to use this
         self.SF = SF
+        self.tf = thickness_factor
         
     def drained_soil(self, friction_angle, cohesion, fos, sensitivity, weight):
         #friction_angle         : float : angle in degrees, obtained from lookup table. 
@@ -138,7 +141,8 @@ class Foundation_Definition:
         #function to perform eccentricity calculations. does not need 
         #any arguments. ext_loads dict can be accessed internally
         #shift this into the external loads function. 
-        self.cache_eccent = self.eccent.__func__(self.ext_loads_dict, self.geom)
+        self.cache_eccent = self.eccent.__func__(self.ext_loads_dict, self.geom,
+                                                 tf = self.tf)
         
     
     def design_check(self):

@@ -44,9 +44,10 @@ weight_slag         = 10
 slope               = 5
 device_geometry     = 3
 SF                  = 2
+thickness_factor    = 0.3
 #declare FoundationA to be an instance of the class
 Foundation_A = Foundation_Definition(weight_concrete, weight_slag, slope, 
-                                     device_geometry, SF)
+                                     device_geometry, SF, thickness_factor)
 
 """
 After class decleration, select soil properties. For undrained soil, the 

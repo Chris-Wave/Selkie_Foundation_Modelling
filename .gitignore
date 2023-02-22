@@ -1,5 +1,9 @@
-.DS_Store
+
 *.csv
 *.pyc
-*.pptx
+*.ppt
 
+
+
+.DS_Store
+**/.DS_Store
