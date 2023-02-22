@@ -22,7 +22,7 @@ import math
 import numpy as np
 import pandas as pd
 
-def eccent(ext_loads_dict, geom, tf = 0.3):
+def eccent(ext_loads_dict, geom, tf=0.3, concrete_density=24):
     #ext_loads_dict : dictionary : user specified moments and forces
     #geom     : float : m, user-specified
     #tf       : float : thickness factor
@@ -63,7 +63,7 @@ def eccent(ext_loads_dict, geom, tf = 0.3):
     t = np.max([tf * np.min([L_vect, B_vect], axis = 0), 
                 np.ones(np.shape(A_comma))], axis = 0)
     v = A_comma * t
-    W = v * 24
+    W = v * concrete_density
     Wb = W - v * 10
 
     return {'Calc':pd.DataFrame({'L':L_vect, 'B':B_vect, 'A':A_comma, 't':t, 'v':v, 'W':W, 'Wb':Wb}),
