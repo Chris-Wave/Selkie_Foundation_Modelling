@@ -16,7 +16,7 @@ The source codes and their respective documentation can be found in the two sepe
 
 ## Requirements
 
-The algorithm makes use of Python 3.9 only. 
+The algorithm makes use of Python 3.9 only. Python's version can be accessed through installation of the latest version of Anaconda (https://www.anaconda.com). To use an IDE for viewing variable values to download Spyder IDE as well. This IDE is available through Anaconda's installation. 
 
 The libraries used and their respective versions used are as follows:
 
